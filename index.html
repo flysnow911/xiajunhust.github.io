@@ -55,9 +55,9 @@
       </nav>
       <nav id="sub-nav">
         
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="Flux RSS"></a>
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
         
-        <a id="nav-search-btn" class="nav-icon" title="Rechercher"></a>
+        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
       </nav>
       <div id="search-form-wrap">
         <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
@@ -67,6 +67,50 @@
 </header>
       <div class="outer">
         <section id="main">
+  
+    <article id="post-Hexo-GitHub环境搭建-添加README" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/06/15/Hexo-GitHub环境搭建-添加README/" class="article-date">
+  <time datetime="2016-06-15T02:30:59.000Z" itemprop="datePublished">2016-06-15</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/06/15/Hexo-GitHub环境搭建-添加README/">Hexo GitHub环境搭建-添加README</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="概要"><a href="#概要" class="headerlink" title="概要"></a>概要</h2><p>当我们使用Hexo+Github搭建好个人博客环境之后，默认Github上repository中是没有Readme的。本文主要介绍如何添加Readme。</p>
+<h2 id="如何添加Readme"><a href="#如何添加Readme" class="headerlink" title="如何添加Readme"></a>如何添加Readme</h2><p>如果我们直接在Github上增加Readme文件，在执行了hexo d部署命令之后，Readme文件会自动消失。  </p>
+<p><b>解决办法</b><br>将我们要添加的Readme.md文件放入本地hexo工作目录的source根目录下，然后修改_config.yml文件，在skip_render后增加我们添加的文件名README.md:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">skip_render: README.md</span><br></pre></td></tr></table></figure>
+<p>需要注意的是，冒号后一定要有空格， 否则运行hexo g命令的时候会出现莫名其妙的错误：<br><img src="imgs/1.png" alt="img">  </p>
+<p>然后我们执行部署命令部署到github，就可以看到repository中有了Readme文件，并且下次再次部署的时候，依然存在。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2016/06/15/Hexo-GitHub环境搭建-添加README/" data-id="cipgaaiwh0000nyxkgpvjcxez" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/开发工具/">开发工具</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
   
     <article id="post-我的第一篇博客" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
@@ -105,7 +149,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/06/15/我的第一篇博客/" data-id="cipg98u8y0001kpxk5q9rozeg" class="article-share-link">Partager</a>
+      <a data-url="http://yoursite.com/2016/06/15/我的第一篇博客/" data-id="cipgaaiwt0003nyxkgd6on072" class="article-share-link">Share</a>
       
       
     </footer>
@@ -150,7 +194,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/06/14/hello-world/" data-id="cipg98u8t0000kpxk4aw8uoe1" class="article-share-link">Partager</a>
+      <a data-url="http://yoursite.com/2016/06/14/hello-world/" data-id="cipgaaiwn0001nyxkzcqaacbz" class="article-share-link">Share</a>
       
       
     </footer>
@@ -169,15 +213,10 @@
 
   
     
-
-  
-    
-  
-    
   <div class="widget-wrap">
-    <h3 class="widget-title">Archives</h3>
+    <h3 class="widget-title">标签</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/开发工具/">开发工具</a></li></ul>
     </div>
   </div>
 
@@ -185,9 +224,32 @@
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Articles récents</h3>
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/开发工具/" style="font-size: 10px;">开发工具</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">六月 2016</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2016/06/15/Hexo-GitHub环境搭建-添加README/">Hexo GitHub环境搭建-添加README</a>
+          </li>
         
           <li>
             <a href="/2016/06/15/我的第一篇博客/">我的第一篇博客-About Me</a>
@@ -210,7 +272,7 @@
   <div class="outer">
     <div id="footer-info" class="inner">
       &copy; 2016 江南烟雨<br>
-      Propulsé by <a href="http://hexo.io/" target="_blank">Hexo</a>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
     </div>
   </div>
 </footer>
