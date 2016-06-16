@@ -3,17 +3,36 @@
 <head>
   <meta charset="utf-8">
   
-  <title>江南烟雨的个人博客</title>
+  <title>Hexo GitHub搭建个人博客-增加评论功能 | 江南烟雨的个人博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description">
-<meta property="og:type" content="website">
-<meta property="og:title" content="江南烟雨的个人博客">
-<meta property="og:url" content="http://yoursite.com/index.html">
+  <meta name="description" content="内容概要本文主要介绍如何为Hexo搭建的博客增加评论功能，采用了多说插件。
+增加评论功能的步骤注册多说进入多说官网，点击我要安装，注册账号。填入多说域名（后续会用到）、要使用多说插件的站点地址等信息。
+修改hexo配置文件
+在根目录下_config.yml中增加如下内容：  
+
+1duoshuo\_shortname: 你站点的short\_name
+这里的short_name也就是前面注册多说填">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hexo GitHub搭建个人博客-增加评论功能">
+<meta property="og:url" content="http://yoursite.com/2016/06/16/Hexo-GitHub搭建个人博客-增加评论功能/index.html">
 <meta property="og:site_name" content="江南烟雨的个人博客">
-<meta property="og:description">
+<meta property="og:description" content="内容概要本文主要介绍如何为Hexo搭建的博客增加评论功能，采用了多说插件。
+增加评论功能的步骤注册多说进入多说官网，点击我要安装，注册账号。填入多说域名（后续会用到）、要使用多说插件的站点地址等信息。
+修改hexo配置文件
+在根目录下_config.yml中增加如下内容：  
+
+1duoshuo\_shortname: 你站点的short\_name
+这里的short_name也就是前面注册多说填">
+<meta property="og:updated_time" content="2016-06-16T07:39:04.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="江南烟雨的个人博客">
-<meta name="twitter:description">
+<meta name="twitter:title" content="Hexo GitHub搭建个人博客-增加评论功能">
+<meta name="twitter:description" content="内容概要本文主要介绍如何为Hexo搭建的博客增加评论功能，采用了多说插件。
+增加评论功能的步骤注册多说进入多说官网，点击我要安装，注册账号。填入多说域名（后续会用到）、要使用多说插件的站点地址等信息。
+修改hexo配置文件
+在根目录下_config.yml中增加如下内容：  
+
+1duoshuo\_shortname: 你站点的short\_name
+这里的short_name也就是前面注册多说填">
   
     <link rel="alternate" href="/atom.xml" title="江南烟雨的个人博客" type="application/atom+xml">
   
@@ -66,9 +85,7 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main">
-  
-    <article id="post-Hexo-GitHub搭建个人博客-增加评论功能" class="article article-type-post" itemscope itemprop="blogPost">
+        <section id="main"><article id="post-Hexo-GitHub搭建个人博客-增加评论功能" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2016/06/16/Hexo-GitHub搭建个人博客-增加评论功能/" class="article-date">
   <time datetime="2016-06-16T07:24:13.000Z" itemprop="datePublished">2016-06-16</time>
@@ -81,8 +98,8 @@
       <header class="article-header">
         
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/06/16/Hexo-GitHub搭建个人博客-增加评论功能/">Hexo GitHub搭建个人博客-增加评论功能</a>
+    <h1 class="article-title" itemprop="name">
+      Hexo GitHub搭建个人博客-增加评论功能
     </h1>
   
 
@@ -117,108 +134,40 @@
     </footer>
   </div>
   
-</article>
-
-  
-
-  
-    <article id="post-Hexo-GitHub环境搭建-添加README" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/06/15/Hexo-GitHub环境搭建-添加README/" class="article-date">
-  <time datetime="2016-06-15T02:30:59.000Z" itemprop="datePublished">2016-06-15</time>
-</a>
     
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
+<nav id="article-nav">
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/06/15/Hexo-GitHub环境搭建-添加README/">Hexo GitHub搭建个人博客-添加README</a>
-    </h1>
   
+    <a href="/2016/06/15/Hexo-GitHub环境搭建-添加README/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Hexo GitHub搭建个人博客-添加README</div>
+    </a>
+  
+</nav>
 
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="概要"><a href="#概要" class="headerlink" title="概要"></a>概要</h2><p>当我们使用Hexo+Github搭建好个人博客环境之后，默认Github上repository中是没有Readme的。本文主要介绍如何添加Readme。</p>
-<h2 id="如何添加Readme"><a href="#如何添加Readme" class="headerlink" title="如何添加Readme"></a>如何添加Readme</h2><p>如果我们直接在Github上增加Readme文件，在执行了hexo d部署命令之后，Readme文件会自动消失。  </p>
-<p><b>解决办法</b><br>将我们要添加的Readme.md文件放入本地hexo工作目录的source根目录下，然后修改_config.yml文件，在skip_render后增加我们添加的文件名README.md:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">skip_render: README.md</span><br></pre></td></tr></table></figure>
-<p>需要注意的是，冒号后一定要有空格， 否则运行hexo g命令的时候会出现莫名其妙的错误：  </p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">xiajundeMacBook-Pro:hexo xiajun$ sudo hexo d</span><br><span class="line">FATAL can not read a block mapping entry; a multiline key may not be an implicit key at line 30, column 1:</span><br><span class="line">    # Writing</span><br><span class="line">    ^</span><br><span class="line">YAMLException: can not read a block mapping entry; a multiline key may not be an implicit key at line 30, column 1:</span><br><span class="line">    # Writing</span><br><span class="line">    ^</span><br><span class="line">    at generateError (/Users/xiajun/hexo/node_modules/hexo/node_modules/js-yaml/lib/js-yaml/loader.js:162:10)</span><br><span class="line">    at throwError (/Users/xiajun/hexo/node_modules/hexo/node_modules/js-yaml/lib/js-yaml/loader.js:168:9)</span><br><span class="line">    at readBlockMapping (/Users/xiajun/hexo/node_modules/hexo/node_modules/js-yaml/lib/js-yaml/loader.js:1040:9)</span><br><span class="line">    at composeNode (/Users/xiajun/hexo/node_modules/hexo/node_modules/js-yaml/lib/js-yaml/loader.js:1326:12)</span><br><span class="line">    at readDocument (/Users/xiajun/hexo/node_modules/hexo/node_modules/js-yaml/lib/js-yaml/loader.js:1488:3)</span><br><span class="line">    at loadDocuments (/Users/xiajun/hexo/node_modules/hexo/node_modules/js-yaml/lib/js-yaml/loader.js:1544:5)</span><br><span class="line">    at Object.load (/Users/xiajun/hexo/node_modules/hexo/node_modules/js-yaml/lib/js-yaml/loader.js:1561:19)</span><br><span class="line">    at Hexo.yamlHelper (/Users/xiajun/hexo/node_modules/hexo/lib/plugins/renderer/yaml.js:7:15)</span><br><span class="line">    at Hexo.tryCatcher (/Users/xiajun/hexo/node_modules/hexo/node_modules/bluebird/js/release/util.js:16:23)</span><br><span class="line">    at Hexo.&lt;anonymous&gt; (/Users/xiajun/hexo/node_modules/hexo/node_modules/bluebird/js/release/method.js:15:34)</span><br><span class="line">    at /Users/xiajun/hexo/node_modules/hexo/lib/hexo/render.js:59:21</span><br><span class="line">    at tryCatcher (/Users/xiajun/hexo/node_modules/hexo/node_modules/bluebird/js/release/util.js:16:23)</span><br><span class="line">    at Promise._settlePromiseFromHandler (/Users/xiajun/hexo/node_modules/hexo/node_modules/bluebird/js/release/promise.js:502:31)</span><br><span class="line">    at Promise._settlePromise (/Users/xiajun/hexo/node_modules/hexo/node_modules/bluebird/js/release/promise.js:559:18)</span><br><span class="line">    at Promise._settlePromise0 (/Users/xiajun/hexo/node_modules/hexo/node_modules/bluebird/js/release/promise.js:604:10)</span><br><span class="line">    at Promise._settlePromises (/Users/xiajun/hexo/node_modules/hexo/node_modules/bluebird/js/release/promise.js:683:18)</span><br><span class="line">    at Async._drainQueue (/Users/xiajun/hexo/node_modules/hexo/node_modules/bluebird/js/release/async.js:138:16)</span><br><span class="line">    at Async._drainQueues (/Users/xiajun/hexo/node_modules/hexo/node_modules/bluebird/js/release/async.js:148:10)</span><br><span class="line">    at Immediate.Async.drainQueues [as _onImmediate] (/Users/xiajun/hexo/node_modules/hexo/node_modules/bluebird/js/release/async.js:17:14)</span><br><span class="line">    at processImmediate [as _immediateCallback] (timers.js:368:17)</span><br></pre></td></tr></table></figure>
-<p>然后我们执行部署命令部署到github，就可以看到repository中有了Readme文件，并且下次再次部署的时候，依然存在。  </p>
-<p>关于skip_render的含义，官方文档解释是：<br>跳过指定文件的渲染，您可使用 glob 表达式来匹配路径。  </p>
-<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><p><a href="http://stackoverflow.com/questions/31494145/how-can-i-tell-hexo-to-ignore-a-file-when-creating-posts" target="_blank" rel="external">How can I tell Hexo to ignore a file when creating posts?-StackOverflow</a><br><a href="http://www.yczmm.com/hexo-skip_render.html" target="_blank" rel="external">Hexo _posts目录, skip_render 的说明</a><br><a href="https://hexo.io/zh-cn/docs/configuration.html" target="_blank" rel="external">Hexo官方文档</a></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/06/15/Hexo-GitHub环境搭建-添加README/" data-id="cipi0stob0001stxks1i49gup" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/开发工具/">开发工具</a></li></ul>
-
-    </footer>
-  </div>
   
 </article>
 
   
-
+  <section id="comments">
+    <!-- 多说评论框 start -->
+    <div class="ds-thread" data-thread-key="post-Hexo-GitHub搭建个人博客-增加评论功能" data-title="Hexo GitHub搭建个人博客-增加评论功能" data-url="http://yoursite.com/2016/06/16/Hexo-GitHub搭建个人博客-增加评论功能/"></div>
+    <!-- 多说评论框 end -->
+    <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+    <script type="text/javascript">
+    var duoshuoQuery = {short_name:'xiajun'};
+      (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0] 
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+      })();
+      </script>
+    <!-- 多说公共JS代码 end -->
+  </section>
   
-    <article id="post-我的第一篇博客" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/06/15/我的第一篇博客/" class="article-date">
-  <time datetime="2016-06-15T01:46:15.000Z" itemprop="datePublished">2016-06-15</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/06/15/我的第一篇博客/">我的第一篇博客-About Me</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="个人简介"><a href="#个人简介" class="headerlink" title="个人简介"></a>个人简介</h2><ul>
-<li>2014.4硕士毕业，一直从事电商类后台开发。</li>
-</ul>
-<h2 id="关注的技术"><a href="#关注的技术" class="headerlink" title="关注的技术"></a>关注的技术</h2><ul>
-<li>Java基础</li>
-<li>分布式服务框架</li>
-<li>分布式消息中间件</li>
-<li>HBase</li>
-<li>Redis</li>
-<li>Mysql</li>
-</ul>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/06/15/我的第一篇博客/" data-id="cipi0stok0003stxk8ronqn0h" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-  
-
-  
-
 </section>
         
           <aside id="sidebar">
