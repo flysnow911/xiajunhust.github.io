@@ -97,16 +97,17 @@
       
         <h1 id="内容概要"><a href="#内容概要" class="headerlink" title="内容概要"></a>内容概要</h1><p>《ActiveMQ实战》第二章学习笔记，消息中间件以及JMS基础知识学习。</p>
 <h1 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h1><h2 id="什么是MOM？"><a href="#什么是MOM？" class="headerlink" title="什么是MOM？"></a>什么是MOM？</h2><p>MOM是的消息发送者和接收者之间松耦合。发送者不必知道接收者的任何信息，接收者也不必知道发送者的任何事情，即异步消息。<br>MOM提供了紧耦合系统之间不具有的优点：消息持久化，在不可靠连接情况下的鲁棒通信、复杂路由、消息转换等等。</p>
-<h2 id="什么是JMS？"><a href="#什么是JMS？" class="headerlink" title="什么是JMS？"></a>什么是JMS？</h2><p>JMS本身不是MOM，他是一种API，抽象了消息客户端和MOM之间的连接，就像JDBC抽象了和关系数据库之间的连接。下图展示了JMS提供了API供消息客户端和具体的MOM JMS提供商之间的交互：</p>
+<h2 id="什么是JMS？"><a href="#什么是JMS？" class="headerlink" title="什么是JMS？"></a>什么是JMS？</h2><p>JMS本身不是MOM，他是一种API，抽象了消息客户端和MOM之间的连接，就像JDBC抽象了和关系数据库之间的连接。下图展示了JMS提供了API供消息客户端和具体的MOM JMS提供商之间的交互：<br><img src="http://o8sltkx20.bkt.clouddn.com/5.png" alt=""></p>
 <h1 id="一些特性"><a href="#一些特性" class="headerlink" title="一些特性"></a>一些特性</h1><h2 id="消息选择"><a href="#消息选择" class="headerlink" title="消息选择"></a>消息选择</h2><p>如果消息接收端只想接收某些类型的消息,则可以使用消息选择功能。消息选择器由SQL92子集定义的条件表达式组成。 消息选择器只能依据消息头和属性来过滤,不能依据消息体来过滤。</p>
 <h2 id="JMS的两种domain"><a href="#JMS的两种domain" class="headerlink" title="JMS的两种domain"></a>JMS的两种domain</h2><ul>
 <li>点对点  </li>
 </ul>
-<p>消息的目的地是一个队列。消息能够以同步或异步的方式被发送和接收。队列接收到的每个消息会被立即发送出去,并且只会被发送给一个消费者。消 费者能够以同步方式(MessageConsumer.receive方法)或者异步方式(MessageConsumer.setMessageListener)从队列接收消息。队列将会一直保存消 息,直至消息被消费或者过期。<br>同一个队列上可以注册多个消费者,但是一个消息只能被一个消费者接收。JMS provider保证一条消息只会被投递一次,并且只会被投递给一个消费 者。JMS provider会轮询已注册的所有消费者,来投递消息。</p>
+<p>消息的目的地是一个队列。消息能够以同步或异步的方式被发送和接收。队列接收到的每个消息会被立即发送出去,并且只会被发送给一个消费者。消 费者能够以同步方式(MessageConsumer.receive方法)或者异步方式(MessageConsumer.setMessageListener)从队列接收消息。队列将会一直保存消 息,直至消息被消费或者过期。<br>同一个队列上可以注册多个消费者,但是一个消息只能被一个消费者接收。JMS provider保证一条消息只会被投递一次,并且只会被投递给一个消费 者。JMS provider会轮询已注册的所有消费者,来投递消息。<br><img src="http://o8sltkx20.bkt.clouddn.com/6.png" alt=""></p>
 <ul>
 <li>发布/订阅</li>
 </ul>
-<p>消息发送的目的地是topic。所有发送到该topic上的消息会被投送给该topic的所有订阅者。<br>与点对点类似,消息订阅者可以以同步或者异步的方式接收消息。默认,topic不会保存消息,除非显式进行持久化订阅。如果采用持久化订阅,JMS provider负责在订阅者离线的时候保存消息。一旦订阅者重新与provider建立连接,便会收到所有的未过期的消息。</p>
+<p>消息发送的目的地是topic。所有发送到该topic上的消息会被投送给该topic的所有订阅者。<br><img src="http://o8sltkx20.bkt.clouddn.com/7.png" alt=""></p>
+<p>与点对点类似,消息订阅者可以以同步或者异步的方式接收消息。默认,topic不会保存消息,除非显式进行持久化订阅。如果采用持久化订阅,JMS provider负责在订阅者离线的时候保存消息。一旦订阅者重新与provider建立连接,便会收到所有的未过期的消息。</p>
 <p>区别message durability &amp; message persistence<br>这两个概念很容易混淆,虽然类似,但是有语义上的区别以及各自的目的。Message durability只存在于发布/订阅模式。<br>而message persistence和哪种模式没有关系,它是一种服务属性,用来只是jms应用在jms provider失败期间保存丢失的消息。调用消息生产者的 setDeliveryMode方法可以设置值(JMSDeliveryMode.PERSISTENCE,NOT_PERSISTENCE)。</p>
 <h3 id="版权声明"><a href="#版权声明" class="headerlink" title="版权声明"></a>版权声明</h3><p>本文首发于<a href="http://xiajunhust.github.io/">江南烟雨的个人博客</a>博客（ <a href="http://xiajunhust.github.io/">http://xiajunhust.github.io/</a> ），版权所有，侵权必究。<br>本文永久链接：<a href="http://xiajunhust.github.io/2016/06/17/《ActiveMQ-in-action》学习之第二章-理解消息中间件以及JMS/">http://xiajunhust.github.io/2016/06/17/《ActiveMQ-in-action》学习之第二章-理解消息中间件以及JMS/</a></p>
 
@@ -114,7 +115,7 @@
 
     </div>
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/06/17/《ActiveMQ-in-action》学习之第二章-理解消息中间件以及JMS/" data-id="cipjqnjxd0004lixkf58fdp2z" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2016/06/17/《ActiveMQ-in-action》学习之第二章-理解消息中间件以及JMS/" data-id="cipjrndbs0004n4xkbssxvwui" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/消息中间件/">消息中间件</a></li></ul>
@@ -184,7 +185,7 @@
 
     </div>
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/06/16/Hexo-GitHub搭建个人博客-增加评论功能/" data-id="cipjqnjxb0003lixkwz5fkozb" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2016/06/16/Hexo-GitHub搭建个人博客-增加评论功能/" data-id="cipjrndbi0001n4xkxvbsb7fa" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/开发工具/">开发工具</a></li></ul>
@@ -239,7 +240,7 @@
 
     </div>
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/06/15/Hexo-GitHub环境搭建-添加README/" data-id="cipjqnjx10000lixk29zbgeuz" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2016/06/15/Hexo-GitHub环境搭建-添加README/" data-id="cipjrndbc0000n4xkuzcfrm12" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/开发工具/">开发工具</a></li></ul>
@@ -296,7 +297,7 @@
 
     </div>
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/06/15/我的第一篇博客/" data-id="cipjqnjx50001lixkxk7dlz92" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2016/06/15/我的第一篇博客/" data-id="cipjrndbq0003n4xkqj8lfr09" class="article-share-link">Share</a>
       
       
     </footer>
