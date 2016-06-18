@@ -116,103 +116,116 @@
 
       
 
-<!-- 打赏模块代码 -->
-<div id="donate_module">
-	<!-- css -->
-	<style type="text/css">
-		.donate_bar a.btn_donate{
-			display: inline-block;
-			width: 82px;
-			height: 82px;
-			background: url("http://img.t.sinajs.cn/t5/style/images/apps_PRF/e_media/btn_reward.gif") no-repeat;
-			_background: url("http://img.t.sinajs.cn/t5/style/images/apps_PRF/e_media/btn_reward.gif") no-repeat;
+		
+			<!-- css -->
+			<style type="text/css">
+			    .center {
+			        text-align: center;
+			    }
+			    .hidden {
+			        display: none;
+			    }
+				.donate_bar a.btn_donate{
+					display: inline-block;
+					width: 82px;
+					height: 82px;
+					background: url("http://7xsl28.com1.z0.glb.clouddn.com/btn_reward.gif") no-repeat;
+					_background: url("http://7xsl28.com1.z0.glb.clouddn.com/btn_reward.gif") no-repeat;
 
-			<!-- 因为本 hexo 生成的博客所用的 theme 的 a:hover 带动画效果，
-				 为了在让打赏按钮显示效果正常 而 添加了以下几行 css，
-				 嵌入其它博客时不一定要它们。 -->
-			-webkit-transition: background 0s;
-			-moz-transition: background 0s;
-			-o-transition: background 0s;
-			-ms-transition: background 0s;
-			transition: background 0s;
-			<!-- /让打赏按钮的效果显示正常 而 添加的几行 css 到此结束 -->
-		}
-		.donate_bar a.btn_donate:hover{ background-position: 0px -82px;}
-		.donate_bar .donate_txt {
-			display: block;
-			color: #9d9d9d;
-			font: 14px/2 "Microsoft Yahei";
-		}
-		.bold{ font-weight: bold; }
-	</style>
-	<!-- /css -->
+					<!-- http://img.t.sinajs.cn/t5/style/images/apps_PRF/e_media/btn_reward.gif
+					     因为本 hexo 生成的博客所用的 theme 的 a:hover 带动画效果，
+						 为了在让打赏按钮显示效果正常 而 添加了以下几行 css，
+						 嵌入其它博客时不一定要它们。 -->
+					-webkit-transition: background 0s;
+					-moz-transition: background 0s;
+					-o-transition: background 0s;
+					-ms-transition: background 0s;
+					transition: background 0s;
+					<!-- /让打赏按钮的效果显示正常 而 添加的几行 css 到此结束 -->
+				}
 
-	<!-- form -->
-	<form id="donate" action="https://shenghuo.alipay.com/send/payment/fill.htm" method="POST" target="_blank" accept-charset="GBK">
-		<input name="optEmail" type="hidden" value="xiajun.0706@163.com" />
-		<input name="payAmount" type="hidden" value="1.00" />
-		<input id="title" name="title" type="hidden" value="打赏《Hexo GitHub搭建个人博》"/>
-		<input name="memo" type="hidden" value="留下您的大名及联系方式(email,blog,etc)，多交流共勉共进：" />
-	</form>
-	<!-- /form -->
+				.donate_bar a.btn_donate:hover{ background-position: 0px -82px;}
+				.donate_bar .donate_txt {
+					display: block;
+					color: #9d9d9d;
+					font: 14px/2 "Microsoft Yahei";
+				}
+				.bold{ font-weight: bold; }
+			</style>
+			<!-- /css -->
 
-	<!-- btn_donate & tips -->
-	<div id="donate_board" class="donate_bar center">
-		<a id="btn_donate" class="btn_donate" target="_self" href="javascript:;" title="Donate 打赏"></a>
-		<span class="donate_txt">
-			&uarr;<br/>
-			If you enjoy the article, please feel free to <span class="bold">donate~</span> Thx.<br/>
-			若本文对您有帮助，<span class="bold">求打赏~</span> 谢谢您的鼓励。
-		</span>
-		<br/>
-	</div>
-	<!-- /btn_donate & tips -->
+		    <!-- Donate Module -->
+		    <div id="donate_module">
 
-	<!-- donate guide -->
-	<div id="donate_guide" class="donate_bar center hidden">
-		<a href="http://o8sltkx20.bkt.clouddn.com/0003.jpg" title="Alipay_Scan_Payment" class="fancybox" rel="article0">
-			<img src="http://o8sltkx20.bkt.clouddn.com/0003.jpg" title="Donate 打赏" height="164px" width="164px"/>
-		</a> &nbsp;
+			<!-- btn_donate & tips -->
+			<div id="donate_board" class="donate_bar center">
+			    <br>
+			    ------------------------------------------------------------------------------------------------------------------------------
+			    <br>
+				<a id="btn_donate" class="btn_donate" target="_self" href="javascript:;" title="Donate 打赏"></a>
+				<span class="donate_txt">
+					打赏我的人，运气都不会太差~
+				</span>
+					
+				
+			</div>
+			<!-- /btn_donate & tips -->
 
-		<a href="http://o8sltkx20.bkt.clouddn.com/0004.jpg" title="WeChat_Scan_Payment" class="fancybox" rel="article0">
-			<img src="http://o8sltkx20.bkt.clouddn.com/0004.jpg" title="Donate 打赏" height="164px" width="auto"/>
-		</a>
+			<!-- donate guide -->
+		    
+			<div id="donate_guide" class="donate_bar center hidden">
+		        <br>
+			    ------------------------------------------------------------------------------------------------------------------------------
+			    <br>
+			    
+			    <div width="100%" align="center"><div name="dashmain" id="dash-main-id-87895f" class="dash-main-3 87895f-0.99"></div></div>
+				<script type="text/javascript" charset="utf-8" src="http://www.dashangcloud.com/static/ds.js"></script>
+				
 
-		<span class="donate_txt">
-			Use App <span class="bold"><a href="http://global.alipay.com/ospay/home.htm">Alipay</a> / <a href="http://www.wechat.com/en/">WeChat</a></span>
-			to scan QRCode~ Thx for your support.<br/>
+				<a href="http://o8sltkx20.bkt.clouddn.com/0004.jpg" title="用微信扫一扫哦~" class="fancybox" rel="article0">
+					<img src="http://o8sltkx20.bkt.clouddn.com/0004.jpg" title="微信打赏 Donate" height="190px" width="auto"/>
+				</a>
+		        
+		        &nbsp;&nbsp;
 
-			用手机 <span class="bold"><a href="https://mobile.alipay.com/index.htm">支付宝钱包</a> / <a href="http://weixin.qq.com/">微信</a></span>，
-			扫一扫即可~ 谢谢您的鼓励。<br/>
-			<br/>
+				<a href="http://o8sltkx20.bkt.clouddn.com/0003.jpg" title="用支付宝扫一扫即可~" class="fancybox" rel="article0">
+					<img src="http://o8sltkx20.bkt.clouddn.com/0003.jpg" title="支付宝打赏 Donate" height="190px" width="auto"/>
+				</a>
 
-			Or donate on <a id="donate_on_web2" class="bold" href="javascript:donate_on_web();" title="Donate 打赏">Web Alipay</a>. /
+				<span class="donate_txt">
+					打赏我的人，运气都不会太差~
+				</span>
 
-			也可用 <a id="donate_on_web1" class="bold" href="javascript:donate_on_web();" title="Donate 打赏">网页版支付宝</a>
-			打赏。<br/>
-		</span>
-		<br/>
-	</div>
-	<!-- /donate guide -->
+			</div>
+			<!-- /donate guide -->
 
-	<!-- donate script -->
-	<script type="text/javascript">
-		document.getElementById('btn_donate').onclick = function(){
-			$('#donate_board').addClass('hidden');
-			$('#donate_guide').removeClass('hidden');
-		}
+			<!-- donate script -->
+			<script type="text/javascript">
+				document.getElementById('btn_donate').onclick = function() {
+					$('#donate_board').addClass('hidden');
+			    $('#donate_guide').removeClass('hidden');
+				}
 
-		function donate_on_web(){
-			$('#donate').submit();
-		}
-	</script>
-	<!-- /donate script -->
-</div>
-<!-- /打赏模块代码 -->
+				function donate_on_web(){
+					$('#donate').submit();
+		        }
+
+				var original_window_onload = window.onload;
+		        window.onload = function () {
+		            if (original_window_onload) {
+		                original_window_onload();
+		            }
+		            document.getElementById('donate_board_wdg').className = 'hidden';
+				}
+			</script>
+			<!-- /donate script -->
+		</div>
+		<!-- /Donate Module -->
+		   
 
     </div>
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/06/15/Hexo-GitHub环境搭建-添加README/" data-id="cipl3bq0b000038xkzvo6yp02" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2016/06/15/Hexo-GitHub环境搭建-添加README/" data-id="cipl3xawe00054bxkbgy0rocn" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/开发工具/">开发工具</a></li></ul>
