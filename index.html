@@ -70,6 +70,88 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-代码设计-命名太长了！" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/06/18/代码设计-命名太长了！/" class="article-date">
+  <time datetime="2016-06-18T08:01:29.000Z" itemprop="datePublished">2016-06-18</time>
+</a>
+    
+  </div>
+
+  <span id="busuanzi_container_page_pv" style='display:none'>
+    <span id="busuanzi_value_page_pv"></span> Hits
+  </span>
+
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/06/18/代码设计-命名太长了！/">代码中的命名问题-命名太长了！</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="1-内容概要"><a href="#1-内容概要" class="headerlink" title="1 内容概要"></a>1 内容概要</h1><p>本文是一篇译文，翻译自：<a href="http://journal.stuffwithstuff.com/2016/06/16/long-names-are-long/?from=timeline&amp;isappinstalled=0" target="_blank" rel="external">Long Names Are Long</a>。主要介绍了编程过程中常见的命名过长的问题。</p>
+<h1 id="2-正文内容"><a href="#2-正文内容" class="headerlink" title="2 正文内容"></a>2 正文内容</h1><h2 id="2-1-选择一个好名字"><a href="#2-1-选择一个好名字" class="headerlink" title="2.1 选择一个好名字"></a>2.1 选择一个好名字</h2><p>一个好名字需要具备以下两个特点：  </p>
+<ul>
+<li>含义清晰。一眼可以看出名字指代的含义。</li>
+<li>含义精确。能够从名字看出它不包含哪些含义。  </li>
+</ul>
+<p>一个名字具备了以上2个特点之后，任何其他字符都是无用的。以下是我在编码过程中命名多得出的一些指导性准则。</p>
+<h3 id="2-1-1-忽略掉表示变量或者参数类型的字符"><a href="#2-1-1-忽略掉表示变量或者参数类型的字符" class="headerlink" title="2.1.1 忽略掉表示变量或者参数类型的字符"></a>2.1.1 忽略掉表示变量或者参数类型的字符</h3><p>对于静态变量，使用者通常都知道变量的类型。方法体通常不会很长，这样，即便是需要通过查看变量定义进行推断的局部变量，也可以很容易得知变量类型。<br>考虑到这点，将类型作为变量名字的一部分是冗余的。我们抛弃掉<a href="https://en.wikipedia.org/wiki/Hungarian_notation" target="_blank" rel="external">Hungarian notation</a>。  </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">// Bad:</span><br><span class="line">String nameString;</span><br><span class="line">DockableModelessWindow dockableModelessWindow;</span><br><span class="line"></span><br><span class="line">// Better:</span><br><span class="line">String name;</span><br><span class="line">DockableModelessWindow window;</span><br></pre></td></tr></table></figure>
+<p>特别的，对于集合，使用复数名词更好，而不要用单独的一个表示集合的名词。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">// Bad:</span><br><span class="line">List&lt;DateTime&gt; holidayDateList;</span><br><span class="line">Map&lt;Employee, Role&gt; employeeRoleHashMap;</span><br><span class="line"></span><br><span class="line">// Better:</span><br><span class="line">List&lt;DateTime&gt; holidays;</span><br><span class="line">Map&lt;Employee, Role&gt; employeeRoles;</span><br></pre></td></tr></table></figure>
+<p>这对于方法命名同样奏效。方法名称没必要体现参数类型-通过参数列表可以得知。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">// Bad:</span><br><span class="line">mergeTableCells(List&lt;TableCell&gt; cells)</span><br><span class="line">sortEventsUsingComparator(List&lt;Event&gt; events,</span><br><span class="line">    Comparator&lt;Event&gt; comparator)</span><br><span class="line"></span><br><span class="line">// Better:</span><br><span class="line">merge(List&lt;TableCell&gt; cells)</span><br><span class="line">sort(List&lt;Event&gt; events, Comparator&lt;Event&gt; comparator)</span><br></pre></td></tr></table></figure>
+<p>这将使得调用方法的代码可读性更好：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mergeTableCells(tableCells);</span><br><span class="line">sortEventsUsingComparator(events, comparator);</span><br></pre></td></tr></table></figure>
+<h3 id="2-1-2-忽略掉会给命名带来歧义的字符"><a href="#2-1-2-忽略掉会给命名带来歧义的字符" class="headerlink" title="2.1.2 忽略掉会给命名带来歧义的字符"></a>2.1.2 忽略掉会给命名带来歧义的字符</h3><p>有些人喜欢把所知道的关于变量或者方法的所有事情都添加到命名中去。记住，命名是一个标识符：它指向它被定义的地方。它不是读者可能想知道的关于这个变量的所有事情的一个完整目录。这部分事情由定义来完成。命名只是让读者能够跳转到定义处。<br>当我看到这样一个命名：recentlyUpdatedAnnualSalesBid，我脑海里会有这样的疑问：  </p>
+<ul>
+<li>有不是最近更新的年销售额投标吗？</li>
+<li>有没更新过的最近的年销售额投标吗？</li>
+<li>等等</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">// Bad:</span><br><span class="line">finalBattleMostDangerousBossMonster;</span><br><span class="line">weaklingFirstEncounterMonster;</span><br><span class="line"></span><br><span class="line">// Better:</span><br><span class="line">boss;</span><br><span class="line">firstMonster;</span><br></pre></td></tr></table></figure>
+<h3 id="2-1-3-忽略掉能够从上下文得知的信息的字符"><a href="#2-1-3-忽略掉能够从上下文得知的信息的字符" class="headerlink" title="2.1.3 忽略掉能够从上下文得知的信息的字符"></a>2.1.3 忽略掉能够从上下文得知的信息的字符</h3><p>在这篇文章中，我能够使用“我”是因为读者能够看到这篇文章是由Bob Nystrom发布的。我不用再文章各处说明作者是Bob Nystrom。代码也是一样。方法或者变量都有各自的上下文，不需要再命名中重复上下文中的信息。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">// Bad:</span><br><span class="line">class AnnualHolidaySale &#123;</span><br><span class="line">  int _annualSaleRebate;</span><br><span class="line">  void promoteHolidaySale() &#123; ... &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// Better:</span><br><span class="line">class AnnualHolidaySale &#123;</span><br><span class="line">  int _rebate;</span><br><span class="line">  void promote() &#123; ... &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="2-1-4-忽略掉无任何含义的字符"><a href="#2-1-4-忽略掉无任何含义的字符" class="headerlink" title="2.1.4 忽略掉无任何含义的字符"></a>2.1.4 忽略掉无任何含义的字符</h3><p>在很多场景下，一些字符不携带任何有意义的信息，常见的如下：<br>data, state, amount, value, manager, engine, object, entity, instance。<br>一个好的命名能够在读者的脑海中绘制一幅画像。”manager”并不会让读者得知这个变量或者方法做了什么事情。<br>我们可以尝试着问自己一个问题：若移除掉这个词，标识符的含义是否和之前一样？如果是这样，这个词就是无意义的，可以移除。</p>
+<h2 id="2-2-准则的实际应用"><a href="#2-2-准则的实际应用" class="headerlink" title="2.2 准则的实际应用"></a>2.2 准则的实际应用</h2><p>为了说明上述准则在实际中是如何使用的，下面看一个例子：  </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">class DeliciousBelgianWaffleObject &#123;</span><br><span class="line">  void garnishDeliciousBelgianWaffleWithStrawberryList(</span><br><span class="line">      List&lt;Strawberry&gt; strawberryList) &#123; ... &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>既然参数类型我们已经能够从参数列表得知，因此将其移除：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">class DeliciousBelgianWaffleObject &#123;</span><br><span class="line">    void garnishDeliciousBelgianWaffle(</span><br><span class="line">        List&lt;Strawberry&gt; strawberries) &#123; ... &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>除非我们有其他口味的华夫饼，或者是其他国家的华夫饼，否则可以继续移除掉一部分字符：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">class WaffleObject &#123;</span><br><span class="line">  void garnishWaffle(List&lt;Strawberry&gt; strawberries) &#123; ... &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>既然方法是在类WaffleObject中，因此我们知道它要装饰的对象，因此修改如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">class WaffleObject &#123;</span><br><span class="line">  void garnish(List&lt;Strawberry&gt; strawberries) &#123; ... &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>程序中，任何事务都是以对象的形式存在，因此类名可以移除掉Object：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">class Waffle &#123;</span><br><span class="line">  void garnish(List&lt;Strawberry&gt; strawberries) &#123; ... &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>现在看看，是不是好多了。</p>
+<h3 id="版权声明"><a href="#版权声明" class="headerlink" title="版权声明"></a>版权声明</h3><p>本文首发于<a href="http://xiajunhust.github.io/">江南烟雨的个人博客</a>博客（ <a href="http://xiajunhust.github.io/">http://xiajunhust.github.io/</a> ），版权所有，侵权必究。<br>本文永久链接：<a href="http://xiajunhust.github.io/2016/06/18/代码设计-命名太长了！/">http://xiajunhust.github.io/2016/06/18/代码设计-命名太长了！/</a></p>
+
+      
+
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://xiajunhust.github.io/2016/06/18/代码设计-命名太长了！/" data-id="cipky5vj30004fcxkz2toludh" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/代码设计/">代码设计</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+  
+
+  
     <article id="post-《ActiveMQ-in-action》学习之第二章-理解消息中间件以及JMS" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2016/06/17/《ActiveMQ-in-action》学习之第二章-理解消息中间件以及JMS/" class="article-date">
@@ -117,7 +199,7 @@
 
     </div>
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/06/17/《ActiveMQ-in-action》学习之第二章-理解消息中间件以及JMS/" data-id="cipklpigz00021xxkprmseufb" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2016/06/17/《ActiveMQ-in-action》学习之第二章-理解消息中间件以及JMS/" data-id="cipky5vj20003fcxk3ytsww5p" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/消息中间件/">消息中间件</a></li></ul>
@@ -187,7 +269,7 @@
 
     </div>
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/06/16/Hexo-GitHub搭建个人博客-增加评论功能/" data-id="cipklpigu00001xxk779ssuhf" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2016/06/16/Hexo-GitHub搭建个人博客-增加评论功能/" data-id="cipky5viq0000fcxkb692bfyt" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/开发工具/">开发工具</a></li></ul>
@@ -242,7 +324,7 @@
 
     </div>
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/06/15/Hexo-GitHub环境搭建-添加README/" data-id="cipklpih600041xxkkkcnx2s2" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2016/06/15/Hexo-GitHub环境搭建-添加README/" data-id="cipky5viv0001fcxkaudkvk4i" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/开发工具/">开发工具</a></li></ul>
@@ -267,7 +349,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">标签</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/开发工具/">开发工具</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/消息中间件/">消息中间件</a></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/代码设计/">代码设计</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/开发工具/">开发工具</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/消息中间件/">消息中间件</a></li></ul>
     </div>
   </div>
 
@@ -277,7 +359,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">标签云</h3>
     <div class="widget tagcloud">
-      <a href="/tags/开发工具/" style="font-size: 20px;">开发工具</a> <a href="/tags/消息中间件/" style="font-size: 10px;">消息中间件</a>
+      <a href="/tags/代码设计/" style="font-size: 10px;">代码设计</a> <a href="/tags/开发工具/" style="font-size: 20px;">开发工具</a> <a href="/tags/消息中间件/" style="font-size: 10px;">消息中间件</a>
     </div>
   </div>
 
@@ -297,6 +379,10 @@
     <h3 class="widget-title">最新文章</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2016/06/18/代码设计-命名太长了！/">代码中的命名问题-命名太长了！</a>
+          </li>
         
           <li>
             <a href="/2016/06/17/《ActiveMQ-in-action》学习之第二章-理解消息中间件以及JMS/">《ActiveMQ in action》学习之第二章-理解消息中间件以及JMS</a>
