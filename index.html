@@ -61,6 +61,67 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-DbUnit-AmbiguousTableNameException异常解决" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/07/14/DbUnit-AmbiguousTableNameException异常解决/" class="article-date">
+  <time datetime="2016-07-14T12:45:12.000Z" itemprop="datePublished">2016-07-14</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/07/14/DbUnit-AmbiguousTableNameException异常解决/">DbUnit AmbiguousTableNameException异常解决</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h1><p>今天在用DbUnit写DAO单元测试（使用的是mysql数据库）的时候，抛异常：</p>
+<blockquote>
+<p>org.dbunit.database.AmbiguousTableNameException: ACTIVITY<br>    at org.dbunit.dataset.OrderedTableNameMap.add(OrderedTableNameMap.java:198)<br>    at org.dbunit.database.DatabaseDataSet.initialize(DatabaseDataSet.java:231)<br>    at org.dbunit.database.DatabaseDataSet.getTableMetaData(DatabaseDataSet.java:281)<br>    at org.dbunit.operation.DeleteAllOperation.execute(DeleteAllOperation.java:109)<br>    at org.dbunit.operation.CompositeOperation.execute(CompositeOperation.java:79)<br>    at org.dbunit.AbstractDatabaseTester.executeOperation(AbstractDatabaseTester.java:190)<br>    at org.dbunit.AbstractDatabaseTester.onSetup(AbstractDatabaseTester.java:103)<br>    at com.youzan.trade.demo.BaseTest.before(BaseTest.java:43)<br>    at com.youzan.trade.demo.BaseDAOTest.before(BaseDAOTest.java:28)<br>    at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)<br>    at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)<br>    at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)<br>    at java.lang.reflect.Method.invoke(Method.java:498)<br>    at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)<br>    at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)<br>    at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:47)<br>    at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:24)<br>    at org.springframework.test.context.junit4.statements.RunBeforeTestMethodCallbacks.evaluate(RunBeforeTestMethodCallbacks.java:74)<br>    at org.springframework.test.context.junit4.statements.RunAfterTestMethodCallbacks.evaluate(RunAfterTestMethodCallbacks.java:83)<br>    at org.springframework.test.context.junit4.statements.SpringRepeat.evaluate(SpringRepeat.java:72)<br>    at org.springframework.test.context.junit4.SpringJUnit4ClassRunner.runChild(SpringJUnit4ClassRunner.java:231)<br>    at org.springframework.test.context.junit4.SpringJUnit4ClassRunner.runChild(SpringJUnit4ClassRunner.java:88)<br>    at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290)<br>    at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71)<br>    at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288)<br>    at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58)<br>    at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268)<br>    at org.springframework.test.context.junit4.statements.RunBeforeTestClassCallbacks.evaluate(RunBeforeTestClassCallbacks.java:61)<br>    at org.springframework.test.context.junit4.statements.RunAfterTestClassCallbacks.evaluate(RunAfterTestClassCallbacks.java:71)<br>    at org.junit.runners.ParentRunner.run(ParentRunner.java:363)<br>    at org.springframework.test.context.junit4.SpringJUnit4ClassRunner.run(SpringJUnit4ClassRunner.java:174)<br>    at org.junit.runner.JUnitCore.run(JUnitCore.java:137)<br>    at com.intellij.junit4.JUnit4IdeaTestRunner.startRunnerWithArgs(JUnit4IdeaTestRunner.java:69)<br>    at com.intellij.rt.execution.junit.JUnitStarter.prepareStreamsAndStart(JUnitStarter.java:234)<br>    at com.intellij.rt.execution.junit.JUnitStarter.main(JUnitStarter.java:74)<br>    at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)<br>    at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)<br>    at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)<br>    at java.lang.reflect.Method.invoke(Method.java:498)<br>    at com.intellij.rt.execution.application.AppMain.main(AppMain.java:144)</p>
+</blockquote>
+<h1 id="AmbiguousTableNameException的含义"><a href="#AmbiguousTableNameException的含义" class="headerlink" title="AmbiguousTableNameException的含义"></a>AmbiguousTableNameException的含义</h1><p>Google搜了下<b>AmbiguousTableNameException</b>关键字，得到如下信息：  </p>
+<blockquote>
+<p>This exception is thrown by IDataSet when multiple tables having the same name are accessible.This usually occurs when the database connection have access to multiple schemas containing identical table names.</p>
+</blockquote>
+<p>大概意思是这个异常通常在构建IDataSet的时候会抛出，原因是由于数据库连接能访问到超过2个相同名字的数据表。  </p>
+<p>一开始并未注意到异常后面的ACTIVITY，而恰巧这个时候我是在做另一个数据表buyer_address的测试，因此排查花费了不少时间。使用mysql客户端查看数据库下面的所有数据表，发现具有名字buyer_address的数据表只有1个。无奈只能在DbUnit jar中添加断点:<br><img src="http://o8sltkx20.bkt.clouddn.com/0008.png" alt="debug point">  </p>
+<p>debug发现，DbUnit会去扫数据库中的所有表，由于数据库中有2个表：activity、Activity，因此就抛出了异常。同时也可以看出，并不会区分大小写。下面我们分析下为什么没有区分大小写。  </p>
+<p>看OrderedTableNameMap的getTableName函数：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line"> * Returns the table name in the correct case (for example as upper case string)</div><div class="line"> * @param tableName The input table name to be resolved</div><div class="line"> * @return The table name for the given string in the correct case.</div><div class="line"> */</div><div class="line">public String getTableName(String tableName) </div><div class="line">&#123;</div><div class="line">    if(LOGGER.isDebugEnabled())</div><div class="line">        LOGGER.debug(&quot;getTableName(tableName=&#123;&#125;) - start&quot;, tableName);</div><div class="line">    </div><div class="line">    String result = tableName;</div><div class="line">    if(!_caseSensitiveTableNames)</div><div class="line">    &#123;</div><div class="line">        // &quot;Locale.ENGLISH&quot; Fixes bug #1537894 when clients have a special</div><div class="line">        // locale like turkish. (for release 2.4.3)</div><div class="line">        result = tableName.toUpperCase(Locale.ENGLISH);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    if(LOGGER.isDebugEnabled())</div><div class="line">        LOGGER.debug(&quot;getTableName(tableName=&#123;&#125;) - end - result=&#123;&#125;&quot;, tableName, result);</div><div class="line">    </div><div class="line">    return result;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>而_caseSensitiveTableNames变量定义默认是false，因此不会区分大小写：  </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line"> * Whether or not case sensitive table names should be used. Defaults to false.</div><div class="line"> */</div><div class="line">private boolean _caseSensitiveTableNames = false;</div></pre></td></tr></table></figure>
+<h1 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h1><p>解决方法有如下几种：<br>（1）如果同一个数据库中有2个同名的数据表（不区分大小写），则删除数据库中同名的数据库。<br>（2）如果数据库连接没有指定scheme，则指定数据库连接的schema。</p>
+<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><ul>
+<li><a href="http://dbunit.sourceforge.net/faq.html#AmbiguousTableNameException" target="_blank" rel="external">FAQ-AmbiguousTableNameException</a></li>
+<li><a href="http://dbunit.sourceforge.net/apidocs/org/dbunit/database/AmbiguousTableNameException.html" target="_blank" rel="external">AmbiguousTableNameException</a><h2 id="版权声明"><a href="#版权声明" class="headerlink" title="版权声明"></a>版权声明</h2></li>
+</ul>
+<p>本文首发于<a href="http://xiajunhust.github.io/">江南烟雨的个人博客</a>博客（ <a href="http://xiajunhust.github.io/">http://xiajunhust.github.io/</a> ），版权所有，侵权必究。<br>本文永久链接：<a href="http://xiajunhust.github.io/2016/07/14/DbUnit-AmbiguousTableNameException异常解决/">http://xiajunhust.github.io/2016/07/14/DbUnit-AmbiguousTableNameException异常解决/</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://xiajunhust.github.io/2016/07/14/DbUnit-AmbiguousTableNameException异常解决/" data-id="ciqmc7wsr00038uwfkxkompui" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/测试技术/">测试技术</a></li></ul>
+
+    </footer>
+  </div>
+  
+
+
+
+</article>
+
+  
     <article id="post-Hexo-GitHub搭建个人博客-增加评论以及访问量统计功能" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2016/07/11/Hexo-GitHub搭建个人博客-增加评论以及访问量统计功能/" class="article-date">
@@ -114,7 +175,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/07/11/Hexo-GitHub搭建个人博客-增加评论以及访问量统计功能/" data-id="ciqi12vhb0000b1wfmv9is76d" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2016/07/11/Hexo-GitHub搭建个人博客-增加评论以及访问量统计功能/" data-id="ciqmc7wse00008uwf4vadl1tx" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/开发工具/">开发工具</a></li></ul>
@@ -164,7 +225,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/07/11/Hexo-GitHub搭建个人博客-添加README/" data-id="ciqi12vhn0003b1wfbbxuc0dk" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2016/07/11/Hexo-GitHub搭建个人博客-添加README/" data-id="ciqmc7wsk00018uwfc6mzycph" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/开发工具/">开发工具</a></li></ul>
@@ -214,7 +275,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/07/11/hello-world/" data-id="ciqi12vhg0001b1wfupccj8q3" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2016/07/11/hello-world/" data-id="ciqmc7wst00048uwf9r8tj40v" class="article-share-link">Share</a>
       
       
     </footer>
@@ -238,7 +299,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">标签</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/开发工具/">开发工具</a></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/开发工具/">开发工具</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/测试技术/">测试技术</a></li></ul>
     </div>
   </div>
 
@@ -248,7 +309,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">标签云</h3>
     <div class="widget tagcloud">
-      <a href="/tags/开发工具/" style="font-size: 10px;">开发工具</a>
+      <a href="/tags/开发工具/" style="font-size: 20px;">开发工具</a> <a href="/tags/测试技术/" style="font-size: 10px;">测试技术</a>
     </div>
   </div>
 
@@ -268,6 +329,10 @@
     <h3 class="widget-title">最新文章</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2016/07/14/DbUnit-AmbiguousTableNameException异常解决/">DbUnit AmbiguousTableNameException异常解决</a>
+          </li>
         
           <li>
             <a href="/2016/07/11/Hexo-GitHub搭建个人博客-增加评论以及访问量统计功能/">Hexo GitHub搭建个人博客-增加评论以及访问量统计功能</a>
