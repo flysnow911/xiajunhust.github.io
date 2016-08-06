@@ -115,6 +115,7 @@
 <p>现在假设原始数组中无元素“x”，这样(2)成功设置了元素”x”，(3)处可以成功获取到元素”x”。这种情况下，(4)一定会读取到(1)处设置的值1.因为(2)处的volatile写以及在此之前的任何写操作都happens-before(3)处的读以及之后的所有读。</p>
 <p>但是，假设一开始数组中就有了元素”x”，如果else不调用setArray，那么(2)处的写就不是volatile写，(4)处的读就不一定能读到(1)处设置的值！</p>
 <p>很显然我们不想让内存可见性依赖于list中已有的值，为了确保任何情况下的内存可见性，set方法必须永远都是一个volatile写，这就是为何要在else代码块中调用setArray的原因。</p>
+<p>其他写方法（add、remove）比较易懂，在此不详述。</p>
 <h1 id="3-参考资料"><a href="#3-参考资料" class="headerlink" title="3 参考资料"></a>3 参考资料</h1><ul>
 <li><a href="http://www.cnblogs.com/skywang12345/p/3498483.html" target="_blank" rel="external">Java多线程系列–“JUC集合”02之 CopyOnWriteArrayList</a></li>
 <li><a href="http://stackoverflow.com/questions/28772539/why-setarray-method-call-required-in-copyonwritearraylist#" target="_blank" rel="external">Why setArray() method call required in CopyOnWriteArrayList</a></li>
@@ -234,7 +235,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/08/06/CopyOnWriteArrayList与JMM/" data-id="cirj10hn10000onwfy514woui" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2016/08/06/CopyOnWriteArrayList与JMM/" data-id="cirj18wcx0001w7wf7fgnt94g" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li></ul>
@@ -420,7 +421,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/07/20/代码中的命名问题-命名太长了！/" data-id="cirj10hnn0009onwfxm7wps93" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2016/07/20/代码中的命名问题-命名太长了！/" data-id="cirj18wdd0008w7wft8oeis4r" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/代码设计/">代码设计</a></li></ul>
@@ -579,7 +580,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/07/16/《Soft-skills》读书笔记（一）-这本书与其他书籍有何不同/" data-id="cirj10hnm0008onwf80664wjr" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2016/07/16/《Soft-skills》读书笔记（一）-这本书与其他书籍有何不同/" data-id="cirj18wdf000aw7wfym4e2ptp" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/思考-读书笔记/">思考&读书笔记</a></li></ul>
@@ -744,7 +745,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/07/14/DbUnit-AmbiguousTableNameException异常解决/" data-id="cirj10hnj0006onwfzgtn17vd" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2016/07/14/DbUnit-AmbiguousTableNameException异常解决/" data-id="cirj18wd40003w7wfncwx3zu8" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/测试技术/">测试技术</a></li></ul>
@@ -919,7 +920,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/07/11/Hexo-GitHub搭建个人博客-增加评论以及访问量统计功能/" data-id="cirj10hn60001onwft33y21ka" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2016/07/11/Hexo-GitHub搭建个人博客-增加评论以及访问量统计功能/" data-id="cirj18wd50004w7wfypynqc7z" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/开发工具/">开发工具</a></li></ul>
@@ -1077,7 +1078,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/07/11/Hexo-GitHub搭建个人博客-添加README/" data-id="cirj10hnc0003onwfdtxa7h2v" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2016/07/11/Hexo-GitHub搭建个人博客-添加README/" data-id="cirj18wcs0000w7wfn8wgoq0e" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/开发工具/">开发工具</a></li></ul>
@@ -1235,7 +1236,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/07/11/hello-world/" data-id="cirj10hne0004onwffl3zw6fl" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2016/07/11/hello-world/" data-id="cirj18wda0006w7wfjvy318j7" class="article-share-link">Share</a>
       
       
     </footer>

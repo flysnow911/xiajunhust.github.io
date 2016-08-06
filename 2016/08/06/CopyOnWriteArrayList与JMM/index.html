@@ -21,7 +21,7 @@
 是线程安全的
 写操作会复制整个基础数组，因此写操作开销很大
 适用">
-<meta property="og:updated_time" content="2016-08-06T10:16:44.000Z">
+<meta property="og:updated_time" content="2016-08-06T10:23:44.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="CopyOnWriteArrayList与JMM">
 <meta name="twitter:description" content="说明：本文代码均以JDK1.8的源码为准。
@@ -132,6 +132,7 @@
 <p>现在假设原始数组中无元素“x”，这样(2)成功设置了元素”x”，(3)处可以成功获取到元素”x”。这种情况下，(4)一定会读取到(1)处设置的值1.因为(2)处的volatile写以及在此之前的任何写操作都happens-before(3)处的读以及之后的所有读。</p>
 <p>但是，假设一开始数组中就有了元素”x”，如果else不调用setArray，那么(2)处的写就不是volatile写，(4)处的读就不一定能读到(1)处设置的值！</p>
 <p>很显然我们不想让内存可见性依赖于list中已有的值，为了确保任何情况下的内存可见性，set方法必须永远都是一个volatile写，这就是为何要在else代码块中调用setArray的原因。</p>
+<p>其他写方法（add、remove）比较易懂，在此不详述。</p>
 <h1 id="3-参考资料"><a href="#3-参考资料" class="headerlink" title="3 参考资料"></a>3 参考资料</h1><ul>
 <li><a href="http://www.cnblogs.com/skywang12345/p/3498483.html" target="_blank" rel="external">Java多线程系列–“JUC集合”02之 CopyOnWriteArrayList</a></li>
 <li><a href="http://stackoverflow.com/questions/28772539/why-setarray-method-call-required-in-copyonwritearraylist#" target="_blank" rel="external">Why setArray() method call required in CopyOnWriteArrayList</a></li>
@@ -251,7 +252,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/08/06/CopyOnWriteArrayList与JMM/" data-id="cirj10hn10000onwfy514woui" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2016/08/06/CopyOnWriteArrayList与JMM/" data-id="cirj18wcx0001w7wf7fgnt94g" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li></ul>
