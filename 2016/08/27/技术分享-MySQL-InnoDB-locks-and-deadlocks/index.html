@@ -3,18 +3,63 @@
 <head>
   <meta charset="utf-8">
   
-  <title>《Soft skills》读书笔记（一）-这本书与其他书籍有何不同 | 江南烟雨的个人博客</title>
+  <title>技术分享-MySQL InnoDB locks and deadlocks | 江南烟雨的个人博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="偶然间在网上看到这本书《Soft Skills-The software developer’s life manual》，目前只有英文版，中文版还在预售。书名翻译成中文是：亚马逊上是五星好评。这本书与其他书籍有明显区别，那就是他不是讲如何去更好的写代码，而是谈的是如何做一个更优秀的软件开发者：关于规划职业生涯、达到目标以及享受生活的乐趣。这本书不是关于我们能做哪些事情，而是关于我们本身：职业生涯">
+  <meta name="description" content="本文是在组内技术分享的ppt：《MySQL InnoDB locks and deadlocks》。与大家分享，如有问题，欢迎来信交流。
+  
+版权声明本文首发于江南烟雨的个人博客博客（ http://xiajunhust.github.io/ ），版权所有，侵权必究。本文永久链接：http://xiajunhust.github.io/2016/08/27/技术分享-MySQL-InnoDB-l">
 <meta property="og:type" content="article">
-<meta property="og:title" content="《Soft skills》读书笔记（一）-这本书与其他书籍有何不同">
-<meta property="og:url" content="http://xiajunhust.github.io/2016/07/16/《Soft-skills》读书笔记（一）-这本书与其他书籍有何不同/index.html">
+<meta property="og:title" content="技术分享-MySQL InnoDB locks and deadlocks">
+<meta property="og:url" content="http://xiajunhust.github.io/2016/08/27/技术分享-MySQL-InnoDB-locks-and-deadlocks/index.html">
 <meta property="og:site_name" content="江南烟雨的个人博客">
-<meta property="og:description" content="偶然间在网上看到这本书《Soft Skills-The software developer’s life manual》，目前只有英文版，中文版还在预售。书名翻译成中文是：亚马逊上是五星好评。这本书与其他书籍有明显区别，那就是他不是讲如何去更好的写代码，而是谈的是如何做一个更优秀的软件开发者：关于规划职业生涯、达到目标以及享受生活的乐趣。这本书不是关于我们能做哪些事情，而是关于我们本身：职业生涯">
-<meta property="og:updated_time" content="2016-07-16T09:56:05.000Z">
+<meta property="og:description" content="本文是在组内技术分享的ppt：《MySQL InnoDB locks and deadlocks》。与大家分享，如有问题，欢迎来信交流。
+  
+版权声明本文首发于江南烟雨的个人博客博客（ http://xiajunhust.github.io/ ），版权所有，侵权必究。本文永久链接：http://xiajunhust.github.io/2016/08/27/技术分享-MySQL-InnoDB-l">
+<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-00.png">
+<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-02.png">
+<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-03.png">
+<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-04.png">
+<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-05.png">
+<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-06.png">
+<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-07.png">
+<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-08.png">
+<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-09.png">
+<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-10.png">
+<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-11.png">
+<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-12.png">
+<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-13.png">
+<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-14.png">
+<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-15.png">
+<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-16.png">
+<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-17.png">
+<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-18.png">
+<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-19.png">
+<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-20.png">
+<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-21.png">
+<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-22.png">
+<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-23.png">
+<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-24.png">
+<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-25.png">
+<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-26.png">
+<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-29.png">
+<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-28.png">
+<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-29.png">
+<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-30.png">
+<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-31.png">
+<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-32.png">
+<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-33.png">
+<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-34.png">
+<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-35.png">
+<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-36.png">
+<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-37.png">
+<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-38.png">
+<meta property="og:updated_time" content="2016-08-27T08:18:38.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="《Soft skills》读书笔记（一）-这本书与其他书籍有何不同">
-<meta name="twitter:description" content="偶然间在网上看到这本书《Soft Skills-The software developer’s life manual》，目前只有英文版，中文版还在预售。书名翻译成中文是：亚马逊上是五星好评。这本书与其他书籍有明显区别，那就是他不是讲如何去更好的写代码，而是谈的是如何做一个更优秀的软件开发者：关于规划职业生涯、达到目标以及享受生活的乐趣。这本书不是关于我们能做哪些事情，而是关于我们本身：职业生涯">
+<meta name="twitter:title" content="技术分享-MySQL InnoDB locks and deadlocks">
+<meta name="twitter:description" content="本文是在组内技术分享的ppt：《MySQL InnoDB locks and deadlocks》。与大家分享，如有问题，欢迎来信交流。
+  
+版权声明本文首发于江南烟雨的个人博客博客（ http://xiajunhust.github.io/ ），版权所有，侵权必究。本文永久链接：http://xiajunhust.github.io/2016/08/27/技术分享-MySQL-InnoDB-l">
+<meta name="twitter:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-00.png">
   
     <link rel="alternate" href="/atom.xml" title="江南烟雨的个人博客" type="application/atom+xml">
   
@@ -63,10 +108,10 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main"><article id="post-《Soft-skills》读书笔记（一）-这本书与其他书籍有何不同" class="article article-type-post" itemscope itemprop="blogPost">
+        <section id="main"><article id="post-技术分享-MySQL-InnoDB-locks-and-deadlocks" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2016/07/16/《Soft-skills》读书笔记（一）-这本书与其他书籍有何不同/" class="article-date">
-  <time datetime="2016-07-16T09:52:57.000Z" itemprop="datePublished">2016-07-16</time>
+    <a href="/2016/08/27/技术分享-MySQL-InnoDB-locks-and-deadlocks/" class="article-date">
+  <time datetime="2016-08-27T08:01:34.000Z" itemprop="datePublished">2016-08-27</time>
 </a>
     
   </div>
@@ -77,7 +122,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      《Soft skills》读书笔记（一）-这本书与其他书籍有何不同
+      技术分享-MySQL InnoDB locks and deadlocks
     </h1>
   
 
@@ -85,17 +130,9 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>偶然间在网上看到这本书《Soft Skills-The software developer’s life manual》，目前只有英文版，中文版还在预售。书名翻译成中文是：<a href="https://www.amazon.com/Soft-Skills-software-developers-manual/dp/1617292397" target="_blank" rel="external">亚马逊</a>上是五星好评。这本书与其他书籍有明显区别，那就是他不是讲如何去更好的写代码，而是谈的是如何做一个更优秀的软件开发者：关于规划职业生涯、达到目标以及享受生活的乐趣。这本书不是关于我们能做哪些事情，而是关于我们本身：职业生涯、生活、身体、心智以及灵魂。作者认为作为一个程序员，远不仅仅是写代码，还有众多 其他事情。</p>
-<p>作者认为如果我们想成为更优秀的程序员，那么应该把注意力集中在整个生涯中，而不仅仅是生命中的一段或者是几段时间。</p>
-<p>本书氛围七部分，每一章聚焦程序员生活中的一个方面。将其分类，可以分为：职业生涯、心智、身体、心灵。</p>
-<p>本书从职业生涯开始谈起，作者发现很少部分程序员会真正花大的精力去积极规划自己的职业生涯。在第一章中，作者将会帮助大家补救这个问题，会教我们如何积极规划职业生涯以达到自己的目标，不管这个目标是在企业中扶摇直上，还是自己从事咨询工作抑甚至是成为企业家打造自己的产品。这是哪个方面作者都谈到了。作者面试过无数程序员，提供了大量反面案例，我们能从中学习并少走很多弯路。作者同时也会提到职业生涯中的一些重要技能，比如写一份耀眼的简历、面试技巧、远程办公以及从其他优秀的人身上学习他们的优点。</p>
-<p>在第二章-营销自己，作者谈到的话题是推销自己。大多数程序员看到这个词恐怕没有什么好感，但是当看完这个章节后，会对这个词有全新的认识并且认识到它的重要性。每个人都是推销者，在本章中作者将会教大家如何成为更好的推销者以及明确自己在推销的是什么。同时给出了一些实际的建议：如何打造个人品牌、如何建立成功的博客、以及通过演讲、写作等一系列方式提高自己的名声。有了这些技巧，才能去获得更好的结果。</p>
-<p>第三章开始讲心智：学习。学习是程序员生活中最重要的一方面。学会如何学习以及如何自学是最有价值的技能之一。因为有了自学能力，我们就有可能去做任何事情。</p>
-<p>第四章继续讲心智：生产率-如何变得更有生产率。生产率是很多人拼搏想获取的，同时也是通往成功之路的最大的绊脚石之一。如果不能克服拖延症、混乱状态以及懒惰，将寸步难行。</p>
-<p>在第五章-理财，作者会谈到一个更重要的并且平时经常被完全忽略的一个话题：个人理财。也许一个人能够成为世界上最成功的程序员，但是如果不能有效的管理好自己的财产，某一天可能会沦落街头。本章作者将会带领我们遨游在经济、个人理财的世界并且教授一些在做出明智的理财决定所必须的基础知识。作者从18岁开始是一个专业的房地产投资者，在本书中这个话题不会太深入，因为要讲的深入足以写整整一本书，但是会覆盖以下基础知识：管理自己的收入、股市是如何运作的、怎么做房地产投资以及避免债务。此外，作为会分享自己如何运用这些知识并在33岁退休的故事。</p>
-<p>接下来进入轻松娱乐的部分，焦点在自己的身体。第六章，健身，作者将会谈如何减肥、增肌以及塑形。大多数程序员存在肥胖、健康状态差的情况，并且没有动力做上述几件事情。作者作为在健身运动方面非常成功的程序员，将为我们分享这方面的必备知识。</p>
-<p>第七章，精神。作者在本章中会针对影响我们情感状态和态度的方面给出实际的建议。主要聚焦在如何保持积极的态度。同时也会覆盖爱情和友情，这对程序员来讲恐怕是比较难的领域了。最后会给出一个私人成功书单。</p>
-<h2 id="版权声明"><a href="#版权声明" class="headerlink" title="版权声明"></a>版权声明</h2><p>本文首发于<a href="http://xiajunhust.github.io/">江南烟雨的个人博客</a>博客（ <a href="http://xiajunhust.github.io/">http://xiajunhust.github.io/</a> ），版权所有，侵权必究。<br>本文永久链接：<a href="http://xiajunhust.github.io/2016/07/16/《Soft-skills》读书笔记（一）-这本书与其他书籍有何不同/">http://xiajunhust.github.io/2016/07/16/《Soft-skills》读书笔记（一）-这本书与其他书籍有何不同/</a></p>
+        <p>本文是在组内技术分享的ppt：《MySQL InnoDB locks and deadlocks》。与大家分享，如有问题，欢迎来信交流。</p>
+<p><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-00.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-02.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-03.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-04.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-05.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-06.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-07.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-08.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-09.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-10.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-11.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-12.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-13.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-14.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-15.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-16.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-17.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-18.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-19.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-20.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-21.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-22.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-23.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-24.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-25.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-26.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-29.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-28.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-29.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-30.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-31.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-32.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-33.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-34.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-35.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-36.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-37.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-38.png" alt="">  </p>
+<h2 id="版权声明"><a href="#版权声明" class="headerlink" title="版权声明"></a>版权声明</h2><p>本文首发于<a href="http://xiajunhust.github.io/">江南烟雨的个人博客</a>博客（ <a href="http://xiajunhust.github.io/">http://xiajunhust.github.io/</a> ），版权所有，侵权必究。<br>本文永久链接：<a href="http://xiajunhust.github.io/2016/08/27/技术分享-MySQL-InnoDB-locks-and-deadlocks/">http://xiajunhust.github.io/2016/08/27/技术分享-MySQL-InnoDB-locks-and-deadlocks/</a></p>
 
       
     </div>
@@ -208,10 +245,10 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/07/16/《Soft-skills》读书笔记（一）-这本书与其他书籍有何不同/" data-id="cisdf5t1d00094jwfzsun07a5" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2016/08/27/技术分享-MySQL-InnoDB-locks-and-deadlocks/" data-id="cisdf5t1a00084jwfdu111v7r" class="article-share-link">Share</a>
       
       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/思考-读书笔记/">思考&读书笔记</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MySQL/">MySQL</a></li></ul>
 
     </footer>
   </div>
@@ -219,19 +256,10 @@
     
 <nav id="article-nav">
   
-    <a href="/2016/07/20/代码中的命名问题-命名太长了！/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Newer</strong>
-      <div class="article-nav-title">
-        
-          代码中的命名问题-命名太长了！
-        
-      </div>
-    </a>
   
-  
-    <a href="/2016/07/14/DbUnit-AmbiguousTableNameException异常解决/" id="article-nav-older" class="article-nav-link-wrap">
+    <a href="/2016/08/06/为什么Java-HashMap、CopyOnWriteArrayList等集合自己实现readObject和writeObject方法/" id="article-nav-older" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">DbUnit AmbiguousTableNameException异常解决</div>
+      <div class="article-nav-title">为什么Java HashMap、CopyOnWriteArrayList等集合自己实现readObject和writeObject方法</div>
     </a>
   
 </nav>
@@ -241,7 +269,7 @@
 
   <section id="comments">
    <!-- 多说评论框 start -->
-<div id="ds-thread" class="ds-thread" data-thread-key="2016/07/16/《Soft-skills》读书笔记（一）-这本书与其他书籍有何不同/" data-title="《Soft skills》读书笔记（一）-这本书与其他书籍有何不同" data-url="http://xiajunhust.github.io/2016/07/16/《Soft-skills》读书笔记（一）-这本书与其他书籍有何不同/"></div>
+<div id="ds-thread" class="ds-thread" data-thread-key="2016/08/27/技术分享-MySQL-InnoDB-locks-and-deadlocks/" data-title="技术分享-MySQL InnoDB locks and deadlocks" data-url="http://xiajunhust.github.io/2016/08/27/技术分享-MySQL-InnoDB-locks-and-deadlocks/"></div>
 <!-- 多说评论框 end -->
 <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 <script type="text/javascript">
