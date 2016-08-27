@@ -75,7 +75,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2016/08/27/技术分享-MySQL-InnoDB-locks-and-deadlocks-夏军/">技术分享-MySQL InnoDB locks and deadlocks-夏军</a>
+      <a class="article-title" href="/2016/08/27/技术分享-MySQL-InnoDB-locks-and-deadlocks-夏军/">技术分享-MySQL InnoDB locks and deadlocks</a>
     </h1>
   
 
@@ -83,8 +83,8 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>本文是在组内技术分享的ppt：《MySQL InnoDB locks and deadlocks》。</p>
-<p><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-01.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-02.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-03.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-04.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-05.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-06.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-07.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-08.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-09.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-10.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-11.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-12.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-13.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-14.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-15.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-16.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-17.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-18.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-19.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-20.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-21.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-22.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-23.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-24.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-25.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-26.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-29.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-28.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-29.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-30.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-31.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-32.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-33.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-34.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-35.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-36.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-37.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-38.png" alt="">  </p>
+        <p>本文是在组内技术分享的ppt：《MySQL InnoDB locks and deadlocks》。与大家分享，如有问题，欢迎来信交流。</p>
+<p><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-00.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-02.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-03.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-04.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-05.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-06.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-07.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-08.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-09.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-10.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-11.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-12.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-13.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-14.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-15.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-16.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-17.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-18.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-19.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-20.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-21.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-22.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-23.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-24.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-25.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-26.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-29.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-28.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-29.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-30.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-31.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-32.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-33.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-34.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-35.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-36.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-37.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-38.png" alt="">  </p>
 <h2 id="版权声明"><a href="#版权声明" class="headerlink" title="版权声明"></a>版权声明</h2><p>本文首发于<a href="http://xiajunhust.github.io/">江南烟雨的个人博客</a>博客（ <a href="http://xiajunhust.github.io/">http://xiajunhust.github.io/</a> ），版权所有，侵权必究。<br>本文永久链接：<a href="http://xiajunhust.github.io/2016/08/27/技术分享-MySQL-InnoDB-locks-and-deadlocks-夏军/">http://xiajunhust.github.io/2016/08/27/技术分享-MySQL-InnoDB-locks-and-deadlocks-夏军/</a></p>
 
       
@@ -198,7 +198,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/08/27/技术分享-MySQL-InnoDB-locks-and-deadlocks-夏军/" data-id="ciscwtuyr000el3wfmbn23ggj" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2016/08/27/技术分享-MySQL-InnoDB-locks-and-deadlocks-夏军/" data-id="ciscx0y4n0009d5wf5v43r526" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MySQL/">MySQL</a></li></ul>
@@ -379,7 +379,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/08/06/为什么Java-HashMap、CopyOnWriteArrayList等集合自己实现readObject和writeObject方法/" data-id="ciscwtuyd0009l3wf3lbbre4c" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2016/08/06/为什么Java-HashMap、CopyOnWriteArrayList等集合自己实现readObject和writeObject方法/" data-id="ciscx0y4s000dd5wfgcptjzbu" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li></ul>
@@ -567,7 +567,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/08/06/CopyOnWriteArrayList与JMM/" data-id="ciscwtuxp0000l3wf2ov4ae3t" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2016/08/06/CopyOnWriteArrayList与JMM/" data-id="ciscx0y420000d5wfzey9rxbs" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li></ul>
@@ -753,7 +753,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/07/20/代码中的命名问题-命名太长了！/" data-id="ciscwtuyi000cl3wfccpdhjxj" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2016/07/20/代码中的命名问题-命名太长了！/" data-id="ciscx0y4r000cd5wfjnodb5f5" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/代码设计/">代码设计</a></li></ul>
@@ -912,7 +912,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/07/16/《Soft-skills》读书笔记（一）-这本书与其他书籍有何不同/" data-id="ciscwtuyb0008l3wf5eeylaqh" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2016/07/16/《Soft-skills》读书笔记（一）-这本书与其他书籍有何不同/" data-id="ciscx0y4m0008d5wfuvevgcha" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/思考-读书笔记/">思考&读书笔记</a></li></ul>
@@ -1077,7 +1077,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/07/14/DbUnit-AmbiguousTableNameException异常解决/" data-id="ciscwtuxv0001l3wfvvup6dzy" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2016/07/14/DbUnit-AmbiguousTableNameException异常解决/" data-id="ciscx0y480001d5wf43dnj6om" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/测试技术/">测试技术</a></li></ul>
@@ -1252,7 +1252,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/07/11/Hexo-GitHub搭建个人博客-增加评论以及访问量统计功能/" data-id="ciscwtuy20003l3wfu0263mbq" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2016/07/11/Hexo-GitHub搭建个人博客-增加评论以及访问量统计功能/" data-id="ciscx0y4f0004d5wfqr7m8it8" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/开发工具/">开发工具</a></li></ul>
@@ -1410,7 +1410,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/07/11/Hexo-GitHub搭建个人博客-添加README/" data-id="ciscwtuy90006l3wfv6r8ssfg" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2016/07/11/Hexo-GitHub搭建个人博客-添加README/" data-id="ciscx0y4l0006d5wfh25951si" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/开发工具/">开发工具</a></li></ul>
@@ -1568,7 +1568,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/07/11/hello-world/" data-id="ciscwtuy40004l3wf2hdenbdh" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2016/07/11/hello-world/" data-id="ciscx0y4e0003d5wfrl15g8rl" class="article-share-link">Share</a>
       
       
     </footer>
@@ -1624,7 +1624,7 @@
       <ul>
         
           <li>
-            <a href="/2016/08/27/技术分享-MySQL-InnoDB-locks-and-deadlocks-夏军/">技术分享-MySQL InnoDB locks and deadlocks-夏军</a>
+            <a href="/2016/08/27/技术分享-MySQL-InnoDB-locks-and-deadlocks-夏军/">技术分享-MySQL InnoDB locks and deadlocks</a>
           </li>
         
           <li>
