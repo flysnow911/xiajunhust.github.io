@@ -61,6 +61,157 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-技术分享-MySQL-InnoDB-locks-and-deadlocks-夏军" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/08/27/技术分享-MySQL-InnoDB-locks-and-deadlocks-夏军/" class="article-date">
+  <time datetime="2016-08-27T08:01:34.000Z" itemprop="datePublished">2016-08-27</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/08/27/技术分享-MySQL-InnoDB-locks-and-deadlocks-夏军/">技术分享-MySQL InnoDB locks and deadlocks-夏军</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>本文是在组内技术分享的ppt：《MySQL InnoDB locks and deadlocks》。</p>
+<p><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-01.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-02.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-03.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-04.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-05.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-06.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-07.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-08.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-09.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-10.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-11.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-12.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-13.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-14.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-15.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-16.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-17.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-18.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-19.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-20.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-21.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-22.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-23.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-24.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-25.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-26.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-29.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-28.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-29.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-30.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-31.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-32.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-33.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-34.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-35.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-36.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-37.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-38.png" alt="">  </p>
+<h2 id="版权声明"><a href="#版权声明" class="headerlink" title="版权声明"></a>版权声明</h2><p>本文首发于<a href="http://xiajunhust.github.io/">江南烟雨的个人博客</a>博客（ <a href="http://xiajunhust.github.io/">http://xiajunhust.github.io/</a> ），版权所有，侵权必究。<br>本文永久链接：<a href="http://xiajunhust.github.io/2016/08/27/技术分享-MySQL-InnoDB-locks-and-deadlocks-夏军/">http://xiajunhust.github.io/2016/08/27/技术分享-MySQL-InnoDB-locks-and-deadlocks-夏军/</a></p>
+
+      
+    </div>
+
+
+	<!-- css -->
+	<style type="text/css">
+	    .center {
+	        text-align: center;
+	    }
+	    .hidden {
+	        display: none;
+	    }
+		.donate_bar a.btn_donate{
+			display: inline-block;
+			width: 82px;
+			height: 82px;
+			background: url("http://7xsl28.com1.z0.glb.clouddn.com/btn_reward.gif") no-repeat;
+			_background: url("http://7xsl28.com1.z0.glb.clouddn.com/btn_reward.gif") no-repeat;
+
+			<!-- http://img.t.sinajs.cn/t5/style/images/apps_PRF/e_media/btn_reward.gif
+			     因为本 hexo 生成的博客所用的 theme 的 a:hover 带动画效果，
+				 为了在让打赏按钮显示效果正常 而 添加了以下几行 css，
+				 嵌入其它博客时不一定要它们。 -->
+			-webkit-transition: background 0s;
+			-moz-transition: background 0s;
+			-o-transition: background 0s;
+			-ms-transition: background 0s;
+			transition: background 0s;
+			<!-- /让打赏按钮的效果显示正常 而 添加的几行 css 到此结束 -->
+		}
+
+		.donate_bar a.btn_donate:hover{ background-position: 0px -82px;}
+		.donate_bar .donate_txt {
+			display: block;
+			color: #9d9d9d;
+			font: 14px/2 "Microsoft Yahei";
+		}
+		.bold{ font-weight: bold; }
+	</style>
+	<!-- /css -->
+
+    <!-- Donate Module -->
+    <div id="donate_module">
+
+	<!-- btn_donate & tips -->
+	<div id="donate_board" class="donate_bar center">
+	    <br>
+	    ------------------------------------------------------------------------------------------------------------------------------
+	    <br>
+		<a id="btn_donate" class="btn_donate" target="_self" href="javascript:;" title="Donate 打赏"></a>
+		<span class="donate_txt">
+			打赏我的人，运气都不会太差~
+		</span>
+			
+		
+	</div>
+	<!-- /btn_donate & tips -->
+
+	<!-- donate guide -->
+    
+	<div id="donate_guide" class="donate_bar center hidden">
+        <br>
+	    ------------------------------------------------------------------------------------------------------------------------------
+	    <br>
+	    
+	    <div width="100%" align="center"><div name="dashmain" id="dash-main-id-87895f" class="dash-main-3 87895f-0.99"></div></div>
+		<script type="text/javascript" charset="utf-8" src="http://www.dashangcloud.com/static/ds.js"></script>
+		
+
+		<a href="http://o8sltkx20.bkt.clouddn.com/0004.jpg" title="用微信扫一扫哦~" class="fancybox" rel="article0">
+			<img src="http://o8sltkx20.bkt.clouddn.com/0004.jpg" title="微信打赏 Donate" height="190px" width="auto"/>
+		</a>
+        
+        &nbsp;&nbsp;
+
+		<a href="http://o8sltkx20.bkt.clouddn.com/0002.jpg" title="用支付宝扫一扫即可~" class="fancybox" rel="article0">
+			<img src="http://o8sltkx20.bkt.clouddn.com/0002.jpg" title="支付宝打赏 Donate" height="190px" width="auto"/>
+		</a>
+
+		<span class="donate_txt">
+			打赏我的人，运气都不会太差~
+		</span>
+
+	</div>
+	<!-- /donate guide -->
+
+	<!-- donate script -->
+	<script type="text/javascript">
+		document.getElementById('btn_donate').onclick = function() {
+			$('#donate_board').addClass('hidden');
+	    $('#donate_guide').removeClass('hidden');
+		}
+
+		function donate_on_web(){
+			$('#donate').submit();
+        }
+
+		var original_window_onload = window.onload;
+        window.onload = function () {
+            if (original_window_onload) {
+                original_window_onload();
+            }
+            document.getElementById('donate_board_wdg').className = 'hidden';
+		}
+	</script>
+	<!-- /donate script -->
+</div>
+<!-- /Donate Module -->
+   
+
+    <footer class="article-footer">
+      <a data-url="http://xiajunhust.github.io/2016/08/27/技术分享-MySQL-InnoDB-locks-and-deadlocks-夏军/" data-id="ciscwtuyr000el3wfmbn23ggj" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MySQL/">MySQL</a></li></ul>
+
+    </footer>
+  </div>
+  
+
+
+
+</article>
+
+  
     <article id="post-为什么Java-HashMap、CopyOnWriteArrayList等集合自己实现readObject和writeObject方法" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2016/08/06/为什么Java-HashMap、CopyOnWriteArrayList等集合自己实现readObject和writeObject方法/" class="article-date">
@@ -228,7 +379,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/08/06/为什么Java-HashMap、CopyOnWriteArrayList等集合自己实现readObject和writeObject方法/" data-id="cirjcpg3b0009cnwfd2mcigg9" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2016/08/06/为什么Java-HashMap、CopyOnWriteArrayList等集合自己实现readObject和writeObject方法/" data-id="ciscwtuyd0009l3wf3lbbre4c" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li></ul>
@@ -416,7 +567,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/08/06/CopyOnWriteArrayList与JMM/" data-id="cirjcpg2q0000cnwfsxygl0o3" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2016/08/06/CopyOnWriteArrayList与JMM/" data-id="ciscwtuxp0000l3wf2ov4ae3t" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li></ul>
@@ -602,7 +753,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/07/20/代码中的命名问题-命名太长了！/" data-id="cirjcpg3h000ccnwf0g8m340v" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2016/07/20/代码中的命名问题-命名太长了！/" data-id="ciscwtuyi000cl3wfccpdhjxj" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/代码设计/">代码设计</a></li></ul>
@@ -761,7 +912,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/07/16/《Soft-skills》读书笔记（一）-这本书与其他书籍有何不同/" data-id="cirjcpg3a0008cnwfsxklfctj" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2016/07/16/《Soft-skills》读书笔记（一）-这本书与其他书籍有何不同/" data-id="ciscwtuyb0008l3wf5eeylaqh" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/思考-读书笔记/">思考&读书笔记</a></li></ul>
@@ -926,7 +1077,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/07/14/DbUnit-AmbiguousTableNameException异常解决/" data-id="cirjcpg380006cnwf5fr4pjsc" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2016/07/14/DbUnit-AmbiguousTableNameException异常解决/" data-id="ciscwtuxv0001l3wfvvup6dzy" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/测试技术/">测试技术</a></li></ul>
@@ -1101,7 +1252,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/07/11/Hexo-GitHub搭建个人博客-增加评论以及访问量统计功能/" data-id="cirjcpg330004cnwf5cmfvtvv" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2016/07/11/Hexo-GitHub搭建个人博客-增加评论以及访问量统计功能/" data-id="ciscwtuy20003l3wfu0263mbq" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/开发工具/">开发工具</a></li></ul>
@@ -1259,7 +1410,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/07/11/Hexo-GitHub搭建个人博客-添加README/" data-id="cirjcpg310003cnwfjrdf4g04" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2016/07/11/Hexo-GitHub搭建个人博客-添加README/" data-id="ciscwtuy90006l3wfv6r8ssfg" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/开发工具/">开发工具</a></li></ul>
@@ -1417,7 +1568,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/07/11/hello-world/" data-id="cirjcpg2v0001cnwf07q5bc45" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2016/07/11/hello-world/" data-id="ciscwtuy40004l3wf2hdenbdh" class="article-share-link">Share</a>
       
       
     </footer>
@@ -1441,7 +1592,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">标签</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/代码设计/">代码设计</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/开发工具/">开发工具</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/思考-读书笔记/">思考&读书笔记</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/测试技术/">测试技术</a></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/">MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/代码设计/">代码设计</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/开发工具/">开发工具</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/思考-读书笔记/">思考&读书笔记</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/测试技术/">测试技术</a></li></ul>
     </div>
   </div>
 
@@ -1451,7 +1602,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">标签云</h3>
     <div class="widget tagcloud">
-      <a href="/tags/Java/" style="font-size: 20px;">Java</a> <a href="/tags/代码设计/" style="font-size: 10px;">代码设计</a> <a href="/tags/开发工具/" style="font-size: 20px;">开发工具</a> <a href="/tags/思考-读书笔记/" style="font-size: 10px;">思考&读书笔记</a> <a href="/tags/测试技术/" style="font-size: 10px;">测试技术</a>
+      <a href="/tags/Java/" style="font-size: 20px;">Java</a> <a href="/tags/MySQL/" style="font-size: 10px;">MySQL</a> <a href="/tags/代码设计/" style="font-size: 10px;">代码设计</a> <a href="/tags/开发工具/" style="font-size: 20px;">开发工具</a> <a href="/tags/思考-读书笔记/" style="font-size: 10px;">思考&读书笔记</a> <a href="/tags/测试技术/" style="font-size: 10px;">测试技术</a>
     </div>
   </div>
 
@@ -1473,6 +1624,10 @@
       <ul>
         
           <li>
+            <a href="/2016/08/27/技术分享-MySQL-InnoDB-locks-and-deadlocks-夏军/">技术分享-MySQL InnoDB locks and deadlocks-夏军</a>
+          </li>
+        
+          <li>
             <a href="/2016/08/06/为什么Java-HashMap、CopyOnWriteArrayList等集合自己实现readObject和writeObject方法/">为什么Java HashMap、CopyOnWriteArrayList等集合自己实现readObject和writeObject方法</a>
           </li>
         
@@ -1486,10 +1641,6 @@
         
           <li>
             <a href="/2016/07/16/《Soft-skills》读书笔记（一）-这本书与其他书籍有何不同/">《Soft skills》读书笔记（一）-这本书与其他书籍有何不同</a>
-          </li>
-        
-          <li>
-            <a href="/2016/07/14/DbUnit-AmbiguousTableNameException异常解决/">DbUnit AmbiguousTableNameException异常解决</a>
           </li>
         
       </ul>

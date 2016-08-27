@@ -3,21 +3,63 @@
 <head>
   <meta charset="utf-8">
   
-  <title>Hello World | 江南烟雨的个人博客</title>
+  <title>技术分享-MySQL InnoDB locks and deadlocks-夏军 | 江南烟雨的个人博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.
-Quick">
+  <meta name="description" content="本文是在组内技术分享的ppt：《MySQL InnoDB locks and deadlocks》。
+  
+版权声明本文首发于江南烟雨的个人博客博客（ http://xiajunhust.github.io/ ），版权所有，侵权必究。本文永久链接：http://xiajunhust.github.io/2016/08/27/技术分享-MySQL-InnoDB-locks-and-deadlocks">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Hello World">
-<meta property="og:url" content="http://xiajunhust.github.io/2016/07/11/hello-world/index.html">
+<meta property="og:title" content="技术分享-MySQL InnoDB locks and deadlocks-夏军">
+<meta property="og:url" content="http://xiajunhust.github.io/2016/08/27/技术分享-MySQL-InnoDB-locks-and-deadlocks-夏军/index.html">
 <meta property="og:site_name" content="江南烟雨的个人博客">
-<meta property="og:description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.
-Quick">
-<meta property="og:updated_time" content="2016-07-11T08:55:34.000Z">
+<meta property="og:description" content="本文是在组内技术分享的ppt：《MySQL InnoDB locks and deadlocks》。
+  
+版权声明本文首发于江南烟雨的个人博客博客（ http://xiajunhust.github.io/ ），版权所有，侵权必究。本文永久链接：http://xiajunhust.github.io/2016/08/27/技术分享-MySQL-InnoDB-locks-and-deadlocks">
+<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-01.png">
+<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-02.png">
+<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-03.png">
+<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-04.png">
+<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-05.png">
+<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-06.png">
+<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-07.png">
+<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-08.png">
+<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-09.png">
+<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-10.png">
+<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-11.png">
+<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-12.png">
+<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-13.png">
+<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-14.png">
+<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-15.png">
+<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-16.png">
+<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-17.png">
+<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-18.png">
+<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-19.png">
+<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-20.png">
+<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-21.png">
+<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-22.png">
+<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-23.png">
+<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-24.png">
+<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-25.png">
+<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-26.png">
+<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-29.png">
+<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-28.png">
+<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-29.png">
+<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-30.png">
+<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-31.png">
+<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-32.png">
+<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-33.png">
+<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-34.png">
+<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-35.png">
+<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-36.png">
+<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-37.png">
+<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-38.png">
+<meta property="og:updated_time" content="2016-08-27T08:12:54.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Hello World">
-<meta name="twitter:description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.
-Quick">
+<meta name="twitter:title" content="技术分享-MySQL InnoDB locks and deadlocks-夏军">
+<meta name="twitter:description" content="本文是在组内技术分享的ppt：《MySQL InnoDB locks and deadlocks》。
+  
+版权声明本文首发于江南烟雨的个人博客博客（ http://xiajunhust.github.io/ ），版权所有，侵权必究。本文永久链接：http://xiajunhust.github.io/2016/08/27/技术分享-MySQL-InnoDB-locks-and-deadlocks">
+<meta name="twitter:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-01.png">
   
     <link rel="alternate" href="/atom.xml" title="江南烟雨的个人博客" type="application/atom+xml">
   
@@ -66,10 +108,10 @@ Quick">
   </div>
 </header>
       <div class="outer">
-        <section id="main"><article id="post-hello-world" class="article article-type-post" itemscope itemprop="blogPost">
+        <section id="main"><article id="post-技术分享-MySQL-InnoDB-locks-and-deadlocks-夏军" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2016/07/11/hello-world/" class="article-date">
-  <time datetime="2016-07-11T08:55:34.000Z" itemprop="datePublished">2016-07-11</time>
+    <a href="/2016/08/27/技术分享-MySQL-InnoDB-locks-and-deadlocks-夏军/" class="article-date">
+  <time datetime="2016-08-27T08:01:34.000Z" itemprop="datePublished">2016-08-27</time>
 </a>
     
   </div>
@@ -80,7 +122,7 @@ Quick">
         
   
     <h1 class="article-title" itemprop="name">
-      Hello World
+      技术分享-MySQL InnoDB locks and deadlocks-夏军
     </h1>
   
 
@@ -88,16 +130,9 @@ Quick">
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo new <span class="string">"My New Post"</span></div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo server</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo generate</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo deploy</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
-<h2 id="版权声明"><a href="#版权声明" class="headerlink" title="版权声明"></a>版权声明</h2><p>本文首发于<a href="http://xiajunhust.github.io/">江南烟雨的个人博客</a>博客（ <a href="http://xiajunhust.github.io/">http://xiajunhust.github.io/</a> ），版权所有，侵权必究。<br>本文永久链接：<a href="http://xiajunhust.github.io/2016/07/11/hello-world/">http://xiajunhust.github.io/2016/07/11/hello-world/</a></p>
+        <p>本文是在组内技术分享的ppt：《MySQL InnoDB locks and deadlocks》。</p>
+<p><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-01.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-02.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-03.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-04.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-05.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-06.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-07.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-08.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-09.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-10.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-11.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-12.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-13.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-14.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-15.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-16.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-17.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-18.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-19.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-20.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-21.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-22.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-23.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-24.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-25.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-26.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-29.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-28.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-29.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-30.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-31.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-32.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-33.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-34.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-35.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-36.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-37.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-38.png" alt="">  </p>
+<h2 id="版权声明"><a href="#版权声明" class="headerlink" title="版权声明"></a>版权声明</h2><p>本文首发于<a href="http://xiajunhust.github.io/">江南烟雨的个人博客</a>博客（ <a href="http://xiajunhust.github.io/">http://xiajunhust.github.io/</a> ），版权所有，侵权必究。<br>本文永久链接：<a href="http://xiajunhust.github.io/2016/08/27/技术分享-MySQL-InnoDB-locks-and-deadlocks-夏军/">http://xiajunhust.github.io/2016/08/27/技术分享-MySQL-InnoDB-locks-and-deadlocks-夏军/</a></p>
 
       
     </div>
@@ -210,24 +245,22 @@ Quick">
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/07/11/hello-world/" data-id="ciscwtuy40004l3wf2hdenbdh" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2016/08/27/技术分享-MySQL-InnoDB-locks-and-deadlocks-夏军/" data-id="ciscwtuyr000el3wfmbn23ggj" class="article-share-link">Share</a>
       
       
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MySQL/">MySQL</a></li></ul>
+
     </footer>
   </div>
   
     
 <nav id="article-nav">
   
-    <a href="/2016/07/11/Hexo-GitHub搭建个人博客-添加README/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Newer</strong>
-      <div class="article-nav-title">
-        
-          Hexo GitHub搭建个人博客-添加README
-        
-      </div>
-    </a>
   
+    <a href="/2016/08/06/为什么Java-HashMap、CopyOnWriteArrayList等集合自己实现readObject和writeObject方法/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">为什么Java HashMap、CopyOnWriteArrayList等集合自己实现readObject和writeObject方法</div>
+    </a>
   
 </nav>
 
@@ -236,7 +269,7 @@ Quick">
 
   <section id="comments">
    <!-- 多说评论框 start -->
-<div id="ds-thread" class="ds-thread" data-thread-key="2016/07/11/hello-world/" data-title="Hello World" data-url="http://xiajunhust.github.io/2016/07/11/hello-world/"></div>
+<div id="ds-thread" class="ds-thread" data-thread-key="2016/08/27/技术分享-MySQL-InnoDB-locks-and-deadlocks-夏军/" data-title="技术分享-MySQL InnoDB locks and deadlocks-夏军" data-url="http://xiajunhust.github.io/2016/08/27/技术分享-MySQL-InnoDB-locks-and-deadlocks-夏军/"></div>
 <!-- 多说评论框 end -->
 <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 <script type="text/javascript">
