@@ -5,26 +5,17 @@
   
   <title>MySQL的日期时间类型关于秒以下精度的处理 | 江南烟雨的个人博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="1 MySQL中日期和时间的表示MySQL中有多种数据类型可以用于日期和时间的表示：
-
-常用的是如下三种：（1）DATE：表示年月日（2）DATETIME：表示年月日时分秒（3）TIME：只需要表示时分秒  
-DATETIME和TIMESTAMP很类似，但是有如下区别：（1）TIMESTAMP支持的时间范围较小（2）在插入或者更新时不明确指定TIMESTAMP列的值时，系统将会设置为当前日期和时间">
+  <meta name="description" content="1 MySQL中日期和时间的表示MySQL中有多种数据类型可以用于日期和时间的表示：">
 <meta property="og:type" content="article">
 <meta property="og:title" content="MySQL的日期时间类型关于秒以下精度的处理">
 <meta property="og:url" content="http://xiajunhust.github.io/2016/08/28/MySQL的日期时间类型关于秒以下精度的处理/index.html">
 <meta property="og:site_name" content="江南烟雨的个人博客">
-<meta property="og:description" content="1 MySQL中日期和时间的表示MySQL中有多种数据类型可以用于日期和时间的表示：
-
-常用的是如下三种：（1）DATE：表示年月日（2）DATETIME：表示年月日时分秒（3）TIME：只需要表示时分秒  
-DATETIME和TIMESTAMP很类似，但是有如下区别：（1）TIMESTAMP支持的时间范围较小（2）在插入或者更新时不明确指定TIMESTAMP列的值时，系统将会设置为当前日期和时间">
+<meta property="og:description" content="1 MySQL中日期和时间的表示MySQL中有多种数据类型可以用于日期和时间的表示：">
 <meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/MySQL-base-001.png">
-<meta property="og:updated_time" content="2016-08-28T13:28:09.000Z">
+<meta property="og:updated_time" content="2016-09-07T08:00:54.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="MySQL的日期时间类型关于秒以下精度的处理">
-<meta name="twitter:description" content="1 MySQL中日期和时间的表示MySQL中有多种数据类型可以用于日期和时间的表示：
-
-常用的是如下三种：（1）DATE：表示年月日（2）DATETIME：表示年月日时分秒（3）TIME：只需要表示时分秒  
-DATETIME和TIMESTAMP很类似，但是有如下区别：（1）TIMESTAMP支持的时间范围较小（2）在插入或者更新时不明确指定TIMESTAMP列的值时，系统将会设置为当前日期和时间">
+<meta name="twitter:description" content="1 MySQL中日期和时间的表示MySQL中有多种数据类型可以用于日期和时间的表示：">
 <meta name="twitter:image" content="http://o8sltkx20.bkt.clouddn.com/MySQL-base-001.png">
   
     <link rel="alternate" href="/atom.xml" title="江南烟雨的个人博客" type="application/atom+xml">
@@ -98,6 +89,7 @@ DATETIME和TIMESTAMP很类似，但是有如下区别：（1）TIMESTAMP支持�
       
         <h1 id="1-MySQL中日期和时间的表示"><a href="#1-MySQL中日期和时间的表示" class="headerlink" title="1 MySQL中日期和时间的表示"></a>1 MySQL中日期和时间的表示</h1><p>MySQL中有多种数据类型可以用于日期和时间的表示：</p>
 <p><img src="http://o8sltkx20.bkt.clouddn.com/MySQL-base-001.png" alt=""></p>
+<a id="more"></a>
 <p>常用的是如下三种：<br>（1）DATE：表示年月日<br>（2）DATETIME：表示年月日时分秒<br>（3）TIME：只需要表示时分秒  </p>
 <p>DATETIME和TIMESTAMP很类似，但是有如下区别：<br>（1）TIMESTAMP支持的时间范围较小<br>（2）在插入或者更新时不明确指定TIMESTAMP列的值时，系统将会设置为当前日期和时间。当值超出最大值值，将会使用默认值“0000-00-00 00:00”<br>（3）TIMESTAMP的插入和更新都受到当地时区的影响<br>（4）TIMESTAMP受MySQL版本和服务器SQLMode的影响很大  </p>
 <h1 id="2-MySQL日期时间对秒以下精度的支持"><a href="#2-MySQL日期时间对秒以下精度的支持" class="headerlink" title="2 MySQL日期时间对秒以下精度的支持"></a>2 MySQL日期时间对秒以下精度的支持</h1><p><b>MySQL在5.6.4以及更高版本提供了对秒以下精度时间的存储支持，在以前的版本是会将秒以下的精度忽略掉的。</b>TIME、TIMESTAMP、DATETIME均提供了小数点后6位的支持（微秒）。如果我们想定义一个能存储秒以下精度的日期时间字段，可以如下做，在类型字段后面指定小数点后的精度位数：</p>
@@ -221,7 +213,7 @@ DATETIME和TIMESTAMP很类似，但是有如下区别：（1）TIMESTAMP支持�
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/08/28/MySQL的日期时间类型关于秒以下精度的处理/" data-id="ciseni4w000091gwfwmz3vtkl" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2016/08/28/MySQL的日期时间类型关于秒以下精度的处理/" data-id="cissli9t900040bwft1kuzv67" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MySQL/">MySQL</a></li></ul>

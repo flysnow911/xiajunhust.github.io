@@ -21,7 +21,7 @@
 是线程安全的
 写操作会复制整个基础数组，因此写操作开销很大
 适用">
-<meta property="og:updated_time" content="2016-08-06T10:23:44.000Z">
+<meta property="og:updated_time" content="2016-09-07T08:02:37.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="CopyOnWriteArrayList与JMM">
 <meta name="twitter:description" content="说明：本文代码均以JDK1.8的源码为准。
@@ -107,6 +107,7 @@
 <li>写操作会复制整个基础数组，因此写操作开销很大</li>
 <li>适用于如下情况：数组大小较小，并且读操作比写操作多很多的情形</li>
 </ul>
+<a id="more"></a>
 <h1 id="2-CopyOnWriteArrayList的设计原理与JMM"><a href="#2-CopyOnWriteArrayList的设计原理与JMM" class="headerlink" title="2 CopyOnWriteArrayList的设计原理与JMM"></a>2 CopyOnWriteArrayList的设计原理与JMM</h1><p>下面我们分析CopyOnWriteArrayList的设计原理，结合JMM的基础知识，分析CopyOnWriteArrayList是如何保证线程安全的。</p>
 <p>首先看用来实际保存数据的数组：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">/** The array, accessed only via getArray/setArray. */</div><div class="line">private transient volatile Object[] array;</div></pre></td></tr></table></figure>
@@ -252,7 +253,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/08/06/CopyOnWriteArrayList与JMM/" data-id="ciseni4vf00001gwfesb3ohoa" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2016/08/06/CopyOnWriteArrayList与JMM/" data-id="cissli9sn00010bwffzb6fj36" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li></ul>

@@ -5,16 +5,12 @@
   
   <title>技术分享-MySQL InnoDB locks and deadlocks | 江南烟雨的个人博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="本文是在组内技术分享的ppt：《MySQL InnoDB locks and deadlocks》。与大家分享，如有问题，欢迎来信交流。
-  
-版权声明本文首发于江南烟雨的个人博客博客（ http://xiajunhust.github.io/ ），版权所有，侵权必究。本文永久链接：http://xiajunhust.github.io/2016/08/27/技术分享-MySQL-InnoDB-l">
+  <meta name="description" content="本文是在组内技术分享的ppt：《MySQL InnoDB locks and deadlocks》。与大家分享，如有问题，欢迎来信交流。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="技术分享-MySQL InnoDB locks and deadlocks">
 <meta property="og:url" content="http://xiajunhust.github.io/2016/08/27/技术分享-MySQL-InnoDB-locks-and-deadlocks/index.html">
 <meta property="og:site_name" content="江南烟雨的个人博客">
-<meta property="og:description" content="本文是在组内技术分享的ppt：《MySQL InnoDB locks and deadlocks》。与大家分享，如有问题，欢迎来信交流。
-  
-版权声明本文首发于江南烟雨的个人博客博客（ http://xiajunhust.github.io/ ），版权所有，侵权必究。本文永久链接：http://xiajunhust.github.io/2016/08/27/技术分享-MySQL-InnoDB-l">
+<meta property="og:description" content="本文是在组内技术分享的ppt：《MySQL InnoDB locks and deadlocks》。与大家分享，如有问题，欢迎来信交流。">
 <meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-00.png">
 <meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-02.png">
 <meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-03.png">
@@ -53,12 +49,10 @@
 <meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-36.png">
 <meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-37.png">
 <meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-38.png">
-<meta property="og:updated_time" content="2016-08-27T08:18:38.000Z">
+<meta property="og:updated_time" content="2016-09-07T08:01:17.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="技术分享-MySQL InnoDB locks and deadlocks">
-<meta name="twitter:description" content="本文是在组内技术分享的ppt：《MySQL InnoDB locks and deadlocks》。与大家分享，如有问题，欢迎来信交流。
-  
-版权声明本文首发于江南烟雨的个人博客博客（ http://xiajunhust.github.io/ ），版权所有，侵权必究。本文永久链接：http://xiajunhust.github.io/2016/08/27/技术分享-MySQL-InnoDB-l">
+<meta name="twitter:description" content="本文是在组内技术分享的ppt：《MySQL InnoDB locks and deadlocks》。与大家分享，如有问题，欢迎来信交流。">
 <meta name="twitter:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-00.png">
   
     <link rel="alternate" href="/atom.xml" title="江南烟雨的个人博客" type="application/atom+xml">
@@ -131,7 +125,9 @@
     <div class="article-entry" itemprop="articleBody">
       
         <p>本文是在组内技术分享的ppt：《MySQL InnoDB locks and deadlocks》。与大家分享，如有问题，欢迎来信交流。</p>
-<p><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-00.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-02.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-03.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-04.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-05.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-06.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-07.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-08.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-09.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-10.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-11.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-12.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-13.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-14.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-15.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-16.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-17.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-18.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-19.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-20.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-21.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-22.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-23.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-24.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-25.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-26.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-29.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-28.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-29.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-30.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-31.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-32.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-33.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-34.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-35.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-36.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-37.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-38.png" alt="">  </p>
+<p><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-00.png" alt="">  </p>
+<a id="more"></a>
+<p><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-02.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-03.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-04.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-05.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-06.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-07.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-08.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-09.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-10.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-11.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-12.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-13.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-14.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-15.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-16.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-17.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-18.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-19.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-20.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-21.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-22.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-23.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-24.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-25.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-26.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-29.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-28.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-29.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-30.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-31.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-32.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-33.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-34.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-35.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-36.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-37.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-38.png" alt="">  </p>
 <h2 id="版权声明"><a href="#版权声明" class="headerlink" title="版权声明"></a>版权声明</h2><p>本文首发于<a href="http://xiajunhust.github.io/">江南烟雨的个人博客</a>博客（ <a href="http://xiajunhust.github.io/">http://xiajunhust.github.io/</a> ），版权所有，侵权必究。<br>本文永久链接：<a href="http://xiajunhust.github.io/2016/08/27/技术分享-MySQL-InnoDB-locks-and-deadlocks/">http://xiajunhust.github.io/2016/08/27/技术分享-MySQL-InnoDB-locks-and-deadlocks/</a></p>
 
       
@@ -245,7 +241,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/08/27/技术分享-MySQL-InnoDB-locks-and-deadlocks/" data-id="ciseni4wd000e1gwfvaho8t97" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2016/08/27/技术分享-MySQL-InnoDB-locks-and-deadlocks/" data-id="cissli9tp000e0bwfp09r60r8" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MySQL/">MySQL</a></li></ul>

@@ -6,21 +6,18 @@
   <title>为什么Java HashMap、CopyOnWriteArrayList等集合自己实现readObject和writeObject方法 | 江南烟雨的个人博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="PS:本文源码参考的是JDK 1.8.
-1 readObject、writeObject方法是什么？作用是什么？当一个class实现了Serializable接口，那么意味着这个类可以被序列化。如果类不实现readObject、writeObject方法，那么会执行默认的序列化和反序列化逻辑，否则执行自定义的序列化和反序列化逻辑，即readObject、writeObject方法的逻辑。
-JDK提">
+1 readObject、writeObject方法是什么？作用是什么？当一个class实现了Serializable接口，那么意味着这个类可以被序列化。如果类不实现readObject、writeObject方法，那么会执行默认的序列化和反序列化逻辑，否则执行自定义的序列化和反序列化逻辑，即readObject、writeObject方法的逻辑。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="为什么Java HashMap、CopyOnWriteArrayList等集合自己实现readObject和writeObject方法">
 <meta property="og:url" content="http://xiajunhust.github.io/2016/08/06/为什么Java-HashMap、CopyOnWriteArrayList等集合自己实现readObject和writeObject方法/index.html">
 <meta property="og:site_name" content="江南烟雨的个人博客">
 <meta property="og:description" content="PS:本文源码参考的是JDK 1.8.
-1 readObject、writeObject方法是什么？作用是什么？当一个class实现了Serializable接口，那么意味着这个类可以被序列化。如果类不实现readObject、writeObject方法，那么会执行默认的序列化和反序列化逻辑，否则执行自定义的序列化和反序列化逻辑，即readObject、writeObject方法的逻辑。
-JDK提">
-<meta property="og:updated_time" content="2016-08-06T15:44:28.000Z">
+1 readObject、writeObject方法是什么？作用是什么？当一个class实现了Serializable接口，那么意味着这个类可以被序列化。如果类不实现readObject、writeObject方法，那么会执行默认的序列化和反序列化逻辑，否则执行自定义的序列化和反序列化逻辑，即readObject、writeObject方法的逻辑。">
+<meta property="og:updated_time" content="2016-09-07T08:01:56.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="为什么Java HashMap、CopyOnWriteArrayList等集合自己实现readObject和writeObject方法">
 <meta name="twitter:description" content="PS:本文源码参考的是JDK 1.8.
-1 readObject、writeObject方法是什么？作用是什么？当一个class实现了Serializable接口，那么意味着这个类可以被序列化。如果类不实现readObject、writeObject方法，那么会执行默认的序列化和反序列化逻辑，否则执行自定义的序列化和反序列化逻辑，即readObject、writeObject方法的逻辑。
-JDK提">
+1 readObject、writeObject方法是什么？作用是什么？当一个class实现了Serializable接口，那么意味着这个类可以被序列化。如果类不实现readObject、writeObject方法，那么会执行默认的序列化和反序列化逻辑，否则执行自定义的序列化和反序列化逻辑，即readObject、writeObject方法的逻辑。">
   
     <link rel="alternate" href="/atom.xml" title="江南烟雨的个人博客" type="application/atom+xml">
   
@@ -93,6 +90,7 @@ JDK提">
       
         <p>PS:本文源码参考的是JDK 1.8.</p>
 <h1 id="1-readObject、writeObject方法是什么？作用是什么？"><a href="#1-readObject、writeObject方法是什么？作用是什么？" class="headerlink" title="1 readObject、writeObject方法是什么？作用是什么？"></a>1 readObject、writeObject方法是什么？作用是什么？</h1><p>当一个class实现了Serializable接口，那么意味着这个类可以被序列化。如果类不实现readObject、writeObject方法，那么会执行默认的序列化和反序列化逻辑，否则执行自定义的序列化和反序列化逻辑，即readObject、writeObject方法的逻辑。</p>
+<a id="more"></a>
 <p>JDK提供的对于Java对象序列化操作的类是ObjectOutputStream，反序列化的类是ObjectInputStream。下面我们来看序列化的实现（ObjectOutputStream.writeObject）。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line"> * Write the specified object to the ObjectOutputStream.  The class of the</div><div class="line"> * object, the signature of the class, and the values of the non-transient</div><div class="line"> * and non-static fields of the class and all of its supertypes are</div><div class="line"> * written.  Default serialization for a class can be overridden using the</div><div class="line"> * writeObject and the readObject methods.  Objects referenced by this</div><div class="line"> * object are written transitively so that a complete equivalent graph of</div><div class="line"> * objects can be reconstructed by an ObjectInputStream.</div><div class="line"> *</div><div class="line"> * &lt;p&gt;Exceptions are thrown for problems with the OutputStream and for</div><div class="line"> * classes that should not be serialized.  All exceptions are fatal to the</div><div class="line"> * OutputStream, which is left in an indeterminate state, and it is up to</div><div class="line"> * the caller to ignore or recover the stream state.</div><div class="line"> *</div><div class="line"> * @throws  InvalidClassException Something is wrong with a class used by</div><div class="line"> *          serialization.</div><div class="line"> * @throws  NotSerializableException Some object to be serialized does not</div><div class="line"> *          implement the java.io.Serializable interface.</div><div class="line"> * @throws  IOException Any exception thrown by the underlying</div><div class="line"> *          OutputStream.</div><div class="line"> */</div><div class="line">public final void writeObject(Object obj) throws IOException &#123;</div><div class="line">    if (enableOverride) &#123;</div><div class="line">        writeObjectOverride(obj);</div><div class="line">        return;</div><div class="line">    &#125;</div><div class="line">    try &#123;</div><div class="line">        writeObject0(obj, false);</div><div class="line">    &#125; catch (IOException ex) &#123;</div><div class="line">        if (depth == 0) &#123;</div><div class="line">            writeFatalException(ex);</div><div class="line">        &#125;</div><div class="line">        throw ex;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>从方法注释可以看到，此方法正是执行了将对象序列化的操作。并且默认的序列化机制可以通过重写readObject、writeObject方法实现。实际调用的方法writeObject0最终会调到writeSerialData：  </p>
@@ -236,7 +234,7 @@ JDK提">
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/08/06/为什么Java-HashMap、CopyOnWriteArrayList等集合自己实现readObject和writeObject方法/" data-id="ciseni4vz00081gwfv4vpvv7x" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2016/08/06/为什么Java-HashMap、CopyOnWriteArrayList等集合自己实现readObject和writeObject方法/" data-id="cissli9te00090bwfajh3cb80" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li></ul>

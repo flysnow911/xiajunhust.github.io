@@ -85,18 +85,11 @@
       
         <h1 id="1-MySQL中日期和时间的表示"><a href="#1-MySQL中日期和时间的表示" class="headerlink" title="1 MySQL中日期和时间的表示"></a>1 MySQL中日期和时间的表示</h1><p>MySQL中有多种数据类型可以用于日期和时间的表示：</p>
 <p><img src="http://o8sltkx20.bkt.clouddn.com/MySQL-base-001.png" alt=""></p>
-<p>常用的是如下三种：<br>（1）DATE：表示年月日<br>（2）DATETIME：表示年月日时分秒<br>（3）TIME：只需要表示时分秒  </p>
-<p>DATETIME和TIMESTAMP很类似，但是有如下区别：<br>（1）TIMESTAMP支持的时间范围较小<br>（2）在插入或者更新时不明确指定TIMESTAMP列的值时，系统将会设置为当前日期和时间。当值超出最大值值，将会使用默认值“0000-00-00 00:00”<br>（3）TIMESTAMP的插入和更新都受到当地时区的影响<br>（4）TIMESTAMP受MySQL版本和服务器SQLMode的影响很大  </p>
-<h1 id="2-MySQL日期时间对秒以下精度的支持"><a href="#2-MySQL日期时间对秒以下精度的支持" class="headerlink" title="2 MySQL日期时间对秒以下精度的支持"></a>2 MySQL日期时间对秒以下精度的支持</h1><p><b>MySQL在5.6.4以及更高版本提供了对秒以下精度时间的存储支持，在以前的版本是会将秒以下的精度忽略掉的。</b>TIME、TIMESTAMP、DATETIME均提供了小数点后6位的支持（微秒）。如果我们想定义一个能存储秒以下精度的日期时间字段，可以如下做，在类型字段后面指定小数点后的精度位数：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">CREATE TABLE t1 (t TIME(3), dt DATETIME(6));</div></pre></td></tr></table></figure>
-<p>如果我们朝数据库中插入一条记录，时间的精度位数大于表字段能表示的位数，则会造成四舍五入：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">mysql&gt; CREATE TABLE fractest( c1 TIME(2), c2 DATETIME(2), c3 TIMESTAMP(2) );</div><div class="line">Query OK, 0 rows affected (0.33 sec)</div><div class="line"></div><div class="line">mysql&gt; INSERT INTO fractest VALUES</div><div class="line">     &gt; (&apos;17:51:04.777&apos;, &apos;2014-09-08 17:51:04.777&apos;, &apos;2014-09-08 17:51:04.777&apos;);</div><div class="line">Query OK, 1 row affected (0.03 sec)</div><div class="line"></div><div class="line">mysql&gt; SELECT * FROM fractest;</div><div class="line">+-------------+------------------------+------------------------+</div><div class="line">| c1          | c2                     | c3                     |</div><div class="line">+-------------+------------------------+------------------------+</div><div class="line">| 17:51:04.78 | 2014-09-08 17:51:04.78 | 2014-09-08 17:51:04.78 |</div><div class="line">+-------------+------------------------+------------------------+</div><div class="line">1 row in set (0.00 sec)</div></pre></td></tr></table></figure>
-<p><b>并且不会有任何警告，这点尤其要注意。</b></p>
-<p>截断在数据库server端，connector是会将毫秒部分一并提交给server的。我们可以看下mysql-connector-java jar中的源码：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">/**</div><div class="line"> * Set a parameter to a java.sql.Timestamp value. The driver converts this</div><div class="line"> * to a SQL TIMESTAMP value when it sends it to the database.</div><div class="line"> * </div><div class="line"> * @param parameterIndex</div><div class="line"> *            the first parameter is 1, the second is 2, ...</div><div class="line"> * @param x</div><div class="line"> *            the parameter value</div><div class="line"> * @param tz</div><div class="line"> *            the timezone to use</div><div class="line"> * </div><div class="line"> * @throws SQLException</div><div class="line"> *             if a database-access error occurs.</div><div class="line"> */</div><div class="line">private void setTimestampInternal(int parameterIndex,</div><div class="line">		Timestamp x, Calendar targetCalendar,</div><div class="line">		TimeZone tz, boolean rollForward) throws SQLException &#123;</div><div class="line">	synchronized (checkClosed().getConnectionMutex()) &#123;</div><div class="line">		if (x == null) &#123;</div><div class="line">			setNull(parameterIndex, java.sql.Types.TIMESTAMP);</div><div class="line">		&#125; else &#123;</div><div class="line">			checkClosed();</div><div class="line">			</div><div class="line">			if (!this.useLegacyDatetimeCode) &#123;</div><div class="line">				newSetTimestampInternal(parameterIndex, x, targetCalendar);</div><div class="line">			&#125; else &#123;</div><div class="line">				Calendar sessionCalendar = this.connection.getUseJDBCCompliantTimezoneShift() ?</div><div class="line">						this.connection.getUtcCalendar() : </div><div class="line">							getCalendarInstanceForSessionOrNew();</div><div class="line">					</div><div class="line">				synchronized (sessionCalendar) &#123;</div><div class="line">					x = TimeUtil.changeTimezone(this.connection, </div><div class="line">							sessionCalendar,</div><div class="line">							targetCalendar,</div><div class="line">							x, tz, this.connection</div><div class="line">						.getServerTimezoneTZ(), rollForward);</div><div class="line">				&#125;</div><div class="line">	</div><div class="line">				if (this.connection.getUseSSPSCompatibleTimezoneShift()) &#123;</div><div class="line">					doSSPSCompatibleTimezoneShift(parameterIndex, x, sessionCalendar);</div><div class="line">				&#125; else &#123;</div><div class="line">					synchronized (this) &#123;</div><div class="line">						if (this.tsdf == null) &#123;</div><div class="line">							this.tsdf = new SimpleDateFormat(&quot;&apos;&apos;yyyy-MM-dd HH:mm:ss&quot;, Locale.US); //$NON-NLS-1$</div><div class="line">						&#125;</div><div class="line">						</div><div class="line">						StringBuffer buf = new StringBuffer();</div><div class="line">						buf.append(this.tsdf.format(x));</div><div class="line"></div><div class="line">						if (this.serverSupportsFracSecs) &#123;</div><div class="line">							int nanos = x.getNanos();</div><div class="line">							//精确到了纳秒</div><div class="line">							if (nanos != 0) &#123;</div><div class="line">								buf.append(&apos;.&apos;);</div><div class="line">								buf.append(TimeUtil.formatNanos(nanos, this.serverSupportsFracSecs, true));</div><div class="line">							&#125;</div><div class="line">						&#125;</div><div class="line"></div><div class="line">						buf.append(&apos;\&apos;&apos;);</div><div class="line"></div><div class="line">						setInternal(parameterIndex, buf.toString()); // SimpleDateFormat is not</div><div class="line">																	  // thread-safe</div><div class="line">					&#125;</div><div class="line">				&#125;</div><div class="line">			&#125;</div><div class="line">			</div><div class="line">			this.parameterTypes[parameterIndex - 1 + getParameterIndexOffset()] = Types.TIMESTAMP;</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h1 id="3-参考资料"><a href="#3-参考资料" class="headerlink" title="3 参考资料"></a>3 参考资料</h1><p>(1)<a href="https://dev.mysql.com/doc/refman/5.6/en/fractional-seconds.html" target="_blank" rel="external">MySQL Reference Manual</a><br>(2)<a href="http://www.yufengof.com/2015/08/17/mysql-datetime-type-millisecond-rounding/" target="_blank" rel="external">http://www.yufengof.com/2015/08/17/mysql-datetime-type-millisecond-rounding/</a></p>
-<h2 id="版权声明"><a href="#版权声明" class="headerlink" title="版权声明"></a>版权声明</h2><p>本文首发于<a href="http://xiajunhust.github.io/">江南烟雨的个人博客</a>博客（ <a href="http://xiajunhust.github.io/">http://xiajunhust.github.io/</a> ），版权所有，侵权必究。<br>本文永久链接：<a href="http://xiajunhust.github.io/2016/08/28/MySQL的日期时间类型关于秒以下精度的处理/">http://xiajunhust.github.io/2016/08/28/MySQL的日期时间类型关于秒以下精度的处理/</a></p>
-
+        
+          <p class="article-more-link">
+            <a href="/2016/08/28/MySQL的日期时间类型关于秒以下精度的处理/#more">Read More</a>
+          </p>
+        
       
     </div>
 
@@ -208,7 +201,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/08/28/MySQL的日期时间类型关于秒以下精度的处理/" data-id="ciseni4w000091gwfwmz3vtkl" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2016/08/28/MySQL的日期时间类型关于秒以下精度的处理/" data-id="cissli9t900040bwft1kuzv67" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MySQL/">MySQL</a></li></ul>
@@ -245,9 +238,12 @@
     <div class="article-entry" itemprop="articleBody">
       
         <p>本文是在组内技术分享的ppt：《MySQL InnoDB locks and deadlocks》。与大家分享，如有问题，欢迎来信交流。</p>
-<p><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-00.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-02.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-03.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-04.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-05.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-06.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-07.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-08.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-09.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-10.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-11.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-12.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-13.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-14.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-15.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-16.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-17.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-18.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-19.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-20.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-21.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-22.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-23.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-24.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-25.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-26.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-29.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-28.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-29.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-30.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-31.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-32.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-33.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-34.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-35.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-36.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-37.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-38.png" alt="">  </p>
-<h2 id="版权声明"><a href="#版权声明" class="headerlink" title="版权声明"></a>版权声明</h2><p>本文首发于<a href="http://xiajunhust.github.io/">江南烟雨的个人博客</a>博客（ <a href="http://xiajunhust.github.io/">http://xiajunhust.github.io/</a> ），版权所有，侵权必究。<br>本文永久链接：<a href="http://xiajunhust.github.io/2016/08/27/技术分享-MySQL-InnoDB-locks-and-deadlocks/">http://xiajunhust.github.io/2016/08/27/技术分享-MySQL-InnoDB-locks-and-deadlocks/</a></p>
-
+<p><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-00.png" alt="">  </p>
+        
+          <p class="article-more-link">
+            <a href="/2016/08/27/技术分享-MySQL-InnoDB-locks-and-deadlocks/#more">Read More</a>
+          </p>
+        
       
     </div>
 
@@ -359,7 +355,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/08/27/技术分享-MySQL-InnoDB-locks-and-deadlocks/" data-id="ciseni4wd000e1gwfvaho8t97" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2016/08/27/技术分享-MySQL-InnoDB-locks-and-deadlocks/" data-id="cissli9tp000e0bwfp09r60r8" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MySQL/">MySQL</a></li></ul>
@@ -397,38 +393,11 @@
       
         <p>PS:本文源码参考的是JDK 1.8.</p>
 <h1 id="1-readObject、writeObject方法是什么？作用是什么？"><a href="#1-readObject、writeObject方法是什么？作用是什么？" class="headerlink" title="1 readObject、writeObject方法是什么？作用是什么？"></a>1 readObject、writeObject方法是什么？作用是什么？</h1><p>当一个class实现了Serializable接口，那么意味着这个类可以被序列化。如果类不实现readObject、writeObject方法，那么会执行默认的序列化和反序列化逻辑，否则执行自定义的序列化和反序列化逻辑，即readObject、writeObject方法的逻辑。</p>
-<p>JDK提供的对于Java对象序列化操作的类是ObjectOutputStream，反序列化的类是ObjectInputStream。下面我们来看序列化的实现（ObjectOutputStream.writeObject）。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line"> * Write the specified object to the ObjectOutputStream.  The class of the</div><div class="line"> * object, the signature of the class, and the values of the non-transient</div><div class="line"> * and non-static fields of the class and all of its supertypes are</div><div class="line"> * written.  Default serialization for a class can be overridden using the</div><div class="line"> * writeObject and the readObject methods.  Objects referenced by this</div><div class="line"> * object are written transitively so that a complete equivalent graph of</div><div class="line"> * objects can be reconstructed by an ObjectInputStream.</div><div class="line"> *</div><div class="line"> * &lt;p&gt;Exceptions are thrown for problems with the OutputStream and for</div><div class="line"> * classes that should not be serialized.  All exceptions are fatal to the</div><div class="line"> * OutputStream, which is left in an indeterminate state, and it is up to</div><div class="line"> * the caller to ignore or recover the stream state.</div><div class="line"> *</div><div class="line"> * @throws  InvalidClassException Something is wrong with a class used by</div><div class="line"> *          serialization.</div><div class="line"> * @throws  NotSerializableException Some object to be serialized does not</div><div class="line"> *          implement the java.io.Serializable interface.</div><div class="line"> * @throws  IOException Any exception thrown by the underlying</div><div class="line"> *          OutputStream.</div><div class="line"> */</div><div class="line">public final void writeObject(Object obj) throws IOException &#123;</div><div class="line">    if (enableOverride) &#123;</div><div class="line">        writeObjectOverride(obj);</div><div class="line">        return;</div><div class="line">    &#125;</div><div class="line">    try &#123;</div><div class="line">        writeObject0(obj, false);</div><div class="line">    &#125; catch (IOException ex) &#123;</div><div class="line">        if (depth == 0) &#123;</div><div class="line">            writeFatalException(ex);</div><div class="line">        &#125;</div><div class="line">        throw ex;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>从方法注释可以看到，此方法正是执行了将对象序列化的操作。并且默认的序列化机制可以通过重写readObject、writeObject方法实现。实际调用的方法writeObject0最终会调到writeSerialData：  </p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line"> * Writes instance data for each serializable class of given object, from</div><div class="line"> * superclass to subclass.</div><div class="line"> */</div><div class="line">private void writeSerialData(Object obj, ObjectStreamClass desc)</div><div class="line">    throws IOException</div><div class="line">&#123;</div><div class="line">    ObjectStreamClass.ClassDataSlot[] slots = desc.getClassDataLayout();</div><div class="line">    for (int i = 0; i &lt; slots.length; i++) &#123;</div><div class="line">        ObjectStreamClass slotDesc = slots[i].desc;</div><div class="line">        //如果类重写了writeObject方法</div><div class="line">        if (slotDesc.hasWriteObjectMethod()) &#123;</div><div class="line">            PutFieldImpl oldPut = curPut;</div><div class="line">            curPut = null;</div><div class="line">            SerialCallbackContext oldContext = curContext;</div><div class="line"></div><div class="line">            if (extendedDebugInfo) &#123;</div><div class="line">                debugInfoStack.push(</div><div class="line">                    &quot;custom writeObject data (class \&quot;&quot; +</div><div class="line">                    slotDesc.getName() + &quot;\&quot;)&quot;);</div><div class="line">            &#125;</div><div class="line">            try &#123;</div><div class="line">                curContext = new SerialCallbackContext(obj, slotDesc);</div><div class="line">                bout.setBlockDataMode(true);</div><div class="line">                //调用实现类自己的writeobject方法</div><div class="line">                slotDesc.invokeWriteObject(obj, this);</div><div class="line">                bout.setBlockDataMode(false);</div><div class="line">                bout.writeByte(TC_ENDBLOCKDATA);</div><div class="line">            &#125; finally &#123;</div><div class="line">                curContext.setUsed();</div><div class="line">                curContext = oldContext;</div><div class="line">                if (extendedDebugInfo) &#123;</div><div class="line">                    debugInfoStack.pop();</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line"></div><div class="line">            curPut = oldPut;</div><div class="line">        &#125; else &#123;</div><div class="line">            defaultWriteFields(obj, slotDesc);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h1 id="2-为什么是private方法？"><a href="#2-为什么是private方法？" class="headerlink" title="2 为什么是private方法？"></a>2 为什么是private方法？</h1><p>javadoc上没有明确说明声明为private的原因，一个可能的原因是，除了子类以外没有其他类会使用它，这样不会被滥用。</p>
-<p>另一个原因是，不希望这些方法被子类override。每个类都可以有自己的writeObject方法，序列化引擎会逐一调用。readObject相同。</p>
-<h1 id="3-HashMap中对readObject、writeObject方法的实现"><a href="#3-HashMap中对readObject、writeObject方法的实现" class="headerlink" title="3 HashMap中对readObject、writeObject方法的实现"></a>3 HashMap中对readObject、writeObject方法的实现</h1><h2 id="3-1-为什么HashMap要自定义序列化逻辑"><a href="#3-1-为什么HashMap要自定义序列化逻辑" class="headerlink" title="3.1 为什么HashMap要自定义序列化逻辑"></a>3.1 为什么HashMap要自定义序列化逻辑</h2><p>下文是摘自《Effective Java》：</p>
-<p><i>For example, consider the case of a hash table. The physical representation is a sequence of hash buckets containing key-value entries. The bucket that an entry resides in is a function of the hash code of its key, which is not, in general, guaranteed to be the same from JVM implementation to JVM implementation. In fact, it isn’t even guaranteed to be the same from run to run. Therefore, accepting the default serialized form for a hash table would constitute a serious bug. Serializing and deserializing the hash table could yield an object whose invariants were seriously corrupt.</i></p>
-<p>大概意思是：对于同一个key，在不同的JVM平台上计算出来的hash值可能不同，导致的结果就是，同一个hashmap反序列化之后和序列化之前不同，导致同一个key取出来的值不同。</p>
-<h2 id="3-1-HashMap是如何解决的"><a href="#3-1-HashMap是如何解决的" class="headerlink" title="3.1 HashMap是如何解决的"></a>3.1 HashMap是如何解决的</h2><ul>
-<li><p>将可能造成数据不一致的元素使用transient修饰，在序列化的时候忽略这些元素：<br><i><br>Entry[] table<br>size<br>modCount<br></i></p>
-</li>
-<li><p>HashMap中对writeObject的实现：</p>
-</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line"> * Save the state of the &lt;tt&gt;HashMap&lt;/tt&gt; instance to a stream (i.e.,</div><div class="line"> * serialize it).</div><div class="line"> *</div><div class="line"> * @serialData The &lt;i&gt;capacity&lt;/i&gt; of the HashMap (the length of the</div><div class="line"> *             bucket array) is emitted (int), followed by the</div><div class="line"> *             &lt;i&gt;size&lt;/i&gt; (an int, the number of key-value</div><div class="line"> *             mappings), followed by the key (Object) and value (Object)</div><div class="line"> *             for each key-value mapping.  The key-value mappings are</div><div class="line"> *             emitted in no particular order.</div><div class="line"> */</div><div class="line">private void writeObject(java.io.ObjectOutputStream s)</div><div class="line">    throws IOException &#123;</div><div class="line">    int buckets = capacity();</div><div class="line">    // Write out the threshold, loadfactor, and any hidden stuff</div><div class="line">    s.defaultWriteObject();</div><div class="line">    s.writeInt(buckets);</div><div class="line">    s.writeInt(size);</div><div class="line">    internalWriteEntries(s);</div><div class="line">&#125;</div><div class="line"></div><div class="line">// Called only from writeObject, to ensure compatible ordering.</div><div class="line">void internalWriteEntries(java.io.ObjectOutputStream s) throws IOException &#123;</div><div class="line">    Node&lt;K,V&gt;[] tab;</div><div class="line">    if (size &gt; 0 &amp;&amp; (tab = table) != null) &#123;</div><div class="line">        for (int i = 0; i &lt; tab.length; ++i) &#123;</div><div class="line">            for (Node&lt;K,V&gt; e = tab[i]; e != null; e = e.next) &#123;</div><div class="line">                s.writeObject(e.key);</div><div class="line">                s.writeObject(e.value);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>HashMap不会将保存数据的数组序列化，而是将元素个数以及每个元素的key、value序列化。而在反序列化的时候，重新计算，填充hashmap：</p>
-<p>readObject的实现：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line"> * Reconstitute the &#123;@code HashMap&#125; instance from a stream (i.e.,</div><div class="line"> * deserialize it).</div><div class="line"> */</div><div class="line">private void readObject(java.io.ObjectInputStream s)</div><div class="line">    throws IOException, ClassNotFoundException &#123;</div><div class="line">    // Read in the threshold (ignored), loadfactor, and any hidden stuff</div><div class="line">    s.defaultReadObject();</div><div class="line">    reinitialize();</div><div class="line">    if (loadFactor &lt;= 0 || Float.isNaN(loadFactor))</div><div class="line">        throw new InvalidObjectException(&quot;Illegal load factor: &quot; +</div><div class="line">                                         loadFactor);</div><div class="line">    s.readInt();                // Read and ignore number of buckets</div><div class="line">    int mappings = s.readInt(); // Read number of mappings (size)</div><div class="line">    if (mappings &lt; 0)</div><div class="line">        throw new InvalidObjectException(&quot;Illegal mappings count: &quot; +</div><div class="line">                                         mappings);</div><div class="line">    else if (mappings &gt; 0) &#123; // (if zero, use defaults)</div><div class="line">        // Size the table using given load factor only if within</div><div class="line">        // range of 0.25...4.0</div><div class="line">        float lf = Math.min(Math.max(0.25f, loadFactor), 4.0f);</div><div class="line">        float fc = (float)mappings / lf + 1.0f;</div><div class="line">        int cap = ((fc &lt; DEFAULT_INITIAL_CAPACITY) ?</div><div class="line">                   DEFAULT_INITIAL_CAPACITY :</div><div class="line">                   (fc &gt;= MAXIMUM_CAPACITY) ?</div><div class="line">                   MAXIMUM_CAPACITY :</div><div class="line">                   tableSizeFor((int)fc));</div><div class="line">        float ft = (float)cap * lf;</div><div class="line">        threshold = ((cap &lt; MAXIMUM_CAPACITY &amp;&amp; ft &lt; MAXIMUM_CAPACITY) ?</div><div class="line">                     (int)ft : Integer.MAX_VALUE);</div><div class="line">        @SuppressWarnings(&#123;&quot;rawtypes&quot;,&quot;unchecked&quot;&#125;)</div><div class="line">            Node&lt;K,V&gt;[] tab = (Node&lt;K,V&gt;[])new Node[cap];</div><div class="line">        table = tab;</div><div class="line"></div><div class="line">        // Read the keys and values, and put the mappings in the HashMap</div><div class="line">        for (int i = 0; i &lt; mappings; i++) &#123;</div><div class="line">            @SuppressWarnings(&quot;unchecked&quot;)</div><div class="line">                K key = (K) s.readObject();</div><div class="line">            @SuppressWarnings(&quot;unchecked&quot;)</div><div class="line">                V value = (V) s.readObject();</div><div class="line">            putVal(hash(key), key, value, false, false);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>这样就避免了反序列化之后根据Key获取到的元素与序列化之前获取到的元素不同。</p>
-<h1 id="4-为什么CopyOnWriteArrayList也需要自定义序列化逻辑？"><a href="#4-为什么CopyOnWriteArrayList也需要自定义序列化逻辑？" class="headerlink" title="4 为什么CopyOnWriteArrayList也需要自定义序列化逻辑？"></a>4 为什么CopyOnWriteArrayList也需要自定义序列化逻辑？</h1><p>writeObject、readObject实现：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line">  * Saves this list to a stream (that is, serializes it).</div><div class="line">  *</div><div class="line">  * @param s the stream</div><div class="line">  * @throws java.io.IOException if an I/O error occurs</div><div class="line">  * @serialData The length of the array backing the list is emitted</div><div class="line">  *               (int), followed by all of its elements (each an Object)</div><div class="line">  *               in the proper order.</div><div class="line">  */</div><div class="line"> private void writeObject(java.io.ObjectOutputStream s)</div><div class="line">     throws java.io.IOException &#123;</div><div class="line"></div><div class="line">     s.defaultWriteObject();</div><div class="line"></div><div class="line">     Object[] elements = getArray();</div><div class="line">     // Write out array length</div><div class="line">     s.writeInt(elements.length);</div><div class="line"></div><div class="line">     // Write out all elements in the proper order.</div><div class="line">     for (Object element : elements)</div><div class="line">         s.writeObject(element);</div><div class="line"> &#125;</div><div class="line"></div><div class="line"> /**</div><div class="line">  * Reconstitutes this list from a stream (that is, deserializes it).</div><div class="line">  * @param s the stream</div><div class="line">  * @throws ClassNotFoundException if the class of a serialized object</div><div class="line">  *         could not be found</div><div class="line">  * @throws java.io.IOException if an I/O error occurs</div><div class="line">  */</div><div class="line"> private void readObject(java.io.ObjectInputStream s)</div><div class="line">     throws java.io.IOException, ClassNotFoundException &#123;</div><div class="line"></div><div class="line">     s.defaultReadObject();</div><div class="line"></div><div class="line">     // bind to new lock</div><div class="line">     resetLock();</div><div class="line"></div><div class="line">     // Read in array length and allocate array</div><div class="line">     int len = s.readInt();</div><div class="line">     Object[] elements = new Object[len];</div><div class="line"></div><div class="line">     // Read in all elements in the proper order.</div><div class="line">     for (int i = 0; i &lt; len; i++)</div><div class="line">         elements[i] = s.readObject();</div><div class="line">     setArray(elements);</div><div class="line"> &#125;</div></pre></td></tr></table></figure>
-<p>而数组被声明为transient：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">/** The array, accessed only via getArray/setArray. */</div><div class="line">private transient volatile Object[] array;</div></pre></td></tr></table></figure>
-<p>可以看出其逻辑和ArrayList相同：是将数组长度以及所有元素序列化，在反序列化的时候新建数组，填充元素。</p>
-<p>如果采用默认的序列化机制会有如下问题：存储数据的数组实际上是动态数组，每次在放满以后自动增长设定的长度值，如果数组自动增长长度设为100，而实际只放了一个元素，那就会序列化很多null元素，所以ArrayList把元素数组设置为transient。 </p>
-<h1 id="5-参考资料"><a href="#5-参考资料" class="headerlink" title="5 参考资料"></a>5 参考资料</h1><ul>
-<li><a href="http://stackoverflow.com/questions/7467313/why-are-readobject-and-writeobject-private-and-why-would-i-write-transient-vari" target="_blank" rel="external">Why are readObject and writeObject private, and why would I write transient variables explicitly?</a></li>
-<li><a href="http://www.a-site.cn/article/140346.html" target="_blank" rel="external">http://www.a-site.cn/article/140346.html</a></li>
-</ul>
-<h2 id="版权声明"><a href="#版权声明" class="headerlink" title="版权声明"></a>版权声明</h2><p>本文首发于<a href="http://xiajunhust.github.io/">江南烟雨的个人博客</a>博客（ <a href="http://xiajunhust.github.io/">http://xiajunhust.github.io/</a> ），版权所有，侵权必究。<br>本文永久链接：<a href="http://xiajunhust.github.io/2016/08/06/为什么Java-HashMap、CopyOnWriteArrayList等集合自己实现readObject和writeObject方法/">http://xiajunhust.github.io/2016/08/06/为什么Java-HashMap、CopyOnWriteArrayList等集合自己实现readObject和writeObject方法/</a></p>
-
+        
+          <p class="article-more-link">
+            <a href="/2016/08/06/为什么Java-HashMap、CopyOnWriteArrayList等集合自己实现readObject和writeObject方法/#more">Read More</a>
+          </p>
+        
       
     </div>
 
@@ -540,7 +509,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/08/06/为什么Java-HashMap、CopyOnWriteArrayList等集合自己实现readObject和writeObject方法/" data-id="ciseni4vz00081gwfv4vpvv7x" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2016/08/06/为什么Java-HashMap、CopyOnWriteArrayList等集合自己实现readObject和writeObject方法/" data-id="cissli9te00090bwfajh3cb80" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li></ul>
@@ -583,40 +552,11 @@
 <li>写操作会复制整个基础数组，因此写操作开销很大</li>
 <li>适用于如下情况：数组大小较小，并且读操作比写操作多很多的情形</li>
 </ul>
-<h1 id="2-CopyOnWriteArrayList的设计原理与JMM"><a href="#2-CopyOnWriteArrayList的设计原理与JMM" class="headerlink" title="2 CopyOnWriteArrayList的设计原理与JMM"></a>2 CopyOnWriteArrayList的设计原理与JMM</h1><p>下面我们分析CopyOnWriteArrayList的设计原理，结合JMM的基础知识，分析CopyOnWriteArrayList是如何保证线程安全的。</p>
-<p>首先看用来实际保存数据的数组：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">/** The array, accessed only via getArray/setArray. */</div><div class="line">private transient volatile Object[] array;</div></pre></td></tr></table></figure>
-<p>可以看到array数组前面使用了volatile变量来修饰。volatile主要用来解决内存可见性问题。关于volatile的详细实现原理可以参考《<a href="http://o8sltkx20.bkt.clouddn.com/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B.pdf" target="_blank" rel="external">深入理解java内存模型.pdf</a>》以及<a href="http://www.cnblogs.com/dolphin0520/p/3920373.html" target="_blank" rel="external">Java并发编程：volatile关键字解析-博客园-海子</a>。</p>
-<h2 id="2-1-CopyOnWriteArrayList的读方法"><a href="#2-1-CopyOnWriteArrayList的读方法" class="headerlink" title="2.1 CopyOnWriteArrayList的读方法"></a>2.1 CopyOnWriteArrayList的读方法</h2><p>读方法比较简单，直接从array中获取对应索引的值。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line"> * &#123;@inheritDoc&#125;</div><div class="line"> *</div><div class="line"> * @throws IndexOutOfBoundsException &#123;@inheritDoc&#125;</div><div class="line"> */</div><div class="line">public E get(int index) &#123;</div><div class="line">    return get(getArray(), index);</div><div class="line">&#125;</div><div class="line"></div><div class="line">@SuppressWarnings(&quot;unchecked&quot;)</div><div class="line">private E get(Object[] a, int index) &#123;</div><div class="line">    return (E) a[index];</div><div class="line">&#125;</div><div class="line"></div><div class="line">/**</div><div class="line"> * Gets the array.  Non-private so as to also be accessible</div><div class="line"> * from CopyOnWriteArraySet class.</div><div class="line"> */</div><div class="line">final Object[] getArray() &#123;</div><div class="line">    return array;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h2 id="2-2-CopyOnWriteArrayList的写方法"><a href="#2-2-CopyOnWriteArrayList的写方法" class="headerlink" title="2.2 CopyOnWriteArrayList的写方法"></a>2.2 CopyOnWriteArrayList的写方法</h2><ul>
-<li>set方法<br>源码如下：</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line"> * Replaces the element at the specified position in this list with the</div><div class="line"> * specified element.</div><div class="line"> *</div><div class="line"> * @throws IndexOutOfBoundsException &#123;@inheritDoc&#125;</div><div class="line"> */</div><div class="line">public E set(int index, E element) &#123;</div><div class="line">    final ReentrantLock lock = this.lock;</div><div class="line">    lock.lock();</div><div class="line">    try &#123;</div><div class="line">        Object[] elements = getArray();</div><div class="line">        E oldValue = get(elements, index);</div><div class="line"></div><div class="line">        if (oldValue != element) &#123;</div><div class="line">            int len = elements.length;</div><div class="line">            Object[] newElements = Arrays.copyOf(elements, len);</div><div class="line">            newElements[index] = element;</div><div class="line">            setArray(newElements);</div><div class="line">        &#125; else &#123;</div><div class="line">            // Not quite a no-op; ensures volatile write semantics</div><div class="line">            setArray(elements);</div><div class="line">        &#125;</div><div class="line">        return oldValue;</div><div class="line">    &#125; finally &#123;</div><div class="line">        lock.unlock();</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">/**</div><div class="line"> * Sets the array.</div><div class="line"> */</div><div class="line">final void setArray(Object[] a) &#123;</div><div class="line">    array = a;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>set方法的功能是将对应索引的元素置为一个新值。执行流程：<br>（1）加锁<br>（2）获取对应索引已有的值<br>（3）比较已有的值和新值，如果不相等，转4，否则转5<br>（4）创建新的数组，复制原数组的元素，并将对应索引置为新值。然后将新数组赋给array（setArray）<br>（5）setArray-将array赋给array</p>
-<p>这里有一个比较奇怪的点，为什么已有的值和新值相等的时候，还要执行setArray呢？本质上setArray也没有做什么事情。  </p>
-<p>这段代码混合使用了锁以及volatile。锁的用法比较容易理解，它在使用同一个锁的不同线程之间保证内存顺序性，代码结尾的释放锁的操作提供了本线程和其他欲获取相同的锁的线程之间的happens-before语义。但是CopyOnWriteArrayList类中其他代码，不一定会使用到这把锁，因此，前面所述的锁带来的内存模型含义对这部分代码执行是不适用的。</p>
-<p>其他没用到这把锁的代码，读写是volatile读和volatile写（因为array前面使用volatile关键字修饰）。由volatile来保证happens-before语义。</p>
-<hr>
-<p><b>volatile的特性及原理</b></p>
-<p>volatile 变量自身具有下列特性:<br>（1）可见性。对一个volatile 变量的读,总是能看到(任意线程)对这个volatile变量最后的写入。<br>（2）原子性:对任意单个volatile 变量的读/写具有原子性,但类似于volatile++这种复合操作不具有原子性。</p>
-<p>volatile 写和锁的释放有相同的内存语义。</p>
-<p>为了实现 volatile 的内存语义,编译器在生成字节码时,会在指令序列中插入内存屏障来禁止特定类型的处理器重排序。</p>
-<hr>
-<p>这里调用setArray的原因是，确保set方法对array执行的永远是volatile写。这就和其他对array执行volatile读的线程之间建立了happens-before语义。非常重要的一点：volatile读/写语义针对的是读写操作，而不是使用volatile修饰的变量本身。这样说更直白一点：在一个volatile写操作之前的对其他非volatile变量的写，happens-before于同一个volatile变量读操作之后的对其他变量的读。这句话比较绕，看下面一个例子就比较易懂了。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">// initial conditions</div><div class="line">int nonVolatileField = 0;</div><div class="line">CopyOnWriteArrayList&lt;String&gt; list = /* a single String */</div><div class="line"></div><div class="line">// Thread 1</div><div class="line">nonVolatileField = 1;                 // (1)</div><div class="line">list.set(0, &quot;x&quot;);                     // (2)</div><div class="line"></div><div class="line">// Thread 2</div><div class="line">String s = list.get(0);               // (3)</div><div class="line">if (s == &quot;x&quot;) &#123;</div><div class="line">    int localVar = nonVolatileField;  // (4)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>现在假设原始数组中无元素“x”，这样(2)成功设置了元素”x”，(3)处可以成功获取到元素”x”。这种情况下，(4)一定会读取到(1)处设置的值1.因为(2)处的volatile写以及在此之前的任何写操作都happens-before(3)处的读以及之后的所有读。</p>
-<p>但是，假设一开始数组中就有了元素”x”，如果else不调用setArray，那么(2)处的写就不是volatile写，(4)处的读就不一定能读到(1)处设置的值！</p>
-<p>很显然我们不想让内存可见性依赖于list中已有的值，为了确保任何情况下的内存可见性，set方法必须永远都是一个volatile写，这就是为何要在else代码块中调用setArray的原因。</p>
-<p>其他写方法（add、remove）比较易懂，在此不详述。</p>
-<h1 id="3-参考资料"><a href="#3-参考资料" class="headerlink" title="3 参考资料"></a>3 参考资料</h1><ul>
-<li><a href="http://www.cnblogs.com/skywang12345/p/3498483.html" target="_blank" rel="external">Java多线程系列–“JUC集合”02之 CopyOnWriteArrayList</a></li>
-<li><a href="http://stackoverflow.com/questions/28772539/why-setarray-method-call-required-in-copyonwritearraylist#" target="_blank" rel="external">Why setArray() method call required in CopyOnWriteArrayList</a></li>
-<li><a href="http://o8sltkx20.bkt.clouddn.com/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Java%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B.pdf" target="_blank" rel="external">深入理解java内存模型.pdf</a></li>
-<li><a href="http://www.cnblogs.com/dolphin0520/p/3920373.html" target="_blank" rel="external">Java并发编程：volatile关键字解析-博客园-海子</a><h2 id="版权声明"><a href="#版权声明" class="headerlink" title="版权声明"></a>版权声明</h2></li>
-</ul>
-<p>本文首发于<a href="http://xiajunhust.github.io/">江南烟雨的个人博客</a>博客（ <a href="http://xiajunhust.github.io/">http://xiajunhust.github.io/</a> ），版权所有，侵权必究。<br>本文永久链接：<a href="http://xiajunhust.github.io/2016/08/06/CopyOnWriteArrayList与JMM/">http://xiajunhust.github.io/2016/08/06/CopyOnWriteArrayList与JMM/</a></p>
-
+        
+          <p class="article-more-link">
+            <a href="/2016/08/06/CopyOnWriteArrayList与JMM/#more">Read More</a>
+          </p>
+        
       
     </div>
 
@@ -728,7 +668,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/08/06/CopyOnWriteArrayList与JMM/" data-id="ciseni4vf00001gwfesb3ohoa" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2016/08/06/CopyOnWriteArrayList与JMM/" data-id="cissli9sn00010bwffzb6fj36" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li></ul>
@@ -764,45 +704,13 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="1-内容概要"><a href="#1-内容概要" class="headerlink" title="1 内容概要"></a>1 内容概要</h1><p>本文是一篇译文，翻译自：<a href="http://journal.stuffwithstuff.com/2016/06/16/long-names-are-long/?from=timeline&amp;isappinstalled=0" target="_blank" rel="external">Long Names Are Long</a>。主要介绍了编程过程中常见的命名过长的问题。</p>
+        <h1 id="1-内容概要"><a href="#1-内容概要" class="headerlink" title="1 内容概要"></a>1 内容概要</h1><p>本文是一篇译文，翻译自：<a href="http://journal.stuffwithstuff.com/2016/06/16/long-names-are-long/?from=timeline&amp;isappinstalled=0">Long Names Are Long</a>。主要介绍了编程过程中常见的命名过长的问题。</p>
 <h1 id="2-正文内容"><a href="#2-正文内容" class="headerlink" title="2 正文内容"></a>2 正文内容</h1><h2 id="2-1-选择一个好名字"><a href="#2-1-选择一个好名字" class="headerlink" title="2.1 选择一个好名字"></a>2.1 选择一个好名字</h2><p>一个好名字需要具备以下两个特点：</p>
-<ul>
-<li>含义清晰。一眼可以看出名字指代的含义。</li>
-<li>含义精确。能够从名字看出它不包含哪些含义。</li>
-</ul>
-<p>一个名字具备了以上2个特点之后，任何其他字符都是无用的。以下是我在编码过程中命名多得出的一些指导性准则。</p>
-<h3 id="2-1-1-忽略掉表示变量或者参数类型的字符"><a href="#2-1-1-忽略掉表示变量或者参数类型的字符" class="headerlink" title="2.1.1 忽略掉表示变量或者参数类型的字符"></a>2.1.1 忽略掉表示变量或者参数类型的字符</h3><p>对于静态变量，使用者通常都知道变量的类型。方法体通常不会很长，这样，即便是需要通过查看变量定义进行推断的局部变量，也可以很容易得知变量类型。<br>考虑到这点，将类型作为变量名字的一部分是冗余的。我们抛弃掉Hungarian notation。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">// Bad:</div><div class="line"></div><div class="line">String nameString;</div><div class="line">DockableModelessWindow dockableModelessWindow;</div><div class="line"></div><div class="line">// Better:</div><div class="line">String name;</div><div class="line">DockableModelessWindow window;</div></pre></td></tr></table></figure>
-<p>特别的，对于集合，使用复数名词更好，而不要用单独的一个表示集合的名词。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">// Bad:</div><div class="line"></div><div class="line">List&lt;DateTime&gt; holidayDateList;</div><div class="line">Map&lt;Employee, Role&gt; employeeRoleHashMap;</div><div class="line"></div><div class="line">// Better:</div><div class="line">List&lt;DateTime&gt; holidays;</div><div class="line">Map&lt;Employee, Role&gt; employeeRoles;</div></pre></td></tr></table></figure>
-<p>这对于方法命名同样奏效。方法名称没必要体现参数类型-通过参数列表可以得知。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">// Bad:</div><div class="line"></div><div class="line">mergeTableCells(List&lt;TableCell&gt; cells)</div><div class="line">sortEventsUsingComparator(List&lt;Event&gt; events,</div><div class="line">    Comparator&lt;Event&gt; comparator)</div><div class="line"></div><div class="line">// Better:</div><div class="line">merge(List&lt;TableCell&gt; cells)</div><div class="line">sort(List&lt;Event&gt; events, Comparator&lt;Event&gt; comparator)</div></pre></td></tr></table></figure>
-<p>这将使得调用方法的代码可读性更好：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">mergeTableCells(tableCells);</div><div class="line"></div><div class="line">sortEventsUsingComparator(events, comparator);</div></pre></td></tr></table></figure>
-<h3 id="2-1-2-忽略掉会给命名带来歧义的字符"><a href="#2-1-2-忽略掉会给命名带来歧义的字符" class="headerlink" title="2.1.2 忽略掉会给命名带来歧义的字符"></a>2.1.2 忽略掉会给命名带来歧义的字符</h3><p>有些人喜欢把所知道的关于变量或者方法的所有事情都添加到命名中去。记住，命名是一个标识符：它指向它被定义的地方。它不是读者可能想知道的关于这个变量的所有事情的一个完整目录。这部分事情由定义来完成。命名只是让读者能够跳转到定义处。<br>当我看到这样一个命名：recentlyUpdatedAnnualSalesBid，我脑海里会有这样的疑问：</p>
-<ul>
-<li>有不是最近更新的年销售额投标吗？</li>
-<li>有没更新过的最近的年销售额投标吗？</li>
-<li>等等</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">// Bad:</div><div class="line"></div><div class="line">finalBattleMostDangerousBossMonster;</div><div class="line">weaklingFirstEncounterMonster;</div><div class="line"></div><div class="line">// Better:</div><div class="line">boss;</div><div class="line">firstMonster;</div></pre></td></tr></table></figure>
-<h3 id="2-1-3-忽略掉能够从上下文得知的信息的字符"><a href="#2-1-3-忽略掉能够从上下文得知的信息的字符" class="headerlink" title="2.1.3 忽略掉能够从上下文得知的信息的字符"></a>2.1.3 忽略掉能够从上下文得知的信息的字符</h3><p>在这篇文章中，我能够使用“我”是因为读者能够看到这篇文章是由Bob Nystrom发布的。我不用再文章各处说明作者是Bob Nystrom。代码也是一样。方法或者变量都有各自的上下文，不需要再命名中重复上下文中的信息。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">// Bad:</div><div class="line"></div><div class="line">class AnnualHolidaySale &#123;</div><div class="line">  int _annualSaleRebate;</div><div class="line">  void promoteHolidaySale() &#123; ... &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">// Better:</div><div class="line">class AnnualHolidaySale &#123;</div><div class="line">  int _rebate;</div><div class="line">  void promote() &#123; ... &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h3 id="2-1-4-忽略掉无任何含义的字符"><a href="#2-1-4-忽略掉无任何含义的字符" class="headerlink" title="2.1.4 忽略掉无任何含义的字符"></a>2.1.4 忽略掉无任何含义的字符</h3><p>在很多场景下，一些字符不携带任何有意义的信息，常见的如下：<br>data, state, amount, value, manager, engine, object, entity, instance。<br>一个好的命名能够在读者的脑海中绘制一幅画像。”manager”并不会让读者得知这个变量或者方法做了什么事情。<br>我们可以尝试着问自己一个问题：若移除掉这个词，标识符的含义是否和之前一样？如果是这样，这个词就是无意义的，可以移除。</p>
-<p>2.2 准则的实际应用</p>
-<p>为了说明上述准则在实际中是如何使用的，下面看一个例子：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">class DeliciousBelgianWaffleObject &#123;</div><div class="line"></div><div class="line">  void garnishDeliciousBelgianWaffleWithStrawberryList(</div><div class="line">      List&lt;Strawberry&gt; strawberryList) &#123; ... &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>既然参数类型我们已经能够从参数列表得知，因此将其移除：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">class DeliciousBelgianWaffleObject &#123;</div><div class="line"></div><div class="line">    void garnishDeliciousBelgianWaffle(</div><div class="line">        List&lt;Strawberry&gt; strawberries) &#123; ... &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>除非我们有其他口味的华夫饼，或者是其他国家的华夫饼，否则可以继续移除掉一部分字符：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">class WaffleObject &#123;</div><div class="line"></div><div class="line">  void garnishWaffle(List&lt;Strawberry&gt; strawberries) &#123; ... &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>既然方法是在类WaffleObject中，因此我们知道它要装饰的对象，因此修改如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">class WaffleObject &#123;</div><div class="line"></div><div class="line">  void garnish(List&lt;Strawberry&gt; strawberries) &#123; ... &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>程序中，任何事务都是以对象的形式存在，因此类名可以移除掉Object：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">class Waffle &#123;</div><div class="line"></div><div class="line">  void garnish(List&lt;Strawberry&gt; strawberries) &#123; ... &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>现在看看，是不是好多了。</p>
-<h2 id="版权声明"><a href="#版权声明" class="headerlink" title="版权声明"></a>版权声明</h2><p>本文首发于<a href="http://xiajunhust.github.io/">江南烟雨的个人博客</a>博客（ <a href="http://xiajunhust.github.io/">http://xiajunhust.github.io/</a> ），版权所有，侵权必究。<br>本文永久链接：<a href="http://xiajunhust.github.io/2016/07/20/代码中的命名问题-命名太长了！/">http://xiajunhust.github.io/2016/07/20/代码中的命名问题-命名太长了！/</a></p>
-
+        
+          <p class="article-more-link">
+            <a href="/2016/07/20/代码中的命名问题-命名太长了！/#more">Read More</a>
+          </p>
+        
       
     </div>
 
@@ -914,7 +822,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/07/20/代码中的命名问题-命名太长了！/" data-id="ciseni4w5000c1gwfta2cwndy" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2016/07/20/代码中的命名问题-命名太长了！/" data-id="cissli9tv000h0bwf71682an3" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/代码设计/">代码设计</a></li></ul>
@@ -950,18 +858,12 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>偶然间在网上看到这本书《Soft Skills-The software developer’s life manual》，目前只有英文版，中文版还在预售。书名翻译成中文是：<a href="https://www.amazon.com/Soft-Skills-software-developers-manual/dp/1617292397" target="_blank" rel="external">亚马逊</a>上是五星好评。这本书与其他书籍有明显区别，那就是他不是讲如何去更好的写代码，而是谈的是如何做一个更优秀的软件开发者：关于规划职业生涯、达到目标以及享受生活的乐趣。这本书不是关于我们能做哪些事情，而是关于我们本身：职业生涯、生活、身体、心智以及灵魂。作者认为作为一个程序员，远不仅仅是写代码，还有众多 其他事情。</p>
-<p>作者认为如果我们想成为更优秀的程序员，那么应该把注意力集中在整个生涯中，而不仅仅是生命中的一段或者是几段时间。</p>
-<p>本书氛围七部分，每一章聚焦程序员生活中的一个方面。将其分类，可以分为：职业生涯、心智、身体、心灵。</p>
-<p>本书从职业生涯开始谈起，作者发现很少部分程序员会真正花大的精力去积极规划自己的职业生涯。在第一章中，作者将会帮助大家补救这个问题，会教我们如何积极规划职业生涯以达到自己的目标，不管这个目标是在企业中扶摇直上，还是自己从事咨询工作抑甚至是成为企业家打造自己的产品。这是哪个方面作者都谈到了。作者面试过无数程序员，提供了大量反面案例，我们能从中学习并少走很多弯路。作者同时也会提到职业生涯中的一些重要技能，比如写一份耀眼的简历、面试技巧、远程办公以及从其他优秀的人身上学习他们的优点。</p>
-<p>在第二章-营销自己，作者谈到的话题是推销自己。大多数程序员看到这个词恐怕没有什么好感，但是当看完这个章节后，会对这个词有全新的认识并且认识到它的重要性。每个人都是推销者，在本章中作者将会教大家如何成为更好的推销者以及明确自己在推销的是什么。同时给出了一些实际的建议：如何打造个人品牌、如何建立成功的博客、以及通过演讲、写作等一系列方式提高自己的名声。有了这些技巧，才能去获得更好的结果。</p>
-<p>第三章开始讲心智：学习。学习是程序员生活中最重要的一方面。学会如何学习以及如何自学是最有价值的技能之一。因为有了自学能力，我们就有可能去做任何事情。</p>
-<p>第四章继续讲心智：生产率-如何变得更有生产率。生产率是很多人拼搏想获取的，同时也是通往成功之路的最大的绊脚石之一。如果不能克服拖延症、混乱状态以及懒惰，将寸步难行。</p>
-<p>在第五章-理财，作者会谈到一个更重要的并且平时经常被完全忽略的一个话题：个人理财。也许一个人能够成为世界上最成功的程序员，但是如果不能有效的管理好自己的财产，某一天可能会沦落街头。本章作者将会带领我们遨游在经济、个人理财的世界并且教授一些在做出明智的理财决定所必须的基础知识。作者从18岁开始是一个专业的房地产投资者，在本书中这个话题不会太深入，因为要讲的深入足以写整整一本书，但是会覆盖以下基础知识：管理自己的收入、股市是如何运作的、怎么做房地产投资以及避免债务。此外，作为会分享自己如何运用这些知识并在33岁退休的故事。</p>
-<p>接下来进入轻松娱乐的部分，焦点在自己的身体。第六章，健身，作者将会谈如何减肥、增肌以及塑形。大多数程序员存在肥胖、健康状态差的情况，并且没有动力做上述几件事情。作者作为在健身运动方面非常成功的程序员，将为我们分享这方面的必备知识。</p>
-<p>第七章，精神。作者在本章中会针对影响我们情感状态和态度的方面给出实际的建议。主要聚焦在如何保持积极的态度。同时也会覆盖爱情和友情，这对程序员来讲恐怕是比较难的领域了。最后会给出一个私人成功书单。</p>
-<h2 id="版权声明"><a href="#版权声明" class="headerlink" title="版权声明"></a>版权声明</h2><p>本文首发于<a href="http://xiajunhust.github.io/">江南烟雨的个人博客</a>博客（ <a href="http://xiajunhust.github.io/">http://xiajunhust.github.io/</a> ），版权所有，侵权必究。<br>本文永久链接：<a href="http://xiajunhust.github.io/2016/07/16/《Soft-skills》读书笔记（一）-这本书与其他书籍有何不同/">http://xiajunhust.github.io/2016/07/16/《Soft-skills》读书笔记（一）-这本书与其他书籍有何不同/</a></p>
-
+        <p>偶然间在网上看到这本书《Soft Skills-The software developer’s life manual》，目前只有英文版，中文版还在预售。书名翻译成中文是：<a href="https://www.amazon.com/Soft-Skills-software-developers-manual/dp/1617292397">亚马逊</a>上是五星好评。这本书与其他书籍有明显区别，那就是他不是讲如何去更好的写代码，而是谈的是如何做一个更优秀的软件开发者：关于规划职业生涯、达到目标以及享受生活的乐趣。这本书不是关于我们能做哪些事情，而是关于我们本身：职业生涯、生活、身体、心智以及灵魂。作者认为作为一个程序员，远不仅仅是写代码，还有众多 其他事情。</p>
+        
+          <p class="article-more-link">
+            <a href="/2016/07/16/《Soft-skills》读书笔记（一）-这本书与其他书籍有何不同/#more">Read More</a>
+          </p>
+        
       
     </div>
 
@@ -1073,7 +975,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/07/16/《Soft-skills》读书笔记（一）-这本书与其他书籍有何不同/" data-id="ciseni4vu00041gwf04mim9qw" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2016/07/16/《Soft-skills》读书笔记（一）-这本书与其他书籍有何不同/" data-id="cissli9tl000c0bwf8cmr28tj" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/思考-读书笔记/">思考&读书笔记</a></li></ul>
@@ -1110,23 +1012,11 @@
     <div class="article-entry" itemprop="articleBody">
       
         <h1 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h1><p>今天在用DbUnit写DAO单元测试（使用的是mysql数据库）的时候，抛异常：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div></pre></td><td class="code"><pre><div class="line">org.dbunit.database.AmbiguousTableNameException: ACTIVITY</div><div class="line"></div><div class="line">	at org.dbunit.dataset.OrderedTableNameMap.add(OrderedTableNameMap.java:198)</div><div class="line">	at org.dbunit.database.DatabaseDataSet.initialize(DatabaseDataSet.java:231)</div><div class="line">	at org.dbunit.database.DatabaseDataSet.getTableMetaData(DatabaseDataSet.java:281)</div><div class="line">	at org.dbunit.operation.DeleteAllOperation.execute(DeleteAllOperation.java:109)</div><div class="line">	at org.dbunit.operation.CompositeOperation.execute(CompositeOperation.java:79)</div><div class="line">	at org.dbunit.AbstractDatabaseTester.executeOperation(AbstractDatabaseTester.java:190)</div><div class="line">	at org.dbunit.AbstractDatabaseTester.onSetup(AbstractDatabaseTester.java:103)</div><div class="line">	at com.youzan.trade.demo.BaseTest.before(BaseTest.java:43)</div><div class="line">	at com.youzan.trade.demo.BaseDAOTest.before(BaseDAOTest.java:28)</div><div class="line">	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)</div><div class="line">	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)</div><div class="line">	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)</div><div class="line">	at java.lang.reflect.Method.invoke(Method.java:498)</div><div class="line">	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)</div><div class="line">	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)</div><div class="line">	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:47)</div><div class="line">	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:24)</div><div class="line">	at org.springframework.test.context.junit4.statements.RunBeforeTestMethodCallbacks.evaluate(RunBeforeTestMethodCallbacks.java:74)</div><div class="line">	at org.springframework.test.context.junit4.statements.RunAfterTestMethodCallbacks.evaluate(RunAfterTestMethodCallbacks.java:83)</div><div class="line">	at org.springframework.test.context.junit4.statements.SpringRepeat.evaluate(SpringRepeat.java:72)</div><div class="line">	at org.springframework.test.context.junit4.SpringJUnit4ClassRunner.runChild(SpringJUnit4ClassRunner.java:231)</div><div class="line">	at org.springframework.test.context.junit4.SpringJUnit4ClassRunner.runChild(SpringJUnit4ClassRunner.java:88)</div><div class="line">	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290)</div><div class="line">	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71)</div><div class="line">	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288)</div><div class="line">	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58)</div><div class="line">	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268)</div><div class="line">	at org.springframework.test.context.junit4.statements.RunBeforeTestClassCallbacks.evaluate(RunBeforeTestClassCallbacks.java:61)</div><div class="line">	at org.springframework.test.context.junit4.statements.RunAfterTestClassCallbacks.evaluate(RunAfterTestClassCallbacks.java:71)</div><div class="line">	at org.junit.runners.ParentRunner.run(ParentRunner.java:363)</div><div class="line">	at org.springframework.test.context.junit4.SpringJUnit4ClassRunner.run(SpringJUnit4ClassRunner.java:174)</div><div class="line">	at org.junit.runner.JUnitCore.run(JUnitCore.java:137)</div><div class="line">	at com.intellij.junit4.JUnit4IdeaTestRunner.startRunnerWithArgs(JUnit4IdeaTestRunner.java:69)</div><div class="line">	at com.intellij.rt.execution.junit.JUnitStarter.prepareStreamsAndStart(JUnitStarter.java:234)</div><div class="line">	at com.intellij.rt.execution.junit.JUnitStarter.main(JUnitStarter.java:74)</div><div class="line">	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)</div><div class="line">	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)</div><div class="line">	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)</div><div class="line">	at java.lang.reflect.Method.invoke(Method.java:498)</div><div class="line">	at com.intellij.rt.execution.application.AppMain.main(AppMain.java:144)</div></pre></td></tr></table></figure>
-<h1 id="AmbiguousTableNameException的含义"><a href="#AmbiguousTableNameException的含义" class="headerlink" title="AmbiguousTableNameException的含义"></a>AmbiguousTableNameException的含义</h1><p>Google搜了下<b>AmbiguousTableNameException</b>关键字，得到如下信息：  </p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">This exception is thrown by IDataSet when multiple tables having the same name are accessible.This usually occurs when the database connection have access to multiple schemas containing identical table names.</div></pre></td></tr></table></figure>
-<p>大概意思是这个异常通常在构建IDataSet的时候会抛出，原因是由于数据库连接能访问到超过2个相同名字的数据表。  </p>
-<p>一开始并未注意到异常后面的ACTIVITY，而恰巧这个时候我是在做另一个数据表buyer_address的测试，因此排查花费了不少时间。使用mysql客户端查看数据库下面的所有数据表，发现具有名字buyer_address的数据表只有1个。无奈只能在DbUnit jar中添加断点:<br><img src="http://o8sltkx20.bkt.clouddn.com/0008.png" alt="debug point">  </p>
-<p>debug发现，DbUnit会去扫数据库中的所有表，由于数据库中有2个表：activity、Activity，因此就抛出了异常。同时也可以看出，并不会区分大小写。下面我们分析下为什么没有区分大小写。  </p>
-<p>看OrderedTableNameMap的getTableName函数：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line"> * Returns the table name in the correct case (for example as upper case string)</div><div class="line"> * @param tableName The input table name to be resolved</div><div class="line"> * @return The table name for the given string in the correct case.</div><div class="line"> */</div><div class="line">public String getTableName(String tableName) </div><div class="line">&#123;</div><div class="line">    if(LOGGER.isDebugEnabled())</div><div class="line">        LOGGER.debug(&quot;getTableName(tableName=&#123;&#125;) - start&quot;, tableName);</div><div class="line">    </div><div class="line">    String result = tableName;</div><div class="line">    if(!_caseSensitiveTableNames)</div><div class="line">    &#123;</div><div class="line">        // &quot;Locale.ENGLISH&quot; Fixes bug #1537894 when clients have a special</div><div class="line">        // locale like turkish. (for release 2.4.3)</div><div class="line">        result = tableName.toUpperCase(Locale.ENGLISH);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    if(LOGGER.isDebugEnabled())</div><div class="line">        LOGGER.debug(&quot;getTableName(tableName=&#123;&#125;) - end - result=&#123;&#125;&quot;, tableName, result);</div><div class="line">    </div><div class="line">    return result;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>而_caseSensitiveTableNames变量定义默认是false，因此不会区分大小写：  </p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line"> * Whether or not case sensitive table names should be used. Defaults to false.</div><div class="line"> */</div><div class="line">private boolean _caseSensitiveTableNames = false;</div></pre></td></tr></table></figure>
-<h1 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h1><p>解决方法有如下几种：<br>（1）如果同一个数据库中有2个同名的数据表（不区分大小写），则删除数据库中同名的数据库。<br>（2）如果数据库连接没有指定scheme，则指定数据库连接的schema。</p>
-<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><ul>
-<li><a href="http://dbunit.sourceforge.net/faq.html#AmbiguousTableNameException" target="_blank" rel="external">FAQ-AmbiguousTableNameException</a></li>
-<li><a href="http://dbunit.sourceforge.net/apidocs/org/dbunit/database/AmbiguousTableNameException.html" target="_blank" rel="external">AmbiguousTableNameException</a><h2 id="版权声明"><a href="#版权声明" class="headerlink" title="版权声明"></a>版权声明</h2></li>
-</ul>
-<p>本文首发于<a href="http://xiajunhust.github.io/">江南烟雨的个人博客</a>博客（ <a href="http://xiajunhust.github.io/">http://xiajunhust.github.io/</a> ），版权所有，侵权必究。<br>本文永久链接：<a href="http://xiajunhust.github.io/2016/07/14/DbUnit-AmbiguousTableNameException异常解决/">http://xiajunhust.github.io/2016/07/14/DbUnit-AmbiguousTableNameException异常解决/</a></p>
-
+        
+          <p class="article-more-link">
+            <a href="/2016/07/14/DbUnit-AmbiguousTableNameException异常解决/#more">Read More</a>
+          </p>
+        
       
     </div>
 
@@ -1238,7 +1128,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/07/14/DbUnit-AmbiguousTableNameException异常解决/" data-id="ciseni4vs00031gwf5mi9qff3" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2016/07/14/DbUnit-AmbiguousTableNameException异常解决/" data-id="cissli9t100030bwf6uc2dfzl" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/测试技术/">测试技术</a></li></ul>
@@ -1275,33 +1165,11 @@
     <div class="article-entry" itemprop="articleBody">
       
         <h1 id="内容概要"><a href="#内容概要" class="headerlink" title="内容概要"></a>内容概要</h1><p>本文主要介绍如何为Hexo搭建的博客增加评论功能，采用了多说插件，以及访问量统计功能。</p>
-<h1 id="增加评论功能的步骤"><a href="#增加评论功能的步骤" class="headerlink" title="增加评论功能的步骤"></a>增加评论功能的步骤</h1><h2 id="注册多说"><a href="#注册多说" class="headerlink" title="注册多说"></a>注册多说</h2><p>进入多说官网，点击我要安装，注册账号。填入多说域名（后续会用到）、要使用多说插件的站点地址等信息。</p>
-<h2 id="修改hexo配置文件"><a href="#修改hexo配置文件" class="headerlink" title="修改hexo配置文件"></a>修改hexo配置文件</h2><ul>
-<li>在根目录下_config.yml中增加如下内容：</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">duoshuo_shortname: 你站点的short_name(xiajun)</div></pre></td></tr></table></figure>
-<p>这里的short_name也就是前面注册多说填入的多说域名。</p>
-<ul>
-<li>然后将themes\landscape\layout_partial\article.ejs（如果使用的其他主题，文件路径类似）中的如下内容：</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">&lt;% if (!index &amp;&amp; post.comments &amp;&amp; config.disqus_shortname)&#123; %&gt;</div><div class="line"></div><div class="line">&lt;section id=&quot;comments&quot;&gt;</div><div class="line">  &lt;div id=&quot;disqus_thread&quot;&gt;</div><div class="line">    &lt;noscript&gt;Please enable JavaScript to view the &lt;a href=&quot;//disqus.com/?ref_noscript&quot;&gt;comments powered by Disqus.&lt;/a&gt;&lt;/noscript&gt;</div><div class="line">  &lt;/div&gt;</div><div class="line">&lt;/section&gt;</div><div class="line">&lt;% &#125; %&gt;</div></pre></td></tr></table></figure>
-<p>替换为：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">&lt;% if (!index &amp;&amp; post.comments &amp;&amp; config.duoshuo_shortname)&#123; %&gt;</div><div class="line"></div><div class="line">  &lt;section id=&quot;comments&quot;&gt;</div><div class="line">  &lt;!-- 多说评论框 start --&gt;</div><div class="line">&lt;div id=&quot;ds-thread&quot; class=&quot;ds-thread&quot; data-thread-key=&quot;&lt;%= post.path %&gt;&quot; data-title=&quot;&lt;%= post.title %&gt;&quot; data-url=&quot;&lt;%= post.permalink %&gt;&quot;&gt;&lt;/div&gt;</div><div class="line">&lt;!-- 多说评论框 end --&gt;</div><div class="line">&lt;!-- 多说公共JS代码 start (一个网页只需插入一次) --&gt;</div><div class="line">&lt;script type=&quot;text/javascript&quot;&gt;</div><div class="line">var duoshuoQuery = &#123;short_name:&quot;xiajun&quot;&#125;;</div><div class="line">  (function() &#123;</div><div class="line">          var ds = document.createElement(&apos;script&apos;);</div><div class="line">              ds.type = &apos;text/javascript&apos;;ds.async = true;</div><div class="line">            ds.src = (document.location.protocol == &apos;https:&apos; ? &apos;https:&apos; : &apos;http:&apos;) + &apos;//static.duoshuo.com/embed.js&apos;;</div><div class="line">              ds.charset = &apos;UTF-8&apos;;</div><div class="line">          (document.getElementsByTagName(&apos;head&apos;)[0]</div><div class="line">              || document.getElementsByTagName(&apos;body&apos;)[0]).appendChild(ds);</div><div class="line">  &#125;)();</div><div class="line">  &lt;/script&gt;</div><div class="line">&lt;!-- 多说公共JS代码 end --&gt;</div><div class="line">  &lt;/section&gt;</div><div class="line">  &lt;% &#125; %&gt;</div></pre></td></tr></table></figure>
-<p>然后将修改部署到github。这个时候刷新博文，就可以发现文章下面多出来的评论窗口。<br>发现评论内容会自动刷新，但是评论数量不会更新，不知道是否是多说的一个bug。</p>
-<h1 id="增加访问量统计功能"><a href="#增加访问量统计功能" class="headerlink" title="增加访问量统计功能"></a>增加访问量统计功能</h1><ul>
-<li>修改themes/landscape/layout/_partial/after_footer.ejs文件，引入js文件</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&lt;script async src=&quot;https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js&quot;&gt;</div><div class="line">&lt;/script&gt;</div></pre></td></tr></table></figure>
-<ul>
-<li>然后在我们要展示访问量统计信息的地方添加如下代码</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">本站总访问量&lt;span id=&quot;busuanzi_value_site_pv&quot;&gt;&lt;/span&gt;次</div><div class="line">本站访客数&lt;span id=&quot;busuanzi_value_site_uv&quot;&gt;&lt;/span&gt;人次</div><div class="line">本文总阅读量&lt;span id=&quot;busuanzi_value_page_pv&quot;&gt;&lt;/span&gt;次</div></pre></td></tr></table></figure>
-<p>部署到github，这个时候就发现对应的地方展示出来了访问量统计信息：</p>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ul>
-<li><a href="http://www.lichanglin.cn/%E5%9C%A8hexo%E4%B8%AD%E5%8A%A0%E5%85%A5%E5%A4%9A%E8%AF%B4%E8%AF%84%E8%AE%BA/" target="_blank" rel="external">在hexo中加入多说评论</a></li>
-</ul>
-<h2 id="版权声明"><a href="#版权声明" class="headerlink" title="版权声明"></a>版权声明</h2><p>本文首发于<a href="http://xiajunhust.github.io/">江南烟雨的个人博客</a>博客（ <a href="http://xiajunhust.github.io/">http://xiajunhust.github.io/</a> ），版权所有，侵权必究。<br>本文永久链接：<a href="http://xiajunhust.github.io/2016/07/11/Hexo-GitHub搭建个人博客-增加评论以及访问量统计功能/">http://xiajunhust.github.io/2016/07/11/Hexo-GitHub搭建个人博客-增加评论以及访问量统计功能/</a></p>
-
+        
+          <p class="article-more-link">
+            <a href="/2016/07/11/Hexo-GitHub搭建个人博客-增加评论以及访问量统计功能/#more">Read More</a>
+          </p>
+        
       
     </div>
 
@@ -1413,7 +1281,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/07/11/Hexo-GitHub搭建个人博客-增加评论以及访问量统计功能/" data-id="ciseni4vx00061gwfcqb3rfqw" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2016/07/11/Hexo-GitHub搭建个人博客-增加评论以及访问量统计功能/" data-id="cissli9se00000bwf8ba48mau" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/开发工具/">开发工具</a></li></ul>
@@ -1450,16 +1318,11 @@
     <div class="article-entry" itemprop="articleBody">
       
         <h1 id="概要"><a href="#概要" class="headerlink" title="概要"></a>概要</h1><p>当我们使用Hexo+Github搭建好个人博客环境之后，默认Github上repository中是没有Readme的。本文主要介绍如何添加Readme。</p>
-<h1 id="如何添加Readme"><a href="#如何添加Readme" class="headerlink" title="如何添加Readme"></a>如何添加Readme</h1><p>如果我们直接在Github上增加Readme文件，在执行了hexo d部署命令之后，Readme文件会自动消失。</p>
-<h1 id="解决办法"><a href="#解决办法" class="headerlink" title="解决办法"></a>解决办法</h1><p>将我们要添加的Readme.md文件放入本地hexo工作目录的source根目录下，然后修改_config.yml文件，在skip_render后增加我们添加的文件名README.md：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">skip_render: [README.md](http://README.md)</div></pre></td></tr></table></figure>
-<p>需要注意的是，冒号后一定要有空格， 否则运行hexo g命令的时候会出现莫名其妙的错误：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line">xiajundeMacBook-Pro:hexo xiajun$ sudo hexo d  </div><div class="line">FATAL can not read a block mapping entry; a multiline key may not be an implicit key at line 30, column 1:  </div><div class="line">    # Writing  </div><div class="line">    ^  </div><div class="line">YAMLException: can not read a block mapping entry; a multiline key may not be an implicit key at line 30, column 1:  </div><div class="line">    # Writing  </div><div class="line">    ^  </div><div class="line">    at generateError (/Users/xiajun/hexo/node_modules/hexo/node_modules/js-yaml/lib/js-yaml/loader.js:162:10)  </div><div class="line">    at throwError (/Users/xiajun/hexo/node_modules/hexo/node_modules/js-yaml/lib/js-yaml/loader.js:168:9)  </div><div class="line">    at readBlockMapping (/Users/xiajun/hexo/node_modules/hexo/node_modules/js-yaml/lib/js-yaml/loader.js:1040:9)  </div><div class="line">    at composeNode (/Users/xiajun/hexo/node_modules/hexo/node_modules/js-yaml/lib/js-yaml/loader.js:1326:12)  </div><div class="line">    at readDocument (/Users/xiajun/hexo/node_modules/hexo/node_modules/js-yaml/lib/js-yaml/loader.js:1488:3)  </div><div class="line">    at loadDocuments (/Users/xiajun/hexo/node_modules/hexo/node_modules/js-yaml/lib/js-yaml/loader.js:1544:5)  </div><div class="line">    at Object.load (/Users/xiajun/hexo/node_modules/hexo/node_modules/js-yaml/lib/js-yaml/loader.js:1561:19)  </div><div class="line">    at Hexo.yamlHelper (/Users/xiajun/hexo/node_modules/hexo/lib/plugins/renderer/yaml.js:7:15)  </div><div class="line">    at Hexo.tryCatcher (/Users/xiajun/hexo/node_modules/hexo/node_modules/bluebird/js/release/util.js:16:23)  </div><div class="line">    at Hexo.&amp;lt;anonymous&amp;gt; (/Users/xiajun/hexo/node_modules/hexo/node_modules/bluebird/js/release/method.js:15:34)  </div><div class="line">    at /Users/xiajun/hexo/node_modules/hexo/lib/hexo/render.js:59:21  </div><div class="line">    at tryCatcher (/Users/xiajun/hexo/node_modules/hexo/node_modules/bluebird/js/release/util.js:16:23)  </div><div class="line">    at Promise._settlePromiseFromHandler (/Users/xiajun/hexo/node_modules/hexo/node_modules/bluebird/js/release/promise.js:502:31)  </div><div class="line">    at Promise._settlePromise (/Users/xiajun/hexo/node_modules/hexo/node_modules/bluebird/js/release/promise.js:559:18)  </div><div class="line">    at Promise._settlePromise0 (/Users/xiajun/hexo/node_modules/hexo/node_modules/bluebird/js/release/promise.js:604:10)  </div><div class="line">    at Promise._settlePromises (/Users/xiajun/hexo/node_modules/hexo/node_modules/bluebird/js/release/promise.js:683:18)  </div><div class="line">    at Async._drainQueue (/Users/xiajun/hexo/node_modules/hexo/node_modules/bluebird/js/release/async.js:138:16)  </div><div class="line">    at Async._drainQueues (/Users/xiajun/hexo/node_modules/hexo/node_modules/bluebird/js/release/async.js:148:10)  </div><div class="line">    at Immediate.Async.drainQueues [as _onImmediate] (/Users/xiajun/hexo/node_modules/hexo/node_modules/bluebird/js/release/async.js:17:14)  </div><div class="line">    at processImmediate [as _immediateCallback] (timers.js:368:17)</div></pre></td></tr></table></figure>
-<p>然后我们执行部署命令部署到github，就可以看到repository中有了Readme文件，并且下次再次部署的时候，依然存在。</p>
-<p>关于skip_render的含义，官方文档解释是：<br>跳过指定文件的渲染，您可使用 glob 表达式来匹配路径。</p>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><p><a href="http://stackoverflow.com/questions/31494145/how-can-i-tell-hexo-to-ignore-a-file-when-creating-posts" target="_blank" rel="external">How can I tell Hexo to ignore a file when creating posts?-StackOverflow</a><br><a href="http://www.yczmm.com/hexo-skip_render.html" target="_blank" rel="external">Hexo _posts目录, skip_render 的说明</a><br><a href="https://hexo.io/zh-cn/docs/configuration.html" target="_blank" rel="external">Hexo官方文档</a></p>
-<h2 id="版权声明"><a href="#版权声明" class="headerlink" title="版权声明"></a>版权声明</h2><p>本文首发于<a href="http://xiajunhust.github.io/">江南烟雨的个人博客</a>博客（ <a href="http://xiajunhust.github.io/">http://xiajunhust.github.io/</a> ），版权所有，侵权必究。<br>本文永久链接：<a href="http://xiajunhust.github.io/2016/07/11/Hexo-GitHub搭建个人博客-添加README/">http://xiajunhust.github.io/2016/07/11/Hexo-GitHub搭建个人博客-添加README/</a></p>
-
+        
+          <p class="article-more-link">
+            <a href="/2016/07/11/Hexo-GitHub搭建个人博客-添加README/#more">Read More</a>
+          </p>
+        
       
     </div>
 
@@ -1571,167 +1434,11 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/07/11/Hexo-GitHub搭建个人博客-添加README/" data-id="ciseni4vk00011gwfzkm5zwsp" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2016/07/11/Hexo-GitHub搭建个人博客-添加README/" data-id="cissli9td00080bwfvjdfizb9" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/开发工具/">开发工具</a></li></ul>
 
-    </footer>
-  </div>
-  
-
-
-
-</article>
-
-  
-    <article id="post-hello-world" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/07/11/hello-world/" class="article-date">
-  <time datetime="2016-07-11T08:55:34.000Z" itemprop="datePublished">2016-07-11</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/07/11/hello-world/">Hello World</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo new <span class="string">"My New Post"</span></div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo server</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo generate</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo deploy</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
-<h2 id="版权声明"><a href="#版权声明" class="headerlink" title="版权声明"></a>版权声明</h2><p>本文首发于<a href="http://xiajunhust.github.io/">江南烟雨的个人博客</a>博客（ <a href="http://xiajunhust.github.io/">http://xiajunhust.github.io/</a> ），版权所有，侵权必究。<br>本文永久链接：<a href="http://xiajunhust.github.io/2016/07/11/hello-world/">http://xiajunhust.github.io/2016/07/11/hello-world/</a></p>
-
-      
-    </div>
-
-
-	<!-- css -->
-	<style type="text/css">
-	    .center {
-	        text-align: center;
-	    }
-	    .hidden {
-	        display: none;
-	    }
-		.donate_bar a.btn_donate{
-			display: inline-block;
-			width: 82px;
-			height: 82px;
-			background: url("http://7xsl28.com1.z0.glb.clouddn.com/btn_reward.gif") no-repeat;
-			_background: url("http://7xsl28.com1.z0.glb.clouddn.com/btn_reward.gif") no-repeat;
-
-			<!-- http://img.t.sinajs.cn/t5/style/images/apps_PRF/e_media/btn_reward.gif
-			     因为本 hexo 生成的博客所用的 theme 的 a:hover 带动画效果，
-				 为了在让打赏按钮显示效果正常 而 添加了以下几行 css，
-				 嵌入其它博客时不一定要它们。 -->
-			-webkit-transition: background 0s;
-			-moz-transition: background 0s;
-			-o-transition: background 0s;
-			-ms-transition: background 0s;
-			transition: background 0s;
-			<!-- /让打赏按钮的效果显示正常 而 添加的几行 css 到此结束 -->
-		}
-
-		.donate_bar a.btn_donate:hover{ background-position: 0px -82px;}
-		.donate_bar .donate_txt {
-			display: block;
-			color: #9d9d9d;
-			font: 14px/2 "Microsoft Yahei";
-		}
-		.bold{ font-weight: bold; }
-	</style>
-	<!-- /css -->
-
-    <!-- Donate Module -->
-    <div id="donate_module">
-
-	<!-- btn_donate & tips -->
-	<div id="donate_board" class="donate_bar center">
-	    <br>
-	    ------------------------------------------------------------------------------------------------------------------------------
-	    <br>
-		<a id="btn_donate" class="btn_donate" target="_self" href="javascript:;" title="Donate 打赏"></a>
-		<span class="donate_txt">
-			打赏我的人，运气都不会太差~
-		</span>
-			
-		
-	</div>
-	<!-- /btn_donate & tips -->
-
-	<!-- donate guide -->
-    
-	<div id="donate_guide" class="donate_bar center hidden">
-        <br>
-	    ------------------------------------------------------------------------------------------------------------------------------
-	    <br>
-	    
-	    <div width="100%" align="center"><div name="dashmain" id="dash-main-id-87895f" class="dash-main-3 87895f-0.99"></div></div>
-		<script type="text/javascript" charset="utf-8" src="http://www.dashangcloud.com/static/ds.js"></script>
-		
-
-		<a href="http://o8sltkx20.bkt.clouddn.com/0004.jpg" title="用微信扫一扫哦~" class="fancybox" rel="article0">
-			<img src="http://o8sltkx20.bkt.clouddn.com/0004.jpg" title="微信打赏 Donate" height="190px" width="auto"/>
-		</a>
-        
-        &nbsp;&nbsp;
-
-		<a href="http://o8sltkx20.bkt.clouddn.com/0002.jpg" title="用支付宝扫一扫即可~" class="fancybox" rel="article0">
-			<img src="http://o8sltkx20.bkt.clouddn.com/0002.jpg" title="支付宝打赏 Donate" height="190px" width="auto"/>
-		</a>
-
-		<span class="donate_txt">
-			打赏我的人，运气都不会太差~
-		</span>
-
-	</div>
-	<!-- /donate guide -->
-
-	<!-- donate script -->
-	<script type="text/javascript">
-		document.getElementById('btn_donate').onclick = function() {
-			$('#donate_board').addClass('hidden');
-	    $('#donate_guide').removeClass('hidden');
-		}
-
-		function donate_on_web(){
-			$('#donate').submit();
-        }
-
-		var original_window_onload = window.onload;
-        window.onload = function () {
-            if (original_window_onload) {
-                original_window_onload();
-            }
-            document.getElementById('donate_board_wdg').className = 'hidden';
-		}
-	</script>
-	<!-- /donate script -->
-</div>
-<!-- /Donate Module -->
-   
-
-    <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/07/11/hello-world/" data-id="ciseni4wf000g1gwfvfgbg4ku" class="article-share-link">Share</a>
-      
-      
     </footer>
   </div>
   
