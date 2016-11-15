@@ -86,17 +86,11 @@
         <p>本文主要介绍RocketMQ异步消息发送的原理。</p>
 <h1 id="1-异步消息发送Demo"><a href="#1-异步消息发送Demo" class="headerlink" title="1 异步消息发送Demo"></a>1 异步消息发送Demo</h1><p>首先看一段RocketMQ异步消息发送的Demo代码：<br>消息生产者：  </p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line">import com.alibaba.rocketmq.client.exception.MQClientException;</div><div class="line">import com.alibaba.rocketmq.client.producer.DefaultMQProducer;</div><div class="line">import com.alibaba.rocketmq.common.message.Message;</div><div class="line">import com.SpringTest.rocketmq.callback.MySendCallback;</div><div class="line"></div><div class="line">public class Producer3 &#123;</div><div class="line">  public static void main(String[] args) throws MQClientException, InterruptedException &#123;</div><div class="line">    DefaultMQProducer producer = new DefaultMQProducer(&quot;ProducerGroupName&quot;);</div><div class="line">    producer.setNamesrvAddr(&quot;192.168.2.104:9876&quot;);</div><div class="line">    producer.setInstanceName(&quot;Producer3&quot;);</div><div class="line">    producer.start();</div><div class="line">    for (int i = 0; i &lt; 1; i++)</div><div class="line">      try &#123;</div><div class="line">        &#123;</div><div class="line">          Message msg = new Message(&quot;TopicTest&quot;,// topic</div><div class="line">                                    &quot;TagA&quot;,// tag</div><div class="line">                                    &quot;OrderID188&quot;,// key</div><div class="line">                                    (&quot;Hello MetaQ&quot;).getBytes());// body</div><div class="line"></div><div class="line">          producer.send(msg, new MySendCallback());</div><div class="line">        &#125;</div><div class="line"></div><div class="line">      &#125;</div><div class="line">      catch (Exception e) &#123;</div><div class="line">        e.printStackTrace();</div><div class="line">      &#125;</div><div class="line"></div><div class="line">    producer.shutdown();</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>回调接口实现：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">public class  MySendCallback implements SendCallback &#123;</div><div class="line"></div><div class="line">  public void onSuccess(final SendResult sendResult) &#123;</div><div class="line">    System.out.println(&quot;SendCallback-发送消息成功! sendResult=&quot; + sendResult.toString());</div><div class="line">  &#125;</div><div class="line"></div><div class="line"></div><div class="line">  public void onException(final Throwable e) &#123;</div><div class="line">    System.out.println(&quot;SendCallback-发送消息失败! 异常=&quot; + e.toString());</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>消息消费者和前一篇消息同步发送博文中示例相同。运行结果：  </p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">生产者：</div><div class="line">SendCallback-发送消息成功! sendResult=SendResult [sendStatus=SEND_OK, msgId=C0A802684CCA1218025C454271C80000,offsetMsgId=C0A8026800002A9F0000000000001AC9, messageQueue=MessageQueue [topic=TopicTest, brokerName=xiajuns-MacBook-Pro.local, queueId=2], queueOffset=0]</div><div class="line"></div><div class="line">消费者：</div><div class="line">ConsumeMessageThread_2 Receive New Messages: [MessageExt [queueId=2, storeSize=189, queueOffset=0, sysFlag=0, bornTimestamp=1479134782410, bornHost=/192.168.2.104:60966, storeTimestamp=1479134782449, storeHost=/192.168.2.104:10911, msgId=C0A8026800002A9F0000000000001AC9, commitLogOffset=6857, bodyCRC=1751783629, reconsumeTimes=0, preparedTransactionOffset=0, toString()=Message [topic=TopicTest, flag=0, properties=&#123;MIN_OFFSET=0, MAX_OFFSET=1, KEYS=OrderID188, CONSUME_START_TIME=1479134782503, UNIQ_KEY=C0A802684CCA1218025C454271C80000, WAIT=true, TAGS=TagA&#125;, body=11]]]</div></pre></td></tr></table></figure>
-<h1 id="2-异步消息发送原理以及应用场景"><a href="#2-异步消息发送原理以及应用场景" class="headerlink" title="2 异步消息发送原理以及应用场景"></a>2 异步消息发送原理以及应用场景</h1><p>异步消息发送是指消息生产者发送了一条消息之后，不用等待此条消息的发送结果，而继续发送下一条消息。需要使用方自行实现回调接口SendCallback。发送端无需等待服务端响应结果，通过回调接口对服务器的响应进行处理。</p>
-<p>使用场景：<br>异步发送一般用于链路耗时较长，对 RT 响应时间较为敏感的业务场景，例如用户视频上传后通知启动转码服务，转码完成后通知推送转码结果等。</p>
-<h1 id="3-异步消息发送源码分析"><a href="#3-异步消息发送源码分析" class="headerlink" title="3 异步消息发送源码分析"></a>3 异步消息发送源码分析</h1><p>异步消息发送的整体发送流程与<a href="http://xiajunhust.github.io/2016/11/12/RocketMQ%E6%BA%90%E7%A0%81%E5%AD%A6%E4%B9%A0%E4%B9%8B%E4%BA%8C-%E5%90%8C%E6%AD%A5%E6%B6%88%E6%81%AF%E5%8F%91%E9%80%81/">RocketMQ同步消息发送</a>流程相同。不同之处在于，DefaultMQProducer.send(Message msg)调到DefaultMQProducerImpl的这个方法传递的CommunicationMode参数是ASYNC。最后会调到底层的Netty通信逻辑NettyRemotingClient:   </p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div></pre></td><td class="code"><pre><div class="line">public void invokeAsyncImpl(final Channel channel, final RemotingCommand request, final long timeoutMillis,</div><div class="line">                            final InvokeCallback invokeCallback)</div><div class="line">        throws InterruptedException, RemotingTooMuchRequestException, RemotingTimeoutException, RemotingSendRequestException &#123;</div><div class="line">    final int opaque = request.getOpaque();</div><div class="line">    boolean acquired = this.semaphoreAsync.tryAcquire(timeoutMillis, TimeUnit.MILLISECONDS);</div><div class="line">    if (acquired) &#123;</div><div class="line">        final SemaphoreReleaseOnlyOnce once = new SemaphoreReleaseOnlyOnce(this.semaphoreAsync);</div><div class="line"></div><div class="line">        final ResponseFuture responseFuture = new ResponseFuture(opaque, timeoutMillis, invokeCallback, once);</div><div class="line">        this.responseTable.put(opaque, responseFuture);</div><div class="line">        try &#123;</div><div class="line">            channel.writeAndFlush(request).addListener(new ChannelFutureListener() &#123;</div><div class="line">                @Override</div><div class="line">                public void operationComplete(ChannelFuture f) throws Exception &#123;</div><div class="line">                    if (f.isSuccess()) &#123;</div><div class="line">                        responseFuture.setSendRequestOK(true);</div><div class="line">                        return;</div><div class="line">                    &#125; else &#123;</div><div class="line">                        responseFuture.setSendRequestOK(false);</div><div class="line">                    &#125;</div><div class="line"></div><div class="line">                    responseFuture.putResponse(null);</div><div class="line">                    responseTable.remove(opaque);</div><div class="line">                    try &#123;</div><div class="line">                    	 //执行回调接口</div><div class="line">                        responseFuture.executeInvokeCallback();</div><div class="line">                    &#125; catch (Throwable e) &#123;</div><div class="line">                        plog.warn(&quot;excute callback in writeAndFlush addListener, and callback throw&quot;, e);</div><div class="line">                    &#125; finally &#123;</div><div class="line">                        responseFuture.release();</div><div class="line">                    &#125;</div><div class="line"></div><div class="line">                    plog.warn(&quot;send a request command to channel &lt;&#123;&#125;&gt; failed.&quot;, RemotingHelper.parseChannelRemoteAddr(channel));</div><div class="line">                &#125;</div><div class="line">            &#125;);</div><div class="line">        &#125; catch (Exception e) &#123;</div><div class="line">            responseFuture.release();</div><div class="line">            plog.warn(&quot;send a request command to channel &lt;&quot; + RemotingHelper.parseChannelRemoteAddr(channel) + &quot;&gt; Exception&quot;, e);</div><div class="line">            throw new RemotingSendRequestException(RemotingHelper.parseChannelRemoteAddr(channel), e);</div><div class="line">        &#125;</div><div class="line">    &#125; else &#123;</div><div class="line">        String info =</div><div class="line">                String.format(&quot;invokeAsyncImpl tryAcquire semaphore timeout, %dms, waiting thread nums: %d semaphoreAsyncValue: %d&quot;, //</div><div class="line">                        timeoutMillis, //</div><div class="line">                        this.semaphoreAsync.getQueueLength(), //</div><div class="line">                        this.semaphoreAsync.availablePermits()//</div><div class="line">                );</div><div class="line">        plog.warn(info);</div><div class="line">        throw new RemotingTooMuchRequestException(info);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>这里同样是注册了监听器ChannelFutureListener，在监听器中设置消息发送结果，与同步发送不同的是会执行用户自己实现的回调接口，完成消息发送后的处理逻辑.<br>并且没有同步发送消息的awaiting逻辑，整个发送消息发送立即返回。</p>
-<h2 id="版权声明"><a href="#版权声明" class="headerlink" title="版权声明"></a>版权声明</h2><p>本文首发于<a href="http://xiajunhust.github.io/">江南烟雨的个人博客</a>博客（ <a href="http://xiajunhust.github.io/">http://xiajunhust.github.io/</a> ），版权所有，侵权必究。<br>本文永久链接：<a href="http://xiajunhust.github.io/2016/11/14/RocketMQ源码学习之三-异步消息发送/">http://xiajunhust.github.io/2016/11/14/RocketMQ源码学习之三-异步消息发送/</a></p>
-
+        
+          <p class="article-more-link">
+            <a href="/2016/11/14/RocketMQ源码学习之三-异步消息发送/#more">Read More</a>
+          </p>
+        
       
     </div>
 
@@ -208,7 +202,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/11/14/RocketMQ源码学习之三-异步消息发送/" data-id="civi7eg5v000676wf9u9jegez" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2016/11/14/RocketMQ源码学习之三-异步消息发送/" data-id="civj3podz0008fawf62fihnh7" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/RocketMQ/">RocketMQ</a></li></ul>
@@ -363,7 +357,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/11/12/RocketMQ源码学习之二-同步消息发送/" data-id="civi7eg6m000c76wfv59i5mue" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2016/11/12/RocketMQ源码学习之二-同步消息发送/" data-id="civj3poe4000cfawfp5f0fivv" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/RocketMQ/">RocketMQ</a></li></ul>
@@ -518,7 +512,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/11/12/RocketMQ源码学习之一-MAC系统单机环境搭建/" data-id="civi7eg6c000876wfqgze1jic" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2016/11/12/RocketMQ源码学习之一-MAC系统单机环境搭建/" data-id="civj3poe00009fawfm9fwz37r" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/RocketMQ/">RocketMQ</a></li></ul>
@@ -672,7 +666,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/08/28/MySQL的日期时间类型关于秒以下精度的处理/" data-id="civi7eg5n000476wf3uy0x8zi" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2016/08/28/MySQL的日期时间类型关于秒以下精度的处理/" data-id="civj3podj0004fawfnff25oio" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MySQL/">MySQL</a></li></ul>
@@ -826,7 +820,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/08/27/技术分享-MySQL-InnoDB-locks-and-deadlocks/" data-id="civi7eg6x000k76wfdnvnlzzi" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2016/08/27/技术分享-MySQL-InnoDB-locks-and-deadlocks/" data-id="civj3poee000jfawfp8ryf54h" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MySQL/">MySQL</a></li></ul>
@@ -980,7 +974,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/08/06/为什么Java-HashMap、CopyOnWriteArrayList等集合自己实现readObject和writeObject方法/" data-id="civi7eg6r000f76wfzv5ri9yr" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2016/08/06/为什么Java-HashMap、CopyOnWriteArrayList等集合自己实现readObject和writeObject方法/" data-id="civj3poeb000hfawfxyxc2wi4" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li></ul>
@@ -1139,7 +1133,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/08/06/CopyOnWriteArrayList与JMM/" data-id="civi7eg53000076wfk3xw28kv" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2016/08/06/CopyOnWriteArrayList与JMM/" data-id="civj3pod40000fawfr15ybup2" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li></ul>
@@ -1293,7 +1287,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/07/20/代码中的命名问题-命名太长了！/" data-id="civi7eg6t000h76wfoagfl6zw" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2016/07/20/代码中的命名问题-命名太长了！/" data-id="civj3poe7000dfawfm4xyj81i" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/代码设计/">代码设计</a></li></ul>
@@ -1446,7 +1440,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/07/16/《Soft-skills》读书笔记（一）-这本书与其他书籍有何不同/" data-id="civi7eg6o000d76wff5ybmgxd" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2016/07/16/《Soft-skills》读书笔记（一）-这本书与其他书籍有何不同/" data-id="civj3poea000ffawfgt3bb3i5" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/思考-读书笔记/">思考&读书笔记</a></li></ul>
@@ -1599,7 +1593,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/07/14/DbUnit-AmbiguousTableNameException异常解决/" data-id="civi7eg59000176wflswnlouo" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2016/07/14/DbUnit-AmbiguousTableNameException异常解决/" data-id="civj3podi0003fawfx0e1lnyn" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/测试技术/">测试技术</a></li></ul>

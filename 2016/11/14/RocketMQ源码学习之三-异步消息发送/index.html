@@ -15,7 +15,7 @@
 <meta property="og:description" content="本文主要介绍RocketMQ异步消息发送的原理。
 1 异步消息发送Demo首先看一段RocketMQ异步消息发送的Demo代码：消息生产者：  
 123456789101112131415161718192021222324252627282930import com.alibaba.rocketmq.client.exception.MQClientException;import com.al">
-<meta property="og:updated_time" content="2016-11-14T15:04:19.000Z">
+<meta property="og:updated_time" content="2016-11-15T06:11:30.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="RocketMQ源码学习之三-异步消息发送">
 <meta name="twitter:description" content="本文主要介绍RocketMQ异步消息发送的原理。
@@ -94,6 +94,7 @@
         <p>本文主要介绍RocketMQ异步消息发送的原理。</p>
 <h1 id="1-异步消息发送Demo"><a href="#1-异步消息发送Demo" class="headerlink" title="1 异步消息发送Demo"></a>1 异步消息发送Demo</h1><p>首先看一段RocketMQ异步消息发送的Demo代码：<br>消息生产者：  </p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line">import com.alibaba.rocketmq.client.exception.MQClientException;</div><div class="line">import com.alibaba.rocketmq.client.producer.DefaultMQProducer;</div><div class="line">import com.alibaba.rocketmq.common.message.Message;</div><div class="line">import com.SpringTest.rocketmq.callback.MySendCallback;</div><div class="line"></div><div class="line">public class Producer3 &#123;</div><div class="line">  public static void main(String[] args) throws MQClientException, InterruptedException &#123;</div><div class="line">    DefaultMQProducer producer = new DefaultMQProducer(&quot;ProducerGroupName&quot;);</div><div class="line">    producer.setNamesrvAddr(&quot;192.168.2.104:9876&quot;);</div><div class="line">    producer.setInstanceName(&quot;Producer3&quot;);</div><div class="line">    producer.start();</div><div class="line">    for (int i = 0; i &lt; 1; i++)</div><div class="line">      try &#123;</div><div class="line">        &#123;</div><div class="line">          Message msg = new Message(&quot;TopicTest&quot;,// topic</div><div class="line">                                    &quot;TagA&quot;,// tag</div><div class="line">                                    &quot;OrderID188&quot;,// key</div><div class="line">                                    (&quot;Hello MetaQ&quot;).getBytes());// body</div><div class="line"></div><div class="line">          producer.send(msg, new MySendCallback());</div><div class="line">        &#125;</div><div class="line"></div><div class="line">      &#125;</div><div class="line">      catch (Exception e) &#123;</div><div class="line">        e.printStackTrace();</div><div class="line">      &#125;</div><div class="line"></div><div class="line">    producer.shutdown();</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<a id="more"></a>
 <p>回调接口实现：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">public class  MySendCallback implements SendCallback &#123;</div><div class="line"></div><div class="line">  public void onSuccess(final SendResult sendResult) &#123;</div><div class="line">    System.out.println(&quot;SendCallback-发送消息成功! sendResult=&quot; + sendResult.toString());</div><div class="line">  &#125;</div><div class="line"></div><div class="line"></div><div class="line">  public void onException(final Throwable e) &#123;</div><div class="line">    System.out.println(&quot;SendCallback-发送消息失败! 异常=&quot; + e.toString());</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>消息消费者和前一篇消息同步发送博文中示例相同。运行结果：  </p>
@@ -216,7 +217,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/11/14/RocketMQ源码学习之三-异步消息发送/" data-id="civi7eg5v000676wf9u9jegez" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2016/11/14/RocketMQ源码学习之三-异步消息发送/" data-id="civj3podz0008fawf62fihnh7" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/RocketMQ/">RocketMQ</a></li></ul>
