@@ -3,18 +3,24 @@
 <head>
   <meta charset="utf-8">
   
-  <title>Hexo GitHub搭建个人博客-增加评论以及访问量统计功能 | 江南烟雨的个人博客</title>
+  <title>RocketMQ源码学习之四-顺序消息 | 江南烟雨的个人博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="内容概要本文主要介绍如何为Hexo搭建的博客增加评论功能，采用了多说插件，以及访问量统计功能。">
+  <meta name="description" content="本文主要讲解RocketMQ的顺序性消息原理。
+1 RocketMQ顺序消息发送与接收Demo先给出RocketMQ顺序消息发送和接收的demo代码。  
+版权声明本文首发于江南烟雨的个人博客博客（ http://xiajunhust.github.io/ ），版权所有，侵权必究。本文永久链接：http://xiajunhust.github.io/2016/11/15/RocketMQ源码学习之">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Hexo GitHub搭建个人博客-增加评论以及访问量统计功能">
-<meta property="og:url" content="http://xiajunhust.github.io/2016/07/11/Hexo-GitHub搭建个人博客-增加评论以及访问量统计功能/index.html">
+<meta property="og:title" content="RocketMQ源码学习之四-顺序消息">
+<meta property="og:url" content="http://xiajunhust.github.io/2016/11/15/RocketMQ源码学习之四-顺序消息/index.html">
 <meta property="og:site_name" content="江南烟雨的个人博客">
-<meta property="og:description" content="内容概要本文主要介绍如何为Hexo搭建的博客增加评论功能，采用了多说插件，以及访问量统计功能。">
-<meta property="og:updated_time" content="2016-09-07T08:03:17.000Z">
+<meta property="og:description" content="本文主要讲解RocketMQ的顺序性消息原理。
+1 RocketMQ顺序消息发送与接收Demo先给出RocketMQ顺序消息发送和接收的demo代码。  
+版权声明本文首发于江南烟雨的个人博客博客（ http://xiajunhust.github.io/ ），版权所有，侵权必究。本文永久链接：http://xiajunhust.github.io/2016/11/15/RocketMQ源码学习之">
+<meta property="og:updated_time" content="2016-11-15T13:44:37.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Hexo GitHub搭建个人博客-增加评论以及访问量统计功能">
-<meta name="twitter:description" content="内容概要本文主要介绍如何为Hexo搭建的博客增加评论功能，采用了多说插件，以及访问量统计功能。">
+<meta name="twitter:title" content="RocketMQ源码学习之四-顺序消息">
+<meta name="twitter:description" content="本文主要讲解RocketMQ的顺序性消息原理。
+1 RocketMQ顺序消息发送与接收Demo先给出RocketMQ顺序消息发送和接收的demo代码。  
+版权声明本文首发于江南烟雨的个人博客博客（ http://xiajunhust.github.io/ ），版权所有，侵权必究。本文永久链接：http://xiajunhust.github.io/2016/11/15/RocketMQ源码学习之">
   
     <link rel="alternate" href="/atom.xml" title="江南烟雨的个人博客" type="application/atom+xml">
   
@@ -63,10 +69,10 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main"><article id="post-Hexo-GitHub搭建个人博客-增加评论以及访问量统计功能" class="article article-type-post" itemscope itemprop="blogPost">
+        <section id="main"><article id="post-RocketMQ源码学习之四-顺序消息" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2016/07/11/Hexo-GitHub搭建个人博客-增加评论以及访问量统计功能/" class="article-date">
-  <time datetime="2016-07-11T10:52:47.000Z" itemprop="datePublished">2016-07-11</time>
+    <a href="/2016/11/15/RocketMQ源码学习之四-顺序消息/" class="article-date">
+  <time datetime="2016-11-15T13:42:00.000Z" itemprop="datePublished">2016-11-15</time>
 </a>
     
   </div>
@@ -77,7 +83,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      Hexo GitHub搭建个人博客-增加评论以及访问量统计功能
+      RocketMQ源码学习之四-顺序消息
     </h1>
   
 
@@ -85,34 +91,9 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="内容概要"><a href="#内容概要" class="headerlink" title="内容概要"></a>内容概要</h1><p>本文主要介绍如何为Hexo搭建的博客增加评论功能，采用了多说插件，以及访问量统计功能。</p>
-<a id="more"></a>
-<h1 id="增加评论功能的步骤"><a href="#增加评论功能的步骤" class="headerlink" title="增加评论功能的步骤"></a>增加评论功能的步骤</h1><h2 id="注册多说"><a href="#注册多说" class="headerlink" title="注册多说"></a>注册多说</h2><p>进入多说官网，点击我要安装，注册账号。填入多说域名（后续会用到）、要使用多说插件的站点地址等信息。</p>
-<h2 id="修改hexo配置文件"><a href="#修改hexo配置文件" class="headerlink" title="修改hexo配置文件"></a>修改hexo配置文件</h2><ul>
-<li>在根目录下_config.yml中增加如下内容：</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">duoshuo_shortname: 你站点的short_name(xiajun)</div></pre></td></tr></table></figure>
-<p>这里的short_name也就是前面注册多说填入的多说域名。</p>
-<ul>
-<li>然后将themes\landscape\layout_partial\article.ejs（如果使用的其他主题，文件路径类似）中的如下内容：</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">&lt;% if (!index &amp;&amp; post.comments &amp;&amp; config.disqus_shortname)&#123; %&gt;</div><div class="line"></div><div class="line">&lt;section id=&quot;comments&quot;&gt;</div><div class="line">  &lt;div id=&quot;disqus_thread&quot;&gt;</div><div class="line">    &lt;noscript&gt;Please enable JavaScript to view the &lt;a href=&quot;//disqus.com/?ref_noscript&quot;&gt;comments powered by Disqus.&lt;/a&gt;&lt;/noscript&gt;</div><div class="line">  &lt;/div&gt;</div><div class="line">&lt;/section&gt;</div><div class="line">&lt;% &#125; %&gt;</div></pre></td></tr></table></figure>
-<p>替换为：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">&lt;% if (!index &amp;&amp; post.comments &amp;&amp; config.duoshuo_shortname)&#123; %&gt;</div><div class="line"></div><div class="line">  &lt;section id=&quot;comments&quot;&gt;</div><div class="line">  &lt;!-- 多说评论框 start --&gt;</div><div class="line">&lt;div id=&quot;ds-thread&quot; class=&quot;ds-thread&quot; data-thread-key=&quot;&lt;%= post.path %&gt;&quot; data-title=&quot;&lt;%= post.title %&gt;&quot; data-url=&quot;&lt;%= post.permalink %&gt;&quot;&gt;&lt;/div&gt;</div><div class="line">&lt;!-- 多说评论框 end --&gt;</div><div class="line">&lt;!-- 多说公共JS代码 start (一个网页只需插入一次) --&gt;</div><div class="line">&lt;script type=&quot;text/javascript&quot;&gt;</div><div class="line">var duoshuoQuery = &#123;short_name:&quot;xiajun&quot;&#125;;</div><div class="line">  (function() &#123;</div><div class="line">          var ds = document.createElement(&apos;script&apos;);</div><div class="line">              ds.type = &apos;text/javascript&apos;;ds.async = true;</div><div class="line">            ds.src = (document.location.protocol == &apos;https:&apos; ? &apos;https:&apos; : &apos;http:&apos;) + &apos;//static.duoshuo.com/embed.js&apos;;</div><div class="line">              ds.charset = &apos;UTF-8&apos;;</div><div class="line">          (document.getElementsByTagName(&apos;head&apos;)[0]</div><div class="line">              || document.getElementsByTagName(&apos;body&apos;)[0]).appendChild(ds);</div><div class="line">  &#125;)();</div><div class="line">  &lt;/script&gt;</div><div class="line">&lt;!-- 多说公共JS代码 end --&gt;</div><div class="line">  &lt;/section&gt;</div><div class="line">  &lt;% &#125; %&gt;</div></pre></td></tr></table></figure>
-<p>然后将修改部署到github。这个时候刷新博文，就可以发现文章下面多出来的评论窗口。<br>发现评论内容会自动刷新，但是评论数量不会更新，不知道是否是多说的一个bug。</p>
-<h1 id="增加访问量统计功能"><a href="#增加访问量统计功能" class="headerlink" title="增加访问量统计功能"></a>增加访问量统计功能</h1><ul>
-<li>修改themes/landscape/layout/_partial/after_footer.ejs文件，引入js文件</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&lt;script async src=&quot;https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js&quot;&gt;</div><div class="line">&lt;/script&gt;</div></pre></td></tr></table></figure>
-<ul>
-<li>然后在我们要展示访问量统计信息的地方添加如下代码</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">本站总访问量&lt;span id=&quot;busuanzi_value_site_pv&quot;&gt;&lt;/span&gt;次</div><div class="line">本站访客数&lt;span id=&quot;busuanzi_value_site_uv&quot;&gt;&lt;/span&gt;人次</div><div class="line">本文总阅读量&lt;span id=&quot;busuanzi_value_page_pv&quot;&gt;&lt;/span&gt;次</div></pre></td></tr></table></figure>
-<p>部署到github，这个时候就发现对应的地方展示出来了访问量统计信息：</p>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><ul>
-<li><a href="http://www.lichanglin.cn/%E5%9C%A8hexo%E4%B8%AD%E5%8A%A0%E5%85%A5%E5%A4%9A%E8%AF%B4%E8%AF%84%E8%AE%BA/" target="_blank" rel="external">在hexo中加入多说评论</a></li>
-</ul>
-<h2 id="版权声明"><a href="#版权声明" class="headerlink" title="版权声明"></a>版权声明</h2><p>本文首发于<a href="http://xiajunhust.github.io/">江南烟雨的个人博客</a>博客（ <a href="http://xiajunhust.github.io/">http://xiajunhust.github.io/</a> ），版权所有，侵权必究。<br>本文永久链接：<a href="http://xiajunhust.github.io/2016/07/11/Hexo-GitHub搭建个人博客-增加评论以及访问量统计功能/">http://xiajunhust.github.io/2016/07/11/Hexo-GitHub搭建个人博客-增加评论以及访问量统计功能/</a></p>
+        <p>本文主要讲解RocketMQ的顺序性消息原理。</p>
+<h1 id="1-RocketMQ顺序消息发送与接收Demo"><a href="#1-RocketMQ顺序消息发送与接收Demo" class="headerlink" title="1 RocketMQ顺序消息发送与接收Demo"></a>1 RocketMQ顺序消息发送与接收Demo</h1><p>先给出RocketMQ顺序消息发送和接收的demo代码。  </p>
+<h2 id="版权声明"><a href="#版权声明" class="headerlink" title="版权声明"></a>版权声明</h2><p>本文首发于<a href="http://xiajunhust.github.io/">江南烟雨的个人博客</a>博客（ <a href="http://xiajunhust.github.io/">http://xiajunhust.github.io/</a> ），版权所有，侵权必究。<br>本文永久链接：<a href="http://xiajunhust.github.io/2016/11/15/RocketMQ源码学习之四-顺序消息/">http://xiajunhust.github.io/2016/11/15/RocketMQ源码学习之四-顺序消息/</a></p>
 
       
     </div>
@@ -225,10 +206,10 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/07/11/Hexo-GitHub搭建个人博客-增加评论以及访问量统计功能/" data-id="civkdfefj0006dmwfzbggzjqs" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2016/11/15/RocketMQ源码学习之四-顺序消息/" data-id="civkdfege000fdmwf2ygwc8k6" class="article-share-link">Share</a>
       
       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/开发工具/">开发工具</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/RocketMQ/">RocketMQ</a></li></ul>
 
     </footer>
   </div>
@@ -236,19 +217,10 @@
     
 <nav id="article-nav">
   
-    <a href="/2016/07/14/DbUnit-AmbiguousTableNameException异常解决/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Newer</strong>
-      <div class="article-nav-title">
-        
-          DbUnit AmbiguousTableNameException异常解决
-        
-      </div>
-    </a>
   
-  
-    <a href="/2016/07/11/Hexo-GitHub搭建个人博客-添加README/" id="article-nav-older" class="article-nav-link-wrap">
+    <a href="/2016/11/14/RocketMQ源码学习之三-异步消息发送/" id="article-nav-older" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">Hexo GitHub搭建个人博客-添加README</div>
+      <div class="article-nav-title">RocketMQ源码学习之三-异步消息发送</div>
     </a>
   
 </nav>
@@ -258,7 +230,7 @@
 
   <section id="comments">
    <!-- 多说评论框 start -->
-<div id="ds-thread" class="ds-thread" data-thread-key="2016/07/11/Hexo-GitHub搭建个人博客-增加评论以及访问量统计功能/" data-title="Hexo GitHub搭建个人博客-增加评论以及访问量统计功能" data-url="http://xiajunhust.github.io/2016/07/11/Hexo-GitHub搭建个人博客-增加评论以及访问量统计功能/"></div>
+<div id="ds-thread" class="ds-thread" data-thread-key="2016/11/15/RocketMQ源码学习之四-顺序消息/" data-title="RocketMQ源码学习之四-顺序消息" data-url="http://xiajunhust.github.io/2016/11/15/RocketMQ源码学习之四-顺序消息/"></div>
 <!-- 多说评论框 end -->
 <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 <script type="text/javascript">

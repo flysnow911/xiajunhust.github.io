@@ -15,12 +15,14 @@
 <meta property="og:description" content="本文主要介绍RocketMQ异步消息发送的原理。
 1 异步消息发送Demo首先看一段RocketMQ异步消息发送的Demo代码：消息生产者：  
 123456789101112131415161718192021222324252627282930import com.alibaba.rocketmq.client.exception.MQClientException;import com.al">
-<meta property="og:updated_time" content="2016-11-15T06:11:30.000Z">
+<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/rocketmq-sourcecode-3-1.png">
+<meta property="og:updated_time" content="2016-11-16T03:31:03.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="RocketMQ源码学习之三-异步消息发送">
 <meta name="twitter:description" content="本文主要介绍RocketMQ异步消息发送的原理。
 1 异步消息发送Demo首先看一段RocketMQ异步消息发送的Demo代码：消息生产者：  
 123456789101112131415161718192021222324252627282930import com.alibaba.rocketmq.client.exception.MQClientException;import com.al">
+<meta name="twitter:image" content="http://o8sltkx20.bkt.clouddn.com/rocketmq-sourcecode-3-1.png">
   
     <link rel="alternate" href="/atom.xml" title="江南烟雨的个人博客" type="application/atom+xml">
   
@@ -100,6 +102,7 @@
 <p>消息消费者和前一篇消息同步发送博文中示例相同。运行结果：  </p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">生产者：</div><div class="line">SendCallback-发送消息成功! sendResult=SendResult [sendStatus=SEND_OK, msgId=C0A802684CCA1218025C454271C80000,offsetMsgId=C0A8026800002A9F0000000000001AC9, messageQueue=MessageQueue [topic=TopicTest, brokerName=xiajuns-MacBook-Pro.local, queueId=2], queueOffset=0]</div><div class="line"></div><div class="line">消费者：</div><div class="line">ConsumeMessageThread_2 Receive New Messages: [MessageExt [queueId=2, storeSize=189, queueOffset=0, sysFlag=0, bornTimestamp=1479134782410, bornHost=/192.168.2.104:60966, storeTimestamp=1479134782449, storeHost=/192.168.2.104:10911, msgId=C0A8026800002A9F0000000000001AC9, commitLogOffset=6857, bodyCRC=1751783629, reconsumeTimes=0, preparedTransactionOffset=0, toString()=Message [topic=TopicTest, flag=0, properties=&#123;MIN_OFFSET=0, MAX_OFFSET=1, KEYS=OrderID188, CONSUME_START_TIME=1479134782503, UNIQ_KEY=C0A802684CCA1218025C454271C80000, WAIT=true, TAGS=TagA&#125;, body=11]]]</div></pre></td></tr></table></figure>
 <h1 id="2-异步消息发送原理以及应用场景"><a href="#2-异步消息发送原理以及应用场景" class="headerlink" title="2 异步消息发送原理以及应用场景"></a>2 异步消息发送原理以及应用场景</h1><p>异步消息发送是指消息生产者发送了一条消息之后，不用等待此条消息的发送结果，而继续发送下一条消息。需要使用方自行实现回调接口SendCallback。发送端无需等待服务端响应结果，通过回调接口对服务器的响应进行处理。</p>
+<p><img src="http://o8sltkx20.bkt.clouddn.com/rocketmq-sourcecode-3-1.png" alt="异步消息发送原理示意图"></p>
 <p>使用场景：<br>异步发送一般用于链路耗时较长，对 RT 响应时间较为敏感的业务场景，例如用户视频上传后通知启动转码服务，转码完成后通知推送转码结果等。</p>
 <h1 id="3-异步消息发送源码分析"><a href="#3-异步消息发送源码分析" class="headerlink" title="3 异步消息发送源码分析"></a>3 异步消息发送源码分析</h1><p>异步消息发送的整体发送流程与<a href="http://xiajunhust.github.io/2016/11/12/RocketMQ%E6%BA%90%E7%A0%81%E5%AD%A6%E4%B9%A0%E4%B9%8B%E4%BA%8C-%E5%90%8C%E6%AD%A5%E6%B6%88%E6%81%AF%E5%8F%91%E9%80%81/">RocketMQ同步消息发送</a>流程相同。不同之处在于，DefaultMQProducer.send(Message msg)调到DefaultMQProducerImpl的这个方法传递的CommunicationMode参数是ASYNC。最后会调到底层的Netty通信逻辑NettyRemotingClient:   </p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div></pre></td><td class="code"><pre><div class="line">public void invokeAsyncImpl(final Channel channel, final RemotingCommand request, final long timeoutMillis,</div><div class="line">                            final InvokeCallback invokeCallback)</div><div class="line">        throws InterruptedException, RemotingTooMuchRequestException, RemotingTimeoutException, RemotingSendRequestException &#123;</div><div class="line">    final int opaque = request.getOpaque();</div><div class="line">    boolean acquired = this.semaphoreAsync.tryAcquire(timeoutMillis, TimeUnit.MILLISECONDS);</div><div class="line">    if (acquired) &#123;</div><div class="line">        final SemaphoreReleaseOnlyOnce once = new SemaphoreReleaseOnlyOnce(this.semaphoreAsync);</div><div class="line"></div><div class="line">        final ResponseFuture responseFuture = new ResponseFuture(opaque, timeoutMillis, invokeCallback, once);</div><div class="line">        this.responseTable.put(opaque, responseFuture);</div><div class="line">        try &#123;</div><div class="line">            channel.writeAndFlush(request).addListener(new ChannelFutureListener() &#123;</div><div class="line">                @Override</div><div class="line">                public void operationComplete(ChannelFuture f) throws Exception &#123;</div><div class="line">                    if (f.isSuccess()) &#123;</div><div class="line">                        responseFuture.setSendRequestOK(true);</div><div class="line">                        return;</div><div class="line">                    &#125; else &#123;</div><div class="line">                        responseFuture.setSendRequestOK(false);</div><div class="line">                    &#125;</div><div class="line"></div><div class="line">                    responseFuture.putResponse(null);</div><div class="line">                    responseTable.remove(opaque);</div><div class="line">                    try &#123;</div><div class="line">                    	 //执行回调接口</div><div class="line">                        responseFuture.executeInvokeCallback();</div><div class="line">                    &#125; catch (Throwable e) &#123;</div><div class="line">                        plog.warn(&quot;excute callback in writeAndFlush addListener, and callback throw&quot;, e);</div><div class="line">                    &#125; finally &#123;</div><div class="line">                        responseFuture.release();</div><div class="line">                    &#125;</div><div class="line"></div><div class="line">                    plog.warn(&quot;send a request command to channel &lt;&#123;&#125;&gt; failed.&quot;, RemotingHelper.parseChannelRemoteAddr(channel));</div><div class="line">                &#125;</div><div class="line">            &#125;);</div><div class="line">        &#125; catch (Exception e) &#123;</div><div class="line">            responseFuture.release();</div><div class="line">            plog.warn(&quot;send a request command to channel &lt;&quot; + RemotingHelper.parseChannelRemoteAddr(channel) + &quot;&gt; Exception&quot;, e);</div><div class="line">            throw new RemotingSendRequestException(RemotingHelper.parseChannelRemoteAddr(channel), e);</div><div class="line">        &#125;</div><div class="line">    &#125; else &#123;</div><div class="line">        String info =</div><div class="line">                String.format(&quot;invokeAsyncImpl tryAcquire semaphore timeout, %dms, waiting thread nums: %d semaphoreAsyncValue: %d&quot;, //</div><div class="line">                        timeoutMillis, //</div><div class="line">                        this.semaphoreAsync.getQueueLength(), //</div><div class="line">                        this.semaphoreAsync.availablePermits()//</div><div class="line">                );</div><div class="line">        plog.warn(info);</div><div class="line">        throw new RemotingTooMuchRequestException(info);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
@@ -217,7 +220,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/11/14/RocketMQ源码学习之三-异步消息发送/" data-id="civj3podz0008fawf62fihnh7" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2016/11/14/RocketMQ源码学习之三-异步消息发送/" data-id="civkdfegk000kdmwf337a5y9w" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/RocketMQ/">RocketMQ</a></li></ul>
@@ -227,6 +230,15 @@
   
     
 <nav id="article-nav">
+  
+    <a href="/2016/11/15/RocketMQ源码学习之四-顺序消息/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          RocketMQ源码学习之四-顺序消息
+        
+      </div>
+    </a>
   
   
     <a href="/2016/11/12/RocketMQ源码学习之二-同步消息发送/" id="article-nav-older" class="article-nav-link-wrap">
@@ -303,6 +315,10 @@ var duoshuoQuery = {short_name:"xiajun"};
       <ul>
         
           <li>
+            <a href="/2016/11/15/RocketMQ源码学习之四-顺序消息/">RocketMQ源码学习之四-顺序消息</a>
+          </li>
+        
+          <li>
             <a href="/2016/11/14/RocketMQ源码学习之三-异步消息发送/">RocketMQ源码学习之三-异步消息发送</a>
           </li>
         
@@ -316,10 +332,6 @@ var duoshuoQuery = {short_name:"xiajun"};
         
           <li>
             <a href="/2016/08/28/MySQL的日期时间类型关于秒以下精度的处理/">MySQL的日期时间类型关于秒以下精度的处理</a>
-          </li>
-        
-          <li>
-            <a href="/2016/08/27/技术分享-MySQL-InnoDB-locks-and-deadlocks/">技术分享-MySQL InnoDB locks and deadlocks</a>
           </li>
         
       </ul>
