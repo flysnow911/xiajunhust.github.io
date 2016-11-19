@@ -3,32 +3,32 @@
 <head>
   <meta charset="utf-8">
   
-  <title>RocketMQ源码学习之四-push消息消费方式 | 江南烟雨的个人博客</title>
+  <title>RocketMQ源码学习之四-Push Consumer | 江南烟雨的个人博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="本文主要讲解RocketMQ的push消息消费方式的实现原理。
-1 RocketMQ的两种消息消费方式RocketMQ支持两种形式的消息消费：  
+  <meta name="description" content="本文主要讲解RocketMQ的push消息消费者的实现原理。
+1 RocketMQ的两种消息消费者RocketMQ支持两种形式的消息消费者：  
 
 Push Consumer通常是应用向Consumer对象注册一个Listener，一旦收到消息，Consumer对象立即回调Listener接口方法。底层采用的是Pull长轮询拉取消息的方式。
-Pull Consumer应用通常主动调用Consum">
+Pull Consumer应用通常主动调用Consume">
 <meta property="og:type" content="article">
-<meta property="og:title" content="RocketMQ源码学习之四-push消息消费方式">
-<meta property="og:url" content="http://xiajunhust.github.io/2016/11/17/RocketMQ源码学习之四-push消息消费方式/index.html">
+<meta property="og:title" content="RocketMQ源码学习之四-Push Consumer">
+<meta property="og:url" content="http://xiajunhust.github.io/2016/11/17/RocketMQ源码学习之四-Push Consumer/index.html">
 <meta property="og:site_name" content="江南烟雨的个人博客">
-<meta property="og:description" content="本文主要讲解RocketMQ的push消息消费方式的实现原理。
-1 RocketMQ的两种消息消费方式RocketMQ支持两种形式的消息消费：  
+<meta property="og:description" content="本文主要讲解RocketMQ的push消息消费者的实现原理。
+1 RocketMQ的两种消息消费者RocketMQ支持两种形式的消息消费者：  
 
 Push Consumer通常是应用向Consumer对象注册一个Listener，一旦收到消息，Consumer对象立即回调Listener接口方法。底层采用的是Pull长轮询拉取消息的方式。
-Pull Consumer应用通常主动调用Consum">
+Pull Consumer应用通常主动调用Consume">
 <meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/rocketmq-sourcecode-4-2.jpg">
 <meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/rocketmq-sourcecode-4-3.jpg">
-<meta property="og:updated_time" content="2016-11-19T03:21:26.000Z">
+<meta property="og:updated_time" content="2016-11-19T03:25:43.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="RocketMQ源码学习之四-push消息消费方式">
-<meta name="twitter:description" content="本文主要讲解RocketMQ的push消息消费方式的实现原理。
-1 RocketMQ的两种消息消费方式RocketMQ支持两种形式的消息消费：  
+<meta name="twitter:title" content="RocketMQ源码学习之四-Push Consumer">
+<meta name="twitter:description" content="本文主要讲解RocketMQ的push消息消费者的实现原理。
+1 RocketMQ的两种消息消费者RocketMQ支持两种形式的消息消费者：  
 
 Push Consumer通常是应用向Consumer对象注册一个Listener，一旦收到消息，Consumer对象立即回调Listener接口方法。底层采用的是Pull长轮询拉取消息的方式。
-Pull Consumer应用通常主动调用Consum">
+Pull Consumer应用通常主动调用Consume">
 <meta name="twitter:image" content="http://o8sltkx20.bkt.clouddn.com/rocketmq-sourcecode-4-2.jpg">
   
     <link rel="alternate" href="/atom.xml" title="江南烟雨的个人博客" type="application/atom+xml">
@@ -78,9 +78,9 @@ Pull Consumer应用通常主动调用Consum">
   </div>
 </header>
       <div class="outer">
-        <section id="main"><article id="post-RocketMQ源码学习之四-push消息消费方式" class="article article-type-post" itemscope itemprop="blogPost">
+        <section id="main"><article id="post-RocketMQ源码学习之四-Push Consumer" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2016/11/17/RocketMQ源码学习之四-push消息消费方式/" class="article-date">
+    <a href="/2016/11/17/RocketMQ源码学习之四-Push Consumer/" class="article-date">
   <time datetime="2016-11-17T15:06:03.000Z" itemprop="datePublished">2016-11-17</time>
 </a>
     
@@ -92,7 +92,7 @@ Pull Consumer应用通常主动调用Consum">
         
   
     <h1 class="article-title" itemprop="name">
-      RocketMQ源码学习之四-push消息消费方式
+      RocketMQ源码学习之四-Push Consumer
     </h1>
   
 
@@ -100,13 +100,14 @@ Pull Consumer应用通常主动调用Consum">
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>本文主要讲解RocketMQ的push消息消费方式的实现原理。</p>
-<h1 id="1-RocketMQ的两种消息消费方式"><a href="#1-RocketMQ的两种消息消费方式" class="headerlink" title="1 RocketMQ的两种消息消费方式"></a>1 RocketMQ的两种消息消费方式</h1><p>RocketMQ支持两种形式的消息消费：  </p>
+        <p>本文主要讲解RocketMQ的push消息消费者的实现原理。</p>
+<h1 id="1-RocketMQ的两种消息消费者"><a href="#1-RocketMQ的两种消息消费者" class="headerlink" title="1 RocketMQ的两种消息消费者"></a>1 RocketMQ的两种消息消费者</h1><p>RocketMQ支持两种形式的消息消费者：  </p>
 <ul>
 <li>Push Consumer<br>通常是应用向Consumer对象注册一个Listener，一旦收到消息，Consumer对象立即回调Listener接口方法。底层采用的是Pull长轮询拉取消息的方式。</li>
 <li>Pull Consumer<br>应用通常主动调用Consumer的拉消息方法从Broker拉消息，主动权由应用控制。</li>
 </ul>
-<h1 id="2-Push-Consumer的一个demo"><a href="#2-Push-Consumer的一个demo" class="headerlink" title="2 Push Consumer的一个demo"></a>2 Push Consumer的一个demo</h1><p>demo：</p>
+<h1 id="2-Push-Consumer的一个demo"><a href="#2-Push-Consumer的一个demo" class="headerlink" title="2 Push Consumer的一个demo"></a>2 Push Consumer的一个demo</h1><a id="more"></a>
+<p>demo：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div></pre></td><td class="code"><pre><div class="line">public class Consumer2 &#123;</div><div class="line">  public static void main(String[] args) throws InterruptedException, MQClientException &#123;</div><div class="line">    DefaultMQPushConsumer</div><div class="line">        consumer = new DefaultMQPushConsumer(&quot;please_rename_unique_group_name_4&quot;);</div><div class="line">    consumer.setVipChannelEnabled(false);</div><div class="line">    consumer.setNamesrvAddr(Constants.hostIpStr + &quot;:9876&quot;);</div><div class="line"></div><div class="line">    /**</div><div class="line">     * 设置Consumer第一次启动是从队列头部开始消费还是队列尾部开始消费&lt;br&gt;</div><div class="line">     * 如果非第一次启动，那么按照上次消费的位置继续消费</div><div class="line">     */</div><div class="line">    consumer.setConsumeFromWhere(ConsumeFromWhere.CONSUME_FROM_FIRST_OFFSET);</div><div class="line"></div><div class="line">    consumer.subscribe(&quot;TopicTest2&quot;, &quot;*&quot;);</div><div class="line"></div><div class="line">    consumer.registerMessageListener(new MessageListenerOrderly() &#123;</div><div class="line"></div><div class="line">      Random random = new Random();</div><div class="line"></div><div class="line">      public ConsumeOrderlyStatus consumeMessage(List&lt;MessageExt&gt; msgs, ConsumeOrderlyContext context) &#123;</div><div class="line">        context.setAutoCommit(true);</div><div class="line">        System.out.print(Thread.currentThread().getName() + &quot; Receive New Messages: &quot; );</div><div class="line">        for (MessageExt msg: msgs) &#123;</div><div class="line">          System.out.println(msg + &quot;, content:&quot; + new String(msg.getBody()));</div><div class="line">        &#125;</div><div class="line">        try &#123;</div><div class="line">          //模拟业务逻辑处理中...</div><div class="line">          TimeUnit.SECONDS.sleep(random.nextInt(10));</div><div class="line">        &#125; catch (Exception e) &#123;</div><div class="line">          e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">        return ConsumeOrderlyStatus.SUCCESS;</div><div class="line">      &#125;</div><div class="line">    &#125;);</div><div class="line"></div><div class="line">    consumer.start();</div><div class="line"></div><div class="line">    System.out.println(&quot;Consumer2 Started.&quot;);</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>运行结果：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">consumeMessageThread_2 Receive New Messages: MessageExt [queueId=0, storeSize=209, queueOffset=30, sysFlag=0, bornTimestamp=1479262699041, bornHost=/172.17.8.240:59605, storeTimestamp=1479262699053, storeHost=/172.17.8.240:10911, msgId=AC1108F000002A9F000000000000246D, commitLogOffset=9325, bodyCRC=2087030154, reconsumeTimes=0, preparedTransactionOffset=0, toString()=Message [topic=TopicTest2, flag=0, properties=&#123;MIN_OFFSET=0, MAX_OFFSET=31, KEYS=KEY0, UNIQ_KEY=AC1108F00B4E1218025C4F757A200000, WAIT=true, TAGS=TagA&#125;, body=36]], content:2016-11-16 10:18:18 Hello RocketMQ 0</div><div class="line">ConsumeMessageThread_2 Receive New Messages: MessageExt [queueId=0, storeSize=209, queueOffset=31, sysFlag=0, bornTimestamp=1479262699062, bornHost=/172.17.8.240:59605, storeTimestamp=1479262699063, storeHost=/172.17.8.240:10911, msgId=AC1108F000002A9F000000000000253E, commitLogOffset=9534, bodyCRC=191020316, reconsumeTimes=0, preparedTransactionOffset=0, toString()=Message [topic=TopicTest2, flag=0, properties=&#123;MIN_OFFSET=0, MAX_OFFSET=32, KEYS=KEY1, UNIQ_KEY=AC1108F00B4E1218025C4F757A360001, WAIT=true, TAGS=TagB&#125;, body=36]], content:2016-11-16 10:18:18 Hello RocketMQ 1</div></pre></td></tr></table></figure>
@@ -131,7 +132,7 @@ Pull Consumer应用通常主动调用Consum">
 <p>可以看出是采用的异步模式，注册监听器，收到响应结果后调用回调函数InvokeCallback。而在InvokeCallback中调用了DefaultMQPushConsumerImpl中的PullCallback回调函数的onSuccess、onException，分别就返回成功结果和失败结果执行对应操作：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">PullCallback核心代码：  </div><div class="line">switch (pullResult.getPullStatus()) &#123;</div><div class="line">case FOUND:</div><div class="line">	...</div><div class="line">	//将拉取到的消息放入processQueue</div><div class="line">    boolean dispathToConsume = processQueue.putMessage(pullResult.getMsgFoundList());</div><div class="line">    //向消息服务consumeMessageService提交消息消费请求</div><div class="line">    DefaultMQPushConsumerImpl.this.consumeMessageService.submitConsumeRequest(//</div><div class="line">            pullResult.getMsgFoundList(), //</div><div class="line">            processQueue, //</div><div class="line">            pullRequest.getMessageQueue(), //</div><div class="line">            dispathToConsume);</div><div class="line">	...</div></pre></td></tr></table></figure>
 <h2 id="3-2-消息消费服务-ConsumeMessageService"><a href="#3-2-消息消费服务-ConsumeMessageService" class="headerlink" title="3.2 消息消费服务-ConsumeMessageService"></a>3.2 消息消费服务-ConsumeMessageService</h2><p>Push消费者启动完成之后，由监听器ConsumeMessageService完成具体的消费过程。具体逻辑在下一篇文章中讲解。 </p>
-<h2 id="版权声明"><a href="#版权声明" class="headerlink" title="版权声明"></a>版权声明</h2><p>本文首发于<a href="http://xiajunhust.github.io/">江南烟雨的个人博客</a>博客（ <a href="http://xiajunhust.github.io/">http://xiajunhust.github.io/</a> ），版权所有，侵权必究。<br>本文永久链接：<a href="http://xiajunhust.github.io/2016/11/17/RocketMQ源码学习之四-push消息消费方式/">http://xiajunhust.github.io/2016/11/17/RocketMQ源码学习之四-push消息消费方式/</a></p>
+<h2 id="版权声明"><a href="#版权声明" class="headerlink" title="版权声明"></a>版权声明</h2><p>本文首发于<a href="http://xiajunhust.github.io/">江南烟雨的个人博客</a>博客（ <a href="http://xiajunhust.github.io/">http://xiajunhust.github.io/</a> ），版权所有，侵权必究。<br>本文永久链接：<a href="http://xiajunhust.github.io/2016/11/17/RocketMQ源码学习之四-Push">http://xiajunhust.github.io/2016/11/17/RocketMQ源码学习之四-Push</a> Consumer/</p>
 
       
     </div>
@@ -244,7 +245,7 @@ Pull Consumer应用通常主动调用Consum">
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/11/17/RocketMQ源码学习之四-push消息消费方式/" data-id="civongqre000lgywfz4hixfsl" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2016/11/17/RocketMQ源码学习之四-Push Consumer/" data-id="civonjr4d0000hwwfmhqvpk63" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/RocketMQ/">RocketMQ</a></li></ul>
@@ -268,7 +269,7 @@ Pull Consumer应用通常主动调用Consum">
 
   <section id="comments">
    <!-- 多说评论框 start -->
-<div id="ds-thread" class="ds-thread" data-thread-key="2016/11/17/RocketMQ源码学习之四-push消息消费方式/" data-title="RocketMQ源码学习之四-push消息消费方式" data-url="http://xiajunhust.github.io/2016/11/17/RocketMQ源码学习之四-push消息消费方式/"></div>
+<div id="ds-thread" class="ds-thread" data-thread-key="2016/11/17/RocketMQ源码学习之四-Push Consumer/" data-title="RocketMQ源码学习之四-Push Consumer" data-url="http://xiajunhust.github.io/2016/11/17/RocketMQ源码学习之四-Push Consumer/"></div>
 <!-- 多说评论框 end -->
 <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 <script type="text/javascript">
@@ -330,7 +331,7 @@ var duoshuoQuery = {short_name:"xiajun"};
       <ul>
         
           <li>
-            <a href="/2016/11/17/RocketMQ源码学习之四-push消息消费方式/">RocketMQ源码学习之四-push消息消费方式</a>
+            <a href="/2016/11/17/RocketMQ源码学习之四-Push Consumer/">RocketMQ源码学习之四-Push Consumer</a>
           </li>
         
           <li>
