@@ -16,8 +16,8 @@
 注：本文基于的Hystrix的版本是：
 123456&amp;lt;hystrix.version&amp;gt;1.5.7&amp;lt;/hystrix.version&amp;gt;&amp;lt;dependency&amp;gt;    &amp;lt;groupId&amp;">
 <meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/rx-001-001.png">
-<meta property="og:image" content="https://mcxiaoke.gitbooks.io/rxdocs/content/images/operators/map.png">
-<meta property="og:updated_time" content="2016-12-22T02:44:22.000Z">
+<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/rx-001-002.png">
+<meta property="og:updated_time" content="2016-12-24T15:03:11.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="从Hystrix DashboardData看ReativeX的使用">
 <meta name="twitter:description" content="最近在将系统中服务降级框架Hystrix的运行时的一些指标数据接入到监控平台，需要获取Hystrix的Dashboard数据。发现用到了ReactiveX的知识，因此总结下。
@@ -136,7 +136,7 @@
 <p><img src="http://o8sltkx20.bkt.clouddn.com/rx-001-001.png" alt="operators.interval"></p>
 <p>RxJava中<a href="http://o8sltkx20.bkt.clouddn.com/rx-001-002.png" target="_blank" rel="external">Observable.interval</a>.</p>
 <p>创建了Observable之后，紧接着调用了变换函数Map。  </p>
-<p><img src="https://mcxiaoke.gitbooks.io/rxdocs/content/images/operators/map.png" alt="operators.map"></p>
+<p><img src="http://o8sltkx20.bkt.clouddn.com/rx-001-002.png" alt="operators.map"></p>
 <p>它对Observable发射的每一项数据应用一个函数，执行变换操作。这里的函数是调用HystrixCommandMetrics、HystrixThreadPoolMetrics、HystrixCollapserMetrics的实例获取方法，返回对应的Dashboard数据。</p>
 <p>doOnSubscribe-当被订阅的时候，执行对应的操作。<br>doOnUnsubscribe-当没有订阅者的时候，执行对应的操作。</p>
 <h1 id="3-参考资料"><a href="#3-参考资料" class="headerlink" title="3 参考资料"></a>3 参考资料</h1><ul>
@@ -256,7 +256,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/12/18/从Hystrix-DashboardData看ReativeX的使用/" data-id="ciwzrlsox000gyzwf625ciufo" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2016/12/18/从Hystrix-DashboardData看ReativeX的使用/" data-id="cix3cvqam0014n7wfvihjhkcr" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Hystrix/">Hystrix</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ReactiveX/">ReactiveX</a></li></ul>
