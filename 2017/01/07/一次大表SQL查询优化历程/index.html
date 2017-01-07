@@ -19,7 +19,7 @@
 <meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-query-optimize-001-002.jpeg">
 <meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-query-optimize-001-003.jpeg">
 <meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-query-optimize-001-004.png">
-<meta property="og:updated_time" content="2017-01-07T07:32:11.000Z">
+<meta property="og:updated_time" content="2017-01-07T08:26:03.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="一次大表SQL查询优化历程">
 <meta name="twitter:description" content="本文主要介绍了一次查询SQL查询性能优化的整个过程。
@@ -101,6 +101,7 @@
         <p>本文主要介绍了一次查询SQL查询性能优化的整个过程。</p>
 <h2 id="1-背景"><a href="#1-背景" class="headerlink" title="1 背景"></a>1 背景</h2><p>有一张存储了订单数据的单表，为了防止表过大，需要删除历史的已达到终态的订单，只保留近期的数据以及历史的未达到终态的订单数据。这张表trade_order的大致结构是这样的（内容有缩减）：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">CREATE TABLE &quot;trade_order&quot; (</div><div class="line">  &quot;id&quot; int(10) unsigned NOT NULL AUTO_INCREMENT,</div><div class="line">  &quot;order_no&quot; varchar(30) NOT NULL DEFAULT &apos;&apos;,</div><div class="line">  &quot;update_time&quot; datetime DEFAULT NULL COMMENT &apos;订单更新时间&apos;,</div><div class="line">  &quot;book_time&quot; datetime DEFAULT NULL COMMENT &apos;预订时间&apos;,</div><div class="line">  &quot;gmt_create_time&quot; datetime NOT NULL COMMENT &apos;DB数据创建时间&apos;,</div><div class="line">  &quot;gmt_modify_time&quot; datetime NOT NULL COMMENT &apos;DB数据更新时间&apos;,</div><div class="line">  &quot;version&quot; tinyint(4) unsigned NOT NULL DEFAULT &apos;0&apos; COMMENT &apos;乐观锁&apos;,</div><div class="line">  PRIMARY KEY (&quot;id&quot;),</div><div class="line">  UNIQUE KEY &quot;order_no&quot; (&quot;order_no&quot;),</div><div class="line">  KEY &quot;update_time_state&quot; (&quot;update_time&quot;,&quot;state&quot;),</div><div class="line">  KEY &quot;idx_stbyway_bktime&quot; (&quot;state&quot;,&quot;buy_way&quot;,&quot;book_time&quot;,&quot;id&quot;)</div><div class="line">)</div></pre></td></tr></table></figure>
+<a id="more"></a>
 <p>数据量：<br>500-800w条左右。</p>
 <p>我们需要删除更新时间在某个阈值之前，并且已达到终态（终态对应的状态有2个）的订单数据。我们不能直接这么做：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">delete from trade_order where update_time &lt; #&#123;updateTimeThreshold&#125; and (state = 99 or state = 100).</div></pre></td></tr></table></figure>
@@ -259,7 +260,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2017/01/07/一次大表SQL查询优化历程/" data-id="cixmwxr2u000lr2wfvgm1cn8s" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2017/01/07/一次大表SQL查询优化历程/" data-id="cixmyuttg000kxzwfhfky9h9s" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MySQL/">MySQL</a></li></ul>
