@@ -3,15 +3,41 @@
 <head>
   <meta charset="utf-8">
   
-  <title>Hystrix Dashborad数据介绍 | 江南烟雨的个人博客</title>
+  <title>Redis源码学习之一-Redis过期键删除 | 江南烟雨的个人博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="article">
-<meta property="og:title" content="Hystrix Dashborad数据介绍">
-<meta property="og:url" content="http://xiajunhust.github.io/2016/12/28/Hystrix-Dashborad数据介绍/index.html">
+  <meta name="description" content="本文内容是Redis过期键删除。
+注：源码基于Redis 2.9版本。
+1 常见的三种过期键删除策略常见的过期键删除策略有三种：  
+
+定时删除使用定时器在键的过期时间来临时，立即执行对键的删除操作。
+
+优点：能保证过期键会被尽快删除，及时释放内存。
+缺点：会占用CPU，在CPU时间比较紧张的情况下，将CPU时间用在删除和当前任务无关的过期键上，会对服务器的响应时间和吞吐量造成影响。另外，创建定时">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Redis源码学习之一-Redis过期键删除">
+<meta property="og:url" content="http://xiajunhust.github.io/2017/12/02/Redis源码学习之一-Redis过期键删除策略/index.html">
 <meta property="og:site_name" content="江南烟雨的个人博客">
-<meta property="og:updated_time" content="2016-12-28T06:17:23.000Z">
+<meta property="og:description" content="本文内容是Redis过期键删除。
+注：源码基于Redis 2.9版本。
+1 常见的三种过期键删除策略常见的过期键删除策略有三种：  
+
+定时删除使用定时器在键的过期时间来临时，立即执行对键的删除操作。
+
+优点：能保证过期键会被尽快删除，及时释放内存。
+缺点：会占用CPU，在CPU时间比较紧张的情况下，将CPU时间用在删除和当前任务无关的过期键上，会对服务器的响应时间和吞吐量造成影响。另外，创建定时">
+<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/redis-expired-delete-01.jpg">
+<meta property="og:updated_time" content="2017-12-02T06:22:19.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Hystrix Dashborad数据介绍">
+<meta name="twitter:title" content="Redis源码学习之一-Redis过期键删除">
+<meta name="twitter:description" content="本文内容是Redis过期键删除。
+注：源码基于Redis 2.9版本。
+1 常见的三种过期键删除策略常见的过期键删除策略有三种：  
+
+定时删除使用定时器在键的过期时间来临时，立即执行对键的删除操作。
+
+优点：能保证过期键会被尽快删除，及时释放内存。
+缺点：会占用CPU，在CPU时间比较紧张的情况下，将CPU时间用在删除和当前任务无关的过期键上，会对服务器的响应时间和吞吐量造成影响。另外，创建定时">
+<meta name="twitter:image" content="http://o8sltkx20.bkt.clouddn.com/redis-expired-delete-01.jpg">
   
     <link rel="alternate" href="/atom.xml" title="江南烟雨的个人博客" type="application/atom+xml">
   
@@ -62,10 +88,10 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main"><article id="post-Hystrix-Dashborad数据介绍" class="article article-type-post" itemscope itemprop="blogPost">
+        <section id="main"><article id="post-Redis源码学习之一-Redis过期键删除策略" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2016/12/28/Hystrix-Dashborad数据介绍/" class="article-date">
-  <time datetime="2016-12-28T06:17:23.000Z" itemprop="datePublished">2016-12-28</time>
+    <a href="/2017/12/02/Redis源码学习之一-Redis过期键删除策略/" class="article-date">
+  <time datetime="2017-12-02T02:48:59.000Z" itemprop="datePublished">2017-12-02</time>
 </a>
     
   </div>
@@ -76,7 +102,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      Hystrix Dashborad数据介绍
+      Redis源码学习之一-Redis过期键删除
     </h1>
   
 
@@ -84,7 +110,32 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        
+        <p>本文内容是Redis过期键删除。</p>
+<p>注：<br>源码基于Redis 2.9版本。</p>
+<h1 id="1-常见的三种过期键删除策略"><a href="#1-常见的三种过期键删除策略" class="headerlink" title="1 常见的三种过期键删除策略"></a>1 常见的三种过期键删除策略</h1><p>常见的过期键删除策略有三种：  </p>
+<ul>
+<li>定时删除<br>使用定时器在键的过期时间来临时，立即执行对键的删除操作。</li>
+</ul>
+<p>优点：<br>能保证过期键会被尽快删除，及时释放内存。</p>
+<p>缺点：<br>会占用CPU，在CPU时间比较紧张的情况下，将CPU时间用在删除和当前任务无关的过期键上，会对服务器的响应时间和吞吐量造成影响。<br>另外，创建定时器需要用到Redis服务器中的时间时间，而当前时间事件的实现方式-无序链表，查找一个事件的时间复杂度是O(N)，并不能高效处理时间事件。</p>
+<p>这种策略不常用。</p>
+<ul>
+<li>惰性删除<br>是在每次从键空间中获取键时，检查取得的键是否过期。如果过期的话删除该键，否则返回该键。</li>
+</ul>
+<p>优点：<br>CPU友好。</p>
+<p>缺点：<br>内存不友好。<br>如果数据库中有非常多的过期键，但是这些过期键又恰好没被访问，可能一直不会被删除（除非用户手动执行FLUSHDB），这样无用的垃圾数据可能会占用大量内存。</p>
+<ul>
+<li>定期删除<br>每隔一段时间，对数据库执行一次检查，删除里面的过期键。通过限制删除操作执行的时长和频率来减少删除操作对CPU时间的影响。<br>是对前两种策略的折中。</li>
+</ul>
+<p>难点：<br>难在如何确定删除操作执行的时长和频率。</p>
+<h1 id="2-Redis过期键删除"><a href="#2-Redis过期键删除" class="headerlink" title="2 Redis过期键删除"></a>2 Redis过期键删除</h1><p>Redis实际采用的是惰性删除和定期删除两种策略：通过配合使用2种删除策略，在CPU时间和避免内存空间浪费之间取得平衡。</p>
+<h1 id="2-1-惰性删除策略的实现"><a href="#2-1-惰性删除策略的实现" class="headerlink" title="2.1 惰性删除策略的实现"></a>2.1 惰性删除策略的实现</h1><p>实现源码在src/db.c#expireIfNeeded，所有读写数据库的Redis命令在执行之前都会调用此方法对输入键进行检查。<br>如果已经过期，将键从数据库中删除。<br>返回值：<br>0：键没有过期时间或者未过期。<br>1：键因为过期被删除了。</p>
+<p>执行过程如下图：<br><img src="http://o8sltkx20.bkt.clouddn.com/redis-expired-delete-01.jpg" alt="Redis过期键删除-惰性删除策略"></p>
+<h1 id="3-参考资料"><a href="#3-参考资料" class="headerlink" title="3 参考资料"></a>3 参考资料</h1><ul>
+<li>《Redis设计与实现》</li>
+</ul>
+<h2 id="版权声明"><a href="#版权声明" class="headerlink" title="版权声明"></a>版权声明</h2><p>本文首发于<a href="http://xiajunhust.github.io/">江南烟雨的个人博客</a>博客（ <a href="http://xiajunhust.github.io/">http://xiajunhust.github.io/</a> ），版权所有，侵权必究。<br>本文永久链接：<a href="http://xiajunhust.github.io/2017/12/02/Redis源码学习之一-Redis过期键删除策略/">http://xiajunhust.github.io/2017/12/02/Redis源码学习之一-Redis过期键删除策略/</a></p>
+
       
     </div>
 
@@ -196,28 +247,21 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/12/28/Hystrix-Dashborad数据介绍/" data-id="cjaoybljf0007f4wfjbklein5" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2017/12/02/Redis源码学习之一-Redis过期键删除策略/" data-id="cjaoybljp000ef4wf272bnts1" class="article-share-link">Share</a>
       
       
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Redis/">Redis</a></li></ul>
+
     </footer>
   </div>
   
     
 <nav id="article-nav">
   
-    <a href="/2017/01/07/一次大表SQL查询优化历程/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Newer</strong>
-      <div class="article-nav-title">
-        
-          一次大表SQL查询优化历程
-        
-      </div>
-    </a>
   
-  
-    <a href="/2016/12/18/从Hystrix-DashboardData看ReativeX的使用/" id="article-nav-older" class="article-nav-link-wrap">
+    <a href="/2017/01/07/一次大表SQL查询优化历程/" id="article-nav-older" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">从Hystrix DashboardData看ReativeX的使用</div>
+      <div class="article-nav-title">一次大表SQL查询优化历程</div>
     </a>
   
 </nav>
@@ -227,7 +271,7 @@
 
   <section id="comments">
    <!-- 多说评论框 start -->
-<div id="ds-thread" class="ds-thread" data-thread-key="2016/12/28/Hystrix-Dashborad数据介绍/" data-title="Hystrix Dashborad数据介绍" data-url="http://xiajunhust.github.io/2016/12/28/Hystrix-Dashborad数据介绍/"></div>
+<div id="ds-thread" class="ds-thread" data-thread-key="2017/12/02/Redis源码学习之一-Redis过期键删除策略/" data-title="Redis源码学习之一-Redis过期键删除" data-url="http://xiajunhust.github.io/2017/12/02/Redis源码学习之一-Redis过期键删除策略/"></div>
 <!-- 多说评论框 end -->
 <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 <script type="text/javascript">
