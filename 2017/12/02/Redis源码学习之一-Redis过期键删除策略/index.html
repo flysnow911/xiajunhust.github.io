@@ -25,7 +25,7 @@
 优点：能保证过期键会被尽快删除，及时释放内存。">
 <meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/redis-expired-delete-01.jpg">
 <meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/redis-expired-delete-02.jpg">
-<meta property="og:updated_time" content="2017-12-02T07:53:31.000Z">
+<meta property="og:updated_time" content="2017-12-02T08:03:30.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Redis源码学习之一-Redis过期键删除">
 <meta name="twitter:description" content="本文内容是Redis过期键删除。
@@ -130,7 +130,7 @@
 <h1 id="2-Redis过期键删除"><a href="#2-Redis过期键删除" class="headerlink" title="2 Redis过期键删除"></a>2 Redis过期键删除</h1><p>Redis实际采用的是惰性删除和定期删除两种策略：通过配合使用2种删除策略，在CPU时间和避免内存空间浪费之间取得平衡。</p>
 <h1 id="2-1-惰性删除策略的实现"><a href="#2-1-惰性删除策略的实现" class="headerlink" title="2.1 惰性删除策略的实现"></a>2.1 惰性删除策略的实现</h1><p>实现源码在src/db.c#expireIfNeeded，所有读写数据库的Redis命令在执行之前都会调用此方法对输入键进行检查。<br>如果已经过期，将键从数据库中删除。<br>返回值：<br>0：键没有过期时间或者未过期。<br>1：键因为过期被删除了。</p>
 <p>执行过程如下图：<br><img src="http://o8sltkx20.bkt.clouddn.com/redis-expired-delete-01.jpg" alt="Redis过期键删除-惰性删除策略"></p>
-<h1 id="2-2-定期删除策略的实现"><a href="#2-2-定期删除策略的实现" class="headerlink" title="2.2 定期删除策略的实现"></a>2.2 定期删除策略的实现</h1><p>源码实现是在src/redis.c#activeExpireCycleTryExpire。每当Redis的服务器周期性操作redis.c/serverCron方法执行时，本方法就会被调用，在规定的时间内，分多次遍历服务器中的各个数据库，从数据库的expires字段中随机检查一部分键的过期时间，并删除其中的过期键。</p>
+<h1 id="2-2-定期删除策略的实现"><a href="#2-2-定期删除策略的实现" class="headerlink" title="2.2 定期删除策略的实现"></a>2.2 定期删除策略的实现</h1><p>源码实现是在src/redis.c#activeExpireCycle。每当Redis的服务器周期性操作redis.c/serverCron方法执行时，本方法就会被调用，在规定的时间内，分多次遍历服务器中的各个数据库，从数据库的expires字段中随机检查一部分键的过期时间，并删除其中的过期键。</p>
 <h2 id="2-2-1-定期删除的2种模式"><a href="#2-2-1-定期删除的2种模式" class="headerlink" title="2.2.1 定期删除的2种模式"></a>2.2.1 定期删除的2种模式</h2><h3 id="2-2-1-1-ACTIVE-EXPIRE-CYCLE-FAST-快速模式"><a href="#2-2-1-1-ACTIVE-EXPIRE-CYCLE-FAST-快速模式" class="headerlink" title="2.2.1.1 ACTIVE_EXPIRE_CYCLE_FAST-快速模式"></a>2.2.1.1 ACTIVE_EXPIRE_CYCLE_FAST-快速模式</h3><p>方法执行的时间不会长于EXPIRE_FAST_CYCLE_DURATION毫秒。并且在EXPIRE_FAST_CYCLE_DURATION毫秒内不会再次执行。  </p>
 <h3 id="2-2-1-2-ACTIVE-EXPIRE-CYCLE-SLOW-慢速模式"><a href="#2-2-1-2-ACTIVE-EXPIRE-CYCLE-SLOW-慢速模式" class="headerlink" title="2.2.1.2 ACTIVE_EXPIRE_CYCLE_SLOW-慢速模式"></a>2.2.1.2 ACTIVE_EXPIRE_CYCLE_SLOW-慢速模式</h3><p>正常执行方式，方法的执行时限为serverCron每次执行时间的一个百分比，百分比由REDIS_EXPIRELOOKUPS_TIME_PERC定义，默认是25%。</p>
 <h2 id="2-2-2-执行过程分析"><a href="#2-2-2-执行过程分析" class="headerlink" title="2.2.2 执行过程分析"></a>2.2.2 执行过程分析</h2><p>通常每次最多扫描的db数量是REDIS_DBCRON_DBS_PER_CALL，除非：  </p>
@@ -140,6 +140,15 @@
 </ul>
 <p>对每个数据库会执行多次循环，每次循环最多只检查ACTIVE_EXPIRE_CYCLE_LOOKUPS_PER_LOOP个键。</p>
 <p>执行过程如下图：<br><img src="http://o8sltkx20.bkt.clouddn.com/redis-expired-delete-02.jpg" alt="Redis定期删除执行"></p>
+<h2 id="2-2-3-什么时候执行定期删除"><a href="#2-2-3-什么时候执行定期删除" class="headerlink" title="2.2.3 什么时候执行定期删除"></a>2.2.3 什么时候执行定期删除</h2><p>Redis会在2种情况下调用activeExpireCycle方法执行定期删除：</p>
+<ul>
+<li>在每次处理事件驱动处理过程之前<br>这个时候执行的是快速模式。</li>
+</ul>
+<p>redis.c#beforeSleep：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line">/* This function gets called every time Redis is entering the</div><div class="line"> * main loop of the event driven library, that is, before to sleep</div><div class="line"> * for ready file descriptors. */</div><div class="line">void beforeSleep(struct aeEventLoop *eventLoop) &#123;</div><div class="line">    REDIS_NOTUSED(eventLoop);</div><div class="line"></div><div class="line">    /* Call the Redis Cluster before sleep function. Note that this function</div><div class="line">     * may change the state of Redis Cluster (from ok to fail or vice versa),</div><div class="line">     * so it&apos;s a good idea to call it before serving the unblocked clients</div><div class="line">     * later in this function. */</div><div class="line">    if (server.cluster_enabled) clusterBeforeSleep();</div><div class="line"></div><div class="line">    /* 执行一次快速扫描处理 */</div><div class="line">    if (server.active_expire_enabled &amp;&amp; server.masterhost == NULL)</div><div class="line">        activeExpireCycle(ACTIVE_EXPIRE_CYCLE_FAST);</div><div class="line"></div><div class="line">    /* Send all the slaves an ACK request if at least one client blocked</div><div class="line">     * during the previous event loop iteration. */</div><div class="line">    if (server.get_ack_from_slaves) &#123;</div><div class="line">        robj *argv[3];</div><div class="line"></div><div class="line">        argv[0] = createStringObject(&quot;REPLCONF&quot;,8);</div><div class="line">        argv[1] = createStringObject(&quot;GETACK&quot;,6);</div><div class="line">        argv[2] = createStringObject(&quot;*&quot;,1); /* Not used argument. */</div><div class="line">        replicationFeedSlaves(server.slaves, server.slaveseldb, argv, 3);</div><div class="line">        decrRefCount(argv[0]);</div><div class="line">        decrRefCount(argv[1]);</div><div class="line">        decrRefCount(argv[2]);</div><div class="line">        server.get_ack_from_slaves = 0;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    /* Unblock all the clients blocked for synchronous replication</div><div class="line">     * in WAIT. */</div><div class="line">    if (listLength(server.clients_waiting_acks))</div><div class="line">        processClientsWaitingReplicas();</div><div class="line"></div><div class="line">    /* Try to process pending commands for clients that were just unblocked. */</div><div class="line">    if (listLength(server.unblocked_clients))</div><div class="line">        processUnblockedClients();</div><div class="line"></div><div class="line">    /* Write the AOF buffer on disk */</div><div class="line">    flushAppendOnlyFile(0);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>serverCron方法被执行时  </li>
+</ul>
 <h1 id="3-参考资料"><a href="#3-参考资料" class="headerlink" title="3 参考资料"></a>3 参考资料</h1><ul>
 <li>《Redis设计与实现》</li>
 </ul>
@@ -256,7 +265,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2017/12/02/Redis源码学习之一-Redis过期键删除策略/" data-id="cjap1k7fd0005izwf7fqees9w" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2017/12/02/Redis源码学习之一-Redis过期键删除策略/" data-id="cjap1x06z0006juwfdt1hbqxv" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Redis/">Redis</a></li></ul>
