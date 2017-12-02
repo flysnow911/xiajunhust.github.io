@@ -11,8 +11,7 @@
 
 定时删除使用定时器在键的过期时间来临时，立即执行对键的删除操作。
 
-优点：能保证过期键会被尽快删除，及时释放内存。
-缺点：会占用CPU，在CPU时间比较紧张的情况下，将CPU时间用在删除和当前任务无关的过期键上，会对服务器的响应时间和吞吐量造成影响。另外，创建定时">
+优点：能保证过期键会被尽快删除，及时释放内存。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Redis源码学习之一-Redis过期键删除">
 <meta property="og:url" content="http://xiajunhust.github.io/2017/12/02/Redis源码学习之一-Redis过期键删除策略/index.html">
@@ -23,10 +22,9 @@
 
 定时删除使用定时器在键的过期时间来临时，立即执行对键的删除操作。
 
-优点：能保证过期键会被尽快删除，及时释放内存。
-缺点：会占用CPU，在CPU时间比较紧张的情况下，将CPU时间用在删除和当前任务无关的过期键上，会对服务器的响应时间和吞吐量造成影响。另外，创建定时">
+优点：能保证过期键会被尽快删除，及时释放内存。">
 <meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/redis-expired-delete-01.jpg">
-<meta property="og:updated_time" content="2017-12-02T06:22:19.000Z">
+<meta property="og:updated_time" content="2017-12-02T06:25:03.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Redis源码学习之一-Redis过期键删除">
 <meta name="twitter:description" content="本文内容是Redis过期键删除。
@@ -35,8 +33,7 @@
 
 定时删除使用定时器在键的过期时间来临时，立即执行对键的删除操作。
 
-优点：能保证过期键会被尽快删除，及时释放内存。
-缺点：会占用CPU，在CPU时间比较紧张的情况下，将CPU时间用在删除和当前任务无关的过期键上，会对服务器的响应时间和吞吐量造成影响。另外，创建定时">
+优点：能保证过期键会被尽快删除，及时释放内存。">
 <meta name="twitter:image" content="http://o8sltkx20.bkt.clouddn.com/redis-expired-delete-01.jpg">
   
     <link rel="alternate" href="/atom.xml" title="江南烟雨的个人博客" type="application/atom+xml">
@@ -117,6 +114,7 @@
 <li>定时删除<br>使用定时器在键的过期时间来临时，立即执行对键的删除操作。</li>
 </ul>
 <p>优点：<br>能保证过期键会被尽快删除，及时释放内存。</p>
+<a id="more"></a>
 <p>缺点：<br>会占用CPU，在CPU时间比较紧张的情况下，将CPU时间用在删除和当前任务无关的过期键上，会对服务器的响应时间和吞吐量造成影响。<br>另外，创建定时器需要用到Redis服务器中的时间时间，而当前时间事件的实现方式-无序链表，查找一个事件的时间复杂度是O(N)，并不能高效处理时间事件。</p>
 <p>这种策略不常用。</p>
 <ul>
@@ -247,7 +245,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2017/12/02/Redis源码学习之一-Redis过期键删除策略/" data-id="cjaoybljp000ef4wf272bnts1" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2017/12/02/Redis源码学习之一-Redis过期键删除策略/" data-id="cjaoyefkr000pfywfo6o75m1f" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Redis/">Redis</a></li></ul>
