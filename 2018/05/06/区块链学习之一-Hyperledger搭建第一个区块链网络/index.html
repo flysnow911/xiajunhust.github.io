@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>区块链学习之一-Hyperledger搭建第一个区块链网络 | 江南烟雨的个人博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="本文介绍如何快速利用fabric自带的例子搭建第一个区块链网络。
+1 环境MAC OS。
+首先需要确保完成了一些前置工作：go、docker的安装。
+2 步骤接下来从github下载fabric-samples代码，地址：https://github.com/hyperledger/fabric-samples
+注意需要将其放置与gopath中，我的路径是：~/Documents/Work/myc">
+<meta property="og:type" content="article">
+<meta property="og:title" content="区块链学习之一-Hyperledger搭建第一个区块链网络">
+<meta property="og:url" content="http://xiajunhust.github.io/2018/05/06/区块链学习之一-Hyperledger搭建第一个区块链网络/index.html">
+<meta property="og:site_name" content="江南烟雨的个人博客">
+<meta property="og:description" content="本文介绍如何快速利用fabric自带的例子搭建第一个区块链网络。
+1 环境MAC OS。
+首先需要确保完成了一些前置工作：go、docker的安装。
+2 步骤接下来从github下载fabric-samples代码，地址：https://github.com/hyperledger/fabric-samples
+注意需要将其放置与gopath中，我的路径是：~/Documents/Work/myc">
+<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/blockchain1.png">
+<meta property="og:updated_time" content="2018-05-06T09:31:12.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="区块链学习之一-Hyperledger搭建第一个区块链网络">
+<meta name="twitter:description" content="本文介绍如何快速利用fabric自带的例子搭建第一个区块链网络。
+1 环境MAC OS。
+首先需要确保完成了一些前置工作：go、docker的安装。
+2 步骤接下来从github下载fabric-samples代码，地址：https://github.com/hyperledger/fabric-samples
+注意需要将其放置与gopath中，我的路径是：~/Documents/Work/myc">
+<meta name="twitter:image" content="http://o8sltkx20.bkt.clouddn.com/blockchain1.png">
+  
+    <link rel="alternate" href="/atom.xml" title="江南烟雨的个人博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">江南烟雨的个人博客</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://xiajunhust.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-区块链学习之一-Hyperledger搭建第一个区块链网络" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/05/06/区块链学习之一-Hyperledger搭建第一个区块链网络/" class="article-date">
+  <time datetime="2018-05-06T09:24:59.000Z" itemprop="datePublished">2018-05-06</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      区块链学习之一-Hyperledger搭建第一个区块链网络
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>本文介绍如何快速利用fabric自带的例子搭建第一个区块链网络。</p>
+<h1 id="1-环境"><a href="#1-环境" class="headerlink" title="1 环境"></a>1 环境</h1><p>MAC OS。</p>
+<p>首先需要确保完成了一些前置工作：go、docker的安装。</p>
+<h1 id="2-步骤"><a href="#2-步骤" class="headerlink" title="2 步骤"></a>2 步骤</h1><p>接下来从github下载fabric-samples代码，地址：<a href="https://github.com/hyperledger/fabric-samples" target="_blank" rel="external">https://github.com/hyperledger/fabric-samples</a></p>
+<p>注意需要将其放置与gopath中，我的路径是：<br>~/Documents/Work/mycode/gopath/src/github.com/hyperledger/fabric-samples/first-network</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">echo $GOPATH</div><div class="line">~/Documents/Work/mycode/gopath/</div></pre></td></tr></table></figure>
+<p>本文基于如下版本：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">➜  first-network git:(a76d649) ✗ git branch</div><div class="line">* (HEAD detached at v1.0.6)</div><div class="line">  master</div><div class="line">➜  first-network git:(a76d649) ✗ git tag</div><div class="line">v1.0.2</div><div class="line">v1.0.6</div><div class="line">v1.1.0-alpha</div><div class="line">v1.1.0-preview</div><div class="line">v1.1.0-rc1</div></pre></td></tr></table></figure>
+<p>接下来切换到first-network子目录，可以看到有个脚本文件byfn.sh。后面我们相关操作都在此子目录中。<br>这个脚本文件封装了很多操作，我们可以利用这个脚本方便的启动区块链网络。关于细节后面会展开讨论。</p>
+<p>执行命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">./byfn.sh -m generate</div></pre></td></tr></table></figure>
+<p>可以在控制台看到如下输出：<br><img src="http://o8sltkx20.bkt.clouddn.com/blockchain1.png" alt="1"></p>
+<p>这一步生成了网络中证书和key，排序服务的创世区块以及channel的配置。</p>
+<p>接下来便可以运行如下命令启动网络：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">./byfn.sh -m up</div></pre></td></tr></table></figure>
+<p>注意需要先启动docker。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">➜  first-network git:(a76d649) ✗ ./byfn.sh -m up</div><div class="line">Starting with channel &apos;mychannel&apos; and CLI timeout of &apos;10&apos;</div><div class="line">Continue (y/n)</div></pre></td></tr></table></figure>
+<p>选择y，接下来会创建channel，部署各个节点，安装链码等等。如果看到如下输出，表示执行成功：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">2018-05-06 09:09:42.028 UTC [main] main -&gt; INFO 007 Exiting.....</div><div class="line">===================== Query on PEER3 on channel &apos;mychannel&apos; is successful =====================</div><div class="line"></div><div class="line">========= All GOOD, BYFN execution completed ===========</div><div class="line"></div><div class="line"></div><div class="line"> _____   _   _   ____</div><div class="line">| ____| | \ | | |  _ \</div><div class="line">|  _|   |  \| | | | | |</div><div class="line">| |___  | |\  | | |_| |</div><div class="line">|_____| |_| \_| |____/</div></pre></td></tr></table></figure>
+<p>关闭网络：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">./byfn.sh -m down</div></pre></td></tr></table></figure>
+<p>输出日志：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div></pre></td><td class="code"><pre><div class="line">➜  first-network git:(a76d649) ✗ ./byfn.sh -m down</div><div class="line">Stopping with channel &apos;mychannel&apos; and CLI timeout of &apos;10&apos;</div><div class="line">Continue (y/n)? y</div><div class="line">proceeding ...</div><div class="line">WARNING: The CHANNEL_NAME variable is not set. Defaulting to a blank string.</div><div class="line">WARNING: The DELAY variable is not set. Defaulting to a blank string.</div><div class="line">WARNING: The TIMEOUT variable is not set. Defaulting to a blank string.</div><div class="line">Stopping orderer.example.com    ... done</div><div class="line">Stopping peer1.org2.example.com ... done</div><div class="line">Stopping peer0.org2.example.com ... done</div><div class="line">Stopping peer1.org1.example.com ... done</div><div class="line">Stopping peer0.org1.example.com ... done</div><div class="line">Removing cli                    ... done</div><div class="line">Removing orderer.example.com    ... done</div><div class="line">Removing peer1.org2.example.com ... done</div><div class="line">Removing peer0.org2.example.com ... done</div><div class="line">Removing peer1.org1.example.com ... done</div><div class="line">Removing peer0.org1.example.com ... done</div><div class="line">Removing network net_byfn</div><div class="line">Removing volume net_peer0.org2.example.com</div><div class="line">Removing volume net_peer1.org2.example.com</div><div class="line">Removing volume net_peer1.org1.example.com</div><div class="line">Removing volume net_peer0.org1.example.com</div><div class="line">Removing volume net_orderer.example.com</div><div class="line">WARNING: The CHANNEL_NAME variable is not set. Defaulting to a blank string.</div><div class="line">WARNING: The DELAY variable is not set. Defaulting to a blank string.</div><div class="line">WARNING: The TIMEOUT variable is not set. Defaulting to a blank string.</div><div class="line">Removing network net_byfn</div><div class="line">WARNING: Network net_byfn not found.</div><div class="line">Removing volume net_peer0.org2.example.com</div><div class="line">WARNING: Volume net_peer0.org2.example.com not found.</div><div class="line">Removing volume net_peer1.org2.example.com</div><div class="line">WARNING: Volume net_peer1.org2.example.com not found.</div><div class="line">Removing volume net_peer1.org1.example.com</div><div class="line">WARNING: Volume net_peer1.org1.example.com not found.</div><div class="line">Removing volume net_peer0.org1.example.com</div><div class="line">WARNING: Volume net_peer0.org1.example.com not found.</div><div class="line">Removing volume net_orderer.example.com</div><div class="line">WARNING: Volume net_orderer.example.com not found.</div><div class="line">6970b9a0fb75</div><div class="line">dcd2b3b66bb8</div><div class="line">6d79e9fcf20a</div><div class="line">b47bdb303acf</div><div class="line">fce5d85cbbaf</div><div class="line">8f01a8e18b98</div><div class="line">58d14dede52f</div><div class="line">ca2f8cbb15ca</div><div class="line">Untagged: dev-peer1.org2.example.com-mycc-1.0-26c2ef32838554aac4f7ad6f100aca865e87959c9a126e86d764c8d01f8346ab:latest</div><div class="line">Deleted: sha256:906bff156357014748b71a348083d33176d294a6a1311e7df0fc54fc8d081745</div><div class="line">Deleted: sha256:36f74509559873d1ee64d93681acdd78e2d8c330ba73377fc837edf0ef431b91</div><div class="line">Deleted: sha256:9d27eb407a1c2acd04f093ac57ffc6a6ac416db510d9dd5c61b8651516525b2f</div><div class="line">Deleted: sha256:c1e7964d91a0cb4c50150588a75c9b2dcbf0cdda7988accd1291e01ebee219d2</div><div class="line">Deleted: sha256:4fb2551d453747c6eefb6a032ea6f0c3adf4e908652c4a242ec49b7882a2af94</div><div class="line">Deleted: sha256:bb201d21c3b5ddf072c1c88a9facf165f3dc41884007ac39c57b7db6ada6660f</div><div class="line">Deleted: sha256:17bb731d4c48aeca66ddbfff413c6ed6d0e3aaaf2c1e39c2a80190b04162784a</div><div class="line">Untagged: dev-peer0.org1.example.com-mycc-1.0-384f11f484b9302df90b453200cfb25174305fce8f53f4e94d45ee3b6cab0ce9:latest</div><div class="line">Deleted: sha256:f8ef2ebed09a2bdc16e0ce832879ef9612cbc1c621018560b640b6ddabd4145a</div><div class="line">Deleted: sha256:b1a821ab9e0c17d5a25e79351888b63048b2a4404f6a42104c24b29f127da5e5</div><div class="line">Deleted: sha256:c0aa1d65ac849a0a0b55bd9f1d441dd72ad6a5a0d1463f69ee1e60bf936278f3</div><div class="line">Deleted: sha256:02750049903dca9fdc8bc6de13517968c4364e4c355b145abb3fb0e6c7f668df</div><div class="line">Deleted: sha256:7825160930eebcbd8c739de264927d2765db870bb2917cf26fc4cb3c7b4336ac</div><div class="line">Deleted: sha256:d2b686a165f3fa3a2f9d7ddaead3b27cc5b2f95901deb15687925459a33eef98</div><div class="line">Deleted: sha256:aede0e567de2e6f82d38172974ad2c3ba8a21fe37550b3b40590aa56a436f7aa</div><div class="line">Untagged: dev-peer0.org2.example.com-mycc-1.0-15b571b3ce849066b7ec74497da3b27e54e0df1345daff3951b94245ce09c42b:latest</div><div class="line">Deleted: sha256:d601184df16e34971d7bbbe2b9af5db5005bb1597a2d20e78eb91a74c28a8e47</div><div class="line">Deleted: sha256:d54ba0376a7ffe21541d5514d316c7d9b4bd76bbaf58a1370df156f90a8fc9a6</div><div class="line">Deleted: sha256:722ba7f245425b0323ecfe58415d1622aba46b9b850ae34ce514a2fd8be035dd</div><div class="line">Deleted: sha256:a956031b925713c8657d6f9b6d215141f87467cec0b7a8c5fb52944b8cc428f4</div><div class="line">Deleted: sha256:1f1302db16d7dc4a99f302cd0328982db99a11e2d32effd4d0a9f96e60595585</div><div class="line">Deleted: sha256:c6e1de55501abb5fcf7e23c77bfc897f33db61f9aa965131ae43c54295a0011e</div><div class="line">Deleted: sha256:7aea8b0de30036baaa12e83d5cb1396584ac7a584679ef7082aaf96055ffd87a</div></pre></td></tr></table></figure>
+<h1 id="3-附录-可能遇到的一些错误："><a href="#3-附录-可能遇到的一些错误：" class="headerlink" title="3 附录-可能遇到的一些错误："></a>3 附录-可能遇到的一些错误：</h1><p>启动网络的时候遇到：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">➜  first-network git:(a76d649) ✗ ./byfn.sh -m up</div><div class="line">Starting with channel &apos;mychannel&apos; and CLI timeout of &apos;10&apos;</div><div class="line">Continue (y/n)? y</div><div class="line">proceeding ...</div><div class="line">Creating cli ... error</div><div class="line">Starting peer1.org2.example.com ...</div><div class="line">Starting peer0.org2.example.com ...</div><div class="line">Starting peer1.org1.example.com ...</div><div class="line">Starting peer1.org1.example.com ... done</div><div class="line">Creating cli ...</div><div class="line"></div><div class="line">ERROR: for cli  Cannot create container for service cli: Conflict. The container name &quot;/cli&quot; is already in use by container &quot;a813a21e2dcc5e8b0f617b8fbdf695ea983b27ecbb4abc9c22f5341116ef7014&quot;. You have to remove (or rename) that container to be able to reuse that name.</div><div class="line"></div><div class="line">ERROR: for cli  Cannot create container for service cli: Conflict. The container name &quot;/cli&quot; is already in use by container &quot;a813a21e2dcc5e8b0f617b8fbdf695ea983b27ecbb4abc9c22f5341116ef7014&quot;. You have to remove (or rename) that container to be able to reuse that name.</div><div class="line">ERROR: Encountered errors while bringing up the project.</div><div class="line">ERROR !!!! Unable to start network</div></pre></td></tr></table></figure>
+<p>原因以及解决方案：<br>原因是之前已经启动过该名字的container。需要删除:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">docker stop /cli</div><div class="line">docker rm .cli</div></pre></td></tr></table></figure>
+<h1 id="4-参考资料"><a href="#4-参考资料" class="headerlink" title="4 参考资料:"></a>4 参考资料:</h1><p><a href="https://stackoverflow.com/questions/31697828/docker-run-name-is-already-in-use-by-container" target="_blank" rel="external">docker-run-name-is-already-in-use-by-container</a></p>
+<h2 id="版权声明"><a href="#版权声明" class="headerlink" title="版权声明"></a>版权声明</h2><p>本文首发于<a href="http://xiajunhust.github.io/">江南烟雨的个人博客</a>博客（ <a href="http://xiajunhust.github.io/">http://xiajunhust.github.io/</a> ），版权所有，侵权必究。<br>本文永久链接：<a href="http://xiajunhust.github.io/2018/05/06/区块链学习之一-Hyperledger搭建第一个区块链网络/">http://xiajunhust.github.io/2018/05/06/区块链学习之一-Hyperledger搭建第一个区块链网络/</a></p>
+
+      
+    </div>
+
+
+	<!-- css -->
+	<style type="text/css">
+	    .center {
+	        text-align: center;
+	    }
+	    .hidden {
+	        display: none;
+	    }
+		.donate_bar a.btn_donate{
+			display: inline-block;
+			width: 82px;
+			height: 82px;
+			background: url("http://7xsl28.com1.z0.glb.clouddn.com/btn_reward.gif") no-repeat;
+			_background: url("http://7xsl28.com1.z0.glb.clouddn.com/btn_reward.gif") no-repeat;
+
+			<!-- http://img.t.sinajs.cn/t5/style/images/apps_PRF/e_media/btn_reward.gif
+			     因为本 hexo 生成的博客所用的 theme 的 a:hover 带动画效果，
+				 为了在让打赏按钮显示效果正常 而 添加了以下几行 css，
+				 嵌入其它博客时不一定要它们。 -->
+			-webkit-transition: background 0s;
+			-moz-transition: background 0s;
+			-o-transition: background 0s;
+			-ms-transition: background 0s;
+			transition: background 0s;
+			<!-- /让打赏按钮的效果显示正常 而 添加的几行 css 到此结束 -->
+		}
+
+		.donate_bar a.btn_donate:hover{ background-position: 0px -82px;}
+		.donate_bar .donate_txt {
+			display: block;
+			color: #9d9d9d;
+			font: 14px/2 "Microsoft Yahei";
+		}
+		.bold{ font-weight: bold; }
+	</style>
+	<!-- /css -->
+
+    <!-- Donate Module -->
+    <div id="donate_module">
+
+	<!-- btn_donate & tips -->
+	<div id="donate_board" class="donate_bar center">
+	    <br>
+	    ------------------------------------------------------------------------------------------------------------------------------
+	    <br>
+		<a id="btn_donate" class="btn_donate" target="_self" href="javascript:;" title="Donate 打赏"></a>
+		<span class="donate_txt">
+			打赏我的人，运气都不会太差~
+		</span>
+			
+		
+	</div>
+	<!-- /btn_donate & tips -->
+
+	<!-- donate guide -->
+    
+	<div id="donate_guide" class="donate_bar center hidden">
+        <br>
+	    ------------------------------------------------------------------------------------------------------------------------------
+	    <br>
+	    
+	    <div width="100%" align="center"><div name="dashmain" id="dash-main-id-87895f" class="dash-main-3 87895f-0.99"></div></div>
+		<script type="text/javascript" charset="utf-8" src="http://www.dashangcloud.com/static/ds.js"></script>
+		
+
+		<a href="http://o8sltkx20.bkt.clouddn.com/0004.jpg" title="用微信扫一扫哦~" class="fancybox" rel="article0">
+			<img src="http://o8sltkx20.bkt.clouddn.com/0004.jpg" title="微信打赏 Donate" height="190px" width="auto"/>
+		</a>
+        
+        &nbsp;&nbsp;
+
+		<a href="http://o8sltkx20.bkt.clouddn.com/0002.jpg" title="用支付宝扫一扫即可~" class="fancybox" rel="article0">
+			<img src="http://o8sltkx20.bkt.clouddn.com/0002.jpg" title="支付宝打赏 Donate" height="190px" width="auto"/>
+		</a>
+
+		<span class="donate_txt">
+			打赏我的人，运气都不会太差~
+		</span>
+
+	</div>
+	<!-- /donate guide -->
+
+	<!-- donate script -->
+	<script type="text/javascript">
+		document.getElementById('btn_donate').onclick = function() {
+			$('#donate_board').addClass('hidden');
+	    $('#donate_guide').removeClass('hidden');
+		}
+
+		function donate_on_web(){
+			$('#donate').submit();
+        }
+
+		var original_window_onload = window.onload;
+        window.onload = function () {
+            if (original_window_onload) {
+                original_window_onload();
+            }
+            document.getElementById('donate_board_wdg').className = 'hidden';
+		}
+	</script>
+	<!-- /donate script -->
+</div>
+<!-- /Donate Module -->
+   
+
+    <footer class="article-footer">
+      <a data-url="http://xiajunhust.github.io/2018/05/06/区块链学习之一-Hyperledger搭建第一个区块链网络/" data-id="cjgumawmu000z52wfvxtcihos" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Hyperledger/">Hyperledger</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/区块链/">区块链</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2017/12/02/Redis源码学习之一-Redis过期键删除策略/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Redis源码学习之一-Redis过期键删除</div>
+    </a>
+  
+</nav>
+
+  
+
+
+  <section id="comments">
+   <!-- 多说评论框 start -->
+<div id="ds-thread" class="ds-thread" data-thread-key="2018/05/06/区块链学习之一-Hyperledger搭建第一个区块链网络/" data-title="区块链学习之一-Hyperledger搭建第一个区块链网络" data-url="http://xiajunhust.github.io/2018/05/06/区块链学习之一-Hyperledger搭建第一个区块链网络/"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"xiajun"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+<!-- 多说公共JS代码 end -->
+  </section>
+  
+
+</article>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hyperledger/">Hyperledger</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hystrix/">Hystrix</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/InfluxDB/">InfluxDB</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/">MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ReactiveX/">ReactiveX</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/">Redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RocketMQ/">RocketMQ</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/代码设计/">代码设计</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/区块链/">区块链</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/开发工具/">开发工具</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/思考-读书笔记/">思考&读书笔记</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/测试技术/">测试技术</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Hyperledger/" style="font-size: 10px;">Hyperledger</a> <a href="/tags/Hystrix/" style="font-size: 10px;">Hystrix</a> <a href="/tags/InfluxDB/" style="font-size: 10px;">InfluxDB</a> <a href="/tags/Java/" style="font-size: 13.33px;">Java</a> <a href="/tags/MySQL/" style="font-size: 16.67px;">MySQL</a> <a href="/tags/ReactiveX/" style="font-size: 10px;">ReactiveX</a> <a href="/tags/Redis/" style="font-size: 10px;">Redis</a> <a href="/tags/RocketMQ/" style="font-size: 20px;">RocketMQ</a> <a href="/tags/代码设计/" style="font-size: 10px;">代码设计</a> <a href="/tags/区块链/" style="font-size: 10px;">区块链</a> <a href="/tags/开发工具/" style="font-size: 13.33px;">开发工具</a> <a href="/tags/思考-读书笔记/" style="font-size: 10px;">思考&读书笔记</a> <a href="/tags/测试技术/" style="font-size: 10px;">测试技术</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">五月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">十二月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">十一月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">八月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">七月 2016</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2018/05/06/区块链学习之一-Hyperledger搭建第一个区块链网络/">区块链学习之一-Hyperledger搭建第一个区块链网络</a>
+          </li>
+        
+          <li>
+            <a href="/2017/12/02/Redis源码学习之一-Redis过期键删除策略/">Redis源码学习之一-Redis过期键删除</a>
+          </li>
+        
+          <li>
+            <a href="/2017/01/07/一次大表SQL查询优化历程/">一次大表SQL查询优化历程</a>
+          </li>
+        
+          <li>
+            <a href="/2016/12/28/Hystrix-Dashborad数据介绍/">Hystrix Dashborad数据介绍</a>
+          </li>
+        
+          <li>
+            <a href="/2016/12/18/从Hystrix-DashboardData看ReativeX的使用/">从Hystrix DashboardData看ReativeX的使用</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    <iframe width="100%" height="550" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=550&fansRow=2&ptype=1&speed=0&skin=1&isTitle=1&noborder=1&isWeibo=1&isFans=1&uid=1618991481&verifier=6bf885be&dpc=1"></iframe>
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+   
+    <div id="footer-info" class="inner">
+      &copy; 2018 江南烟雨<br>
+     本站总访问量<span id="busuanzi_value_site_pv"></span>次</br>
+     本站访客数<span id="busuanzi_value_site_uv"></span>人次</br>
+
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="http://o8sltkx20.bkt.clouddn.com/jquery-2.0.3.min.js"></script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>
