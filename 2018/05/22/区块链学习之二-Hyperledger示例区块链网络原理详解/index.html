@@ -17,7 +17,7 @@
 123generateCertsreplacePrivateKeygenerateCh">
 <meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/blockchain2.jpeg">
 <meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/blockchain3.jpeg">
-<meta property="og:updated_time" content="2018-05-27T08:52:28.000Z">
+<meta property="og:updated_time" content="2018-05-27T08:58:07.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="区块链学习之二-Hyperledger示例区块链网络原理详解">
 <meta name="twitter:description" content="在上篇文章中，我们是直接利用fabric-samples工程中自带的脚本byfn.sh文件来搭建我们的区块链的，直接省略了很多细节，本文探索下背后的细节与实现。 
@@ -113,7 +113,7 @@
 <p>该文件包含了对应网络的结构定义，包含3个成员：1个排序组织以及2个peer组织（每个管理2个peer节点）。</p>
 <h1 id="2-byfn-sh-up-启动示例区块链网络"><a href="#2-byfn-sh-up-启动示例区块链网络" class="headerlink" title="2 byfn.sh up-启动示例区块链网络"></a>2 byfn.sh up-启动示例区块链网络</h1><p>核心脚本代码：  </p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"># use this as the default docker-compose yaml definition</div><div class="line">COMPOSE_FILE=docker-compose-cli.yaml</div><div class="line">#</div><div class="line">COMPOSE_FILE_COUCH=docker-compose-couch.yaml</div><div class="line"></div><div class="line">function networkUp () &#123;</div><div class="line">  if [ &quot;$&#123;IF_COUCHDB&#125;&quot; == &quot;couchdb&quot; ]; then</div><div class="line">      IMAGE_TAG=$IMAGETAG CHANNEL_NAME=$CHANNEL_NAME TIMEOUT=$CLI_TIMEOUT DELAY=$CLI_DELAY docker-compose -f $COMPOSE_FILE -f $COMPOSE_FILE_COUCH up -d 2&gt;&amp;1</div><div class="line">  else</div><div class="line">      IMAGE_TAG=$IMAGETAG CHANNEL_NAME=$CHANNEL_NAME TIMEOUT=$CLI_TIMEOUT DELAY=$CLI_DELAY docker-compose -f $COMPOSE_FILE up -d 2&gt;&amp;1</div><div class="line">  fi</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>会执行的详细操作主要在docker-compose-cli.yaml文件中，可以看到是先启动CLI container，然后执行了shell脚本./scripts/script.sh，完整步骤示意图如下：<br><img src="http://o8sltkx20.bkt.clouddn.com/blockchain3.jpeg" alt="区块链示例网络启动示意图"></p>
+<p>会执行的详细操作主要在docker-compose-cli.yaml文件中，可以看到是先启动CLI container，然后执行了shell脚本./scripts/script.sh，完整步骤示意图如下：<br><img src="http://o8sltkx20.bkt.clouddn.com/blockchain3.jpeg" width="300" alt="区块链示例网络启动示意图" align="center">     </p>
 <p>核心脚本如下：  </p>
 <ul>
 <li>createChannel</li>
@@ -259,7 +259,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2018/05/22/区块链学习之二-Hyperledger示例区块链网络原理详解/" data-id="cjhol681000113vwftluaaifl" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2018/05/22/区块链学习之二-Hyperledger示例区块链网络原理详解/" data-id="cjhol829o000to1wfdztoh6q3" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Hyperledger/">Hyperledger</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/区块链/">区块链</a></li></ul>
