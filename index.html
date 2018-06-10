@@ -77,7 +77,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/06/10/区块链学习之三-Hyperledger-编写第一个区块链应用/">区块链学习之三-编写Hyperledger区块链应用以及应用于账本交互原理解析</a>
+      <a class="article-title" href="/2018/06/10/区块链学习之三-Hyperledger-编写第一个区块链应用/">区块链学习之三-编写Hyperledger区块链应用以及应用与账本交互原理解析</a>
     </h1>
   
 
@@ -120,8 +120,8 @@
 <p>再次执行query.js可以看到我们刚才创建的这条car记录。</p>
 <h1 id="2-5-智能合约解读"><a href="#2-5-智能合约解读" class="headerlink" title="2.5 智能合约解读"></a>2.5 智能合约解读</h1><p>GO版本的智能合约代码在gopath/src/github.com/hyperledger/fabric-samples/chaincode/fabcar/fabcar.go目录下面，文件名fabcar。go，使用go语言编写。</p>
 <p>应用是如何能够调到用链码上的不同方法呢？每个方法会被编码到链码shim interface里的一个API，这样智能合约容器就能与peer节点账本进行交互。<br><img src="http://o8sltkx20.bkt.clouddn.com/blockchain6.jpeg" width="700" alt="查询账本" align="center">  </p>
-<p>我们看看刚才运行的方法queryAllCars，看看是如何与账本交互的。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div></pre></td><td class="code"><pre><div class="line">func (s *SmartContract) queryAllCars(APIstub shim.ChaincodeStubInterface) sc.Response &#123;</div><div class="line">   //查询范围指定</div><div class="line">	startKey := &quot;CAR0&quot;</div><div class="line">	endKey := &quot;CAR999&quot;</div><div class="line"></div><div class="line">	resultsIterator, err := APIstub.GetStateByRange(startKey, endKey)</div><div class="line">	if err != nil &#123;</div><div class="line">		return shim.Error(err.Error())</div><div class="line">	&#125;</div><div class="line">	defer resultsIterator.Close()</div><div class="line"></div><div class="line">	// buffer is a JSON array containing QueryResults</div><div class="line">	var buffer bytes.Buffer</div><div class="line">	buffer.WriteString(&quot;[&quot;)</div><div class="line"></div><div class="line">	bArrayMemberAlreadyWritten := false</div><div class="line">	for resultsIterator.HasNext() &#123;</div><div class="line">		queryResponse, err := resultsIterator.Next()</div><div class="line">		if err != nil &#123;</div><div class="line">			return shim.Error(err.Error())</div><div class="line">		&#125;</div><div class="line">		// Add a comma before array members, suppress it for the first array member</div><div class="line">		if bArrayMemberAlreadyWritten == true &#123;</div><div class="line">			buffer.WriteString(&quot;,&quot;)</div><div class="line">		&#125;</div><div class="line">		buffer.WriteString(&quot;&#123;\&quot;Key\&quot;:&quot;)</div><div class="line">		buffer.WriteString(&quot;\&quot;&quot;)</div><div class="line">		buffer.WriteString(queryResponse.Key)</div><div class="line">		buffer.WriteString(&quot;\&quot;&quot;)</div><div class="line"></div><div class="line">		buffer.WriteString(&quot;, \&quot;Record\&quot;:&quot;)</div><div class="line">		// Record is a JSON object, so we write as-is</div><div class="line">		buffer.WriteString(string(queryResponse.Value))</div><div class="line">		buffer.WriteString(&quot;&#125;&quot;)</div><div class="line">		bArrayMemberAlreadyWritten = true</div><div class="line">	&#125;</div><div class="line">	buffer.WriteString(&quot;]&quot;)</div><div class="line"></div><div class="line">	fmt.Printf(&quot;- queryAllCars:\n%s\n&quot;, buffer.String())</div><div class="line"></div><div class="line">	return shim.Success(buffer.Bytes())</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>我们看看刚才运行的方法queryAllCars，看看是如何与账本交互的。核心代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">func (s *SmartContract) queryAllCars(APIstub shim.ChaincodeStubInterface) sc.Response &#123;</div><div class="line">   //查询范围指定</div><div class="line">	startKey := &quot;CAR0&quot;</div><div class="line">	endKey := &quot;CAR999&quot;</div><div class="line"></div><div class="line">	resultsIterator, err := APIstub.GetStateByRange(startKey, endKey)</div><div class="line">	if err != nil &#123;</div><div class="line">		return shim.Error(err.Error())</div><div class="line">	&#125;</div><div class="line">	defer resultsIterator.Close()</div><div class="line"></div><div class="line">	// buffer is a JSON array containing QueryResults</div><div class="line">   //...</div><div class="line"></div><div class="line">	return shim.Success(buffer.Bytes())</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <h2 id="版权声明"><a href="#版权声明" class="headerlink" title="版权声明"></a>版权声明</h2><p>本文首发于<a href="http://xiajunhust.github.io/">江南烟雨的个人博客</a>博客（ <a href="http://xiajunhust.github.io/">http://xiajunhust.github.io/</a> ），版权所有，侵权必究。<br>本文永久链接：<a href="http://xiajunhust.github.io/2018/06/10/区块链学习之三-Hyperledger-编写第一个区块链应用/">http://xiajunhust.github.io/2018/06/10/区块链学习之三-Hyperledger-编写第一个区块链应用/</a></p>
 
       
@@ -235,7 +235,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2018/06/10/区块链学习之三-Hyperledger-编写第一个区块链应用/" data-id="cji8khans000uk5wfvuqtngb5" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2018/06/10/区块链学习之三-Hyperledger-编写第一个区块链应用/" data-id="cji8kougv0011lywfxt7ks22r" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Hyperledger/">Hyperledger</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/区块链/">区块链</a></li></ul>
@@ -435,7 +435,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2018/05/22/区块链学习之二-Hyperledger示例区块链网络原理详解/" data-id="cji8khany0012k5wfyxb9mzgj" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2018/05/22/区块链学习之二-Hyperledger示例区块链网络原理详解/" data-id="cji8kougw0012lywfap0ihxcc" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Hyperledger/">Hyperledger</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/区块链/">区块链</a></li></ul>
@@ -613,7 +613,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2018/05/06/区块链学习之一-Hyperledger搭建第一个区块链网络/" data-id="cji8khanq000sk5wfqtbhxt4n" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2018/05/06/区块链学习之一-Hyperledger搭建第一个区块链网络/" data-id="cji8kougu000zlywfmmiel7ie" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Hyperledger/">Hyperledger</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/区块链/">区块链</a></li></ul>
@@ -772,7 +772,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2017/12/02/Redis源码学习之一-Redis过期键删除策略/" data-id="cji8khane000ak5wforzarh4z" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2017/12/02/Redis源码学习之一-Redis过期键删除策略/" data-id="cji8kouge000dlywfin4nft9v" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Redis/">Redis</a></li></ul>
@@ -927,7 +927,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2017/01/07/一次大表SQL查询优化历程/" data-id="cji8khanm000kk5wf4aavh04l" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2017/01/07/一次大表SQL查询优化历程/" data-id="cji8kougp000qlywfmsdyij13" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MySQL/">MySQL</a></li></ul>
@@ -1075,7 +1075,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/12/28/Hystrix-Dashborad数据介绍/" data-id="cji8khan50005k5wfukxgbob7" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2016/12/28/Hystrix-Dashborad数据介绍/" data-id="cji8kougc000alywf1khll0g5" class="article-share-link">Share</a>
       
       
     </footer>
@@ -1231,7 +1231,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/12/18/从Hystrix-DashboardData看ReativeX的使用/" data-id="cji8khanp000qk5wf1rzq4670" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2016/12/18/从Hystrix-DashboardData看ReativeX的使用/" data-id="cji8kougq000slywfpa9hum4s" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Hystrix/">Hystrix</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ReactiveX/">ReactiveX</a></li></ul>
@@ -1386,7 +1386,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/12/13/InfluxDB写入失败-partial-write-max-values-per-tag-limit-exceeded/" data-id="cji8khanb0009k5wf2cbrbx1r" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2016/12/13/InfluxDB写入失败-partial-write-max-values-per-tag-limit-exceeded/" data-id="cji8kougd000blywfrmo8f0iq" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/InfluxDB/">InfluxDB</a></li></ul>
@@ -1545,7 +1545,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/11/17/RocketMQ源码学习之四-PushConsumer/" data-id="cji8khann000mk5wf7ostcd4e" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2016/11/17/RocketMQ源码学习之四-PushConsumer/" data-id="cji8kougn000nlywfnefvkq6c" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/RocketMQ/">RocketMQ</a></li></ul>
@@ -1700,7 +1700,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/11/14/RocketMQ源码学习之三-异步消息发送/" data-id="cji8khanh000ek5wf8v5n1u6l" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2016/11/14/RocketMQ源码学习之三-异步消息发送/" data-id="cji8kougo000olywfo84ah9uh" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/RocketMQ/">RocketMQ</a></li></ul>
@@ -1762,7 +1762,7 @@
       <ul>
         
           <li>
-            <a href="/2018/06/10/区块链学习之三-Hyperledger-编写第一个区块链应用/">区块链学习之三-编写Hyperledger区块链应用以及应用于账本交互原理解析</a>
+            <a href="/2018/06/10/区块链学习之三-Hyperledger-编写第一个区块链应用/">区块链学习之三-编写Hyperledger区块链应用以及应用与账本交互原理解析</a>
           </li>
         
           <li>
