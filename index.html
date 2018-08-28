@@ -207,7 +207,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2018/08/28/DDD-Domain&Application&infrastructure-Service(DDD中三种服务)/" data-id="cjld0yopy0005thwftfrl4f61" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2018/08/28/DDD-Domain&Application&infrastructure-Service(DDD中三种服务)/" data-id="cjld11da20000upwf3g57l5qo" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DDD/">DDD</a></li></ul>
@@ -359,7 +359,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2018/06/24/区块链学习之四-Hyperledger-链码/" data-id="cjld0yoqk0014thwfglovaz92" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2018/06/24/区块链学习之四-Hyperledger-链码/" data-id="cjld11db10010upwfo772rfni" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Hyperledger/">Hyperledger</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/区块链/">区块链</a></li></ul>
@@ -545,7 +545,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2018/06/10/区块链学习之三-Hyperledger-编写第一个区块链应用/" data-id="cjld0yoqj0012thwfvi6ep47y" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2018/06/10/区块链学习之三-Hyperledger-编写第一个区块链应用/" data-id="cjld11db0000yupwfx5c1l6i9" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Hyperledger/">Hyperledger</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/区块链/">区块链</a></li></ul>
@@ -745,7 +745,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2018/05/22/区块链学习之二-Hyperledger示例区块链网络原理详解/" data-id="cjld0yoqf000wthwfxhjbti41" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2018/05/22/区块链学习之二-Hyperledger示例区块链网络原理详解/" data-id="cjld11db60012upwfbqoqblte" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Hyperledger/">Hyperledger</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/区块链/">区块链</a></li></ul>
@@ -785,33 +785,16 @@
 <p>欢迎关注我的区块链技术学习二维码：<br><img src="http://o8sltkx20.bkt.clouddn.com/%E5%85%AC%E4%BC%97%E5%8F%B7%E4%BA%8C%E7%BB%B4%E7%A0%81.jpg" alt="大话区块链技术"></p>
 <h1 id="1-环境"><a href="#1-环境" class="headerlink" title="1 环境"></a>1 环境</h1><p>MAC OS。</p>
 <p>首先需要确保完成了一些前置工作：go、docker的安装。</p>
-<h1 id="2-步骤"><a href="#2-步骤" class="headerlink" title="2 步骤"></a>2 步骤</h1><p>接下来从github下载fabric-samples代码，地址：<a href="https://github.com/hyperledger/fabric-samples" target="_blank" rel="external">https://github.com/hyperledger/fabric-samples</a></p>
+<h1 id="2-步骤"><a href="#2-步骤" class="headerlink" title="2 步骤"></a>2 步骤</h1><p>接下来从github下载fabric-samples代码，地址：<a href="https://github.com/hyperledger/fabric-samples">https://github.com/hyperledger/fabric-samples</a></p>
 <p>注意需要将其放置与gopath中，我的路径是：<br>~/Documents/Work/mycode/gopath/src/github.com/hyperledger/fabric-samples/first-network</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">echo $GOPATH</div><div class="line">~/Documents/Work/mycode/gopath/</div></pre></td></tr></table></figure>
 <p>本文基于如下版本：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">➜  first-network git:(a76d649) ✗ git branch</div><div class="line">* (HEAD detached at v1.0.6)</div><div class="line">  master</div><div class="line">➜  first-network git:(a76d649) ✗ git tag</div><div class="line">v1.0.2</div><div class="line">v1.0.6</div><div class="line">v1.1.0-alpha</div><div class="line">v1.1.0-preview</div><div class="line">v1.1.0-rc1</div></pre></td></tr></table></figure>
-<p>接下来切换到first-network子目录，可以看到有个脚本文件byfn.sh。后面我们相关操作都在此子目录中。<br>这个脚本文件封装了很多操作，我们可以利用这个脚本方便的启动区块链网络。关于细节后面会展开讨论。</p>
-<p>执行命令：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">./byfn.sh -m generate</div></pre></td></tr></table></figure>
-<p>可以在控制台看到如下输出：<br><img src="http://o8sltkx20.bkt.clouddn.com/blockchain1.png" alt="1"></p>
-<p>这一步生成了网络中证书和key，排序服务的创世区块以及channel的配置。</p>
-<p>接下来便可以运行如下命令启动网络：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">./byfn.sh -m up</div></pre></td></tr></table></figure>
-<p>注意需要先启动docker。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">➜  first-network git:(a76d649) ✗ ./byfn.sh -m up</div><div class="line">Starting with channel &apos;mychannel&apos; and CLI timeout of &apos;10&apos;</div><div class="line">Continue (y/n)</div></pre></td></tr></table></figure>
-<p>选择y，接下来会创建channel，部署各个节点，安装链码等等。如果看到如下输出，表示执行成功：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">2018-05-06 09:09:42.028 UTC [main] main -&gt; INFO 007 Exiting.....</div><div class="line">===================== Query on PEER3 on channel &apos;mychannel&apos; is successful =====================</div><div class="line"></div><div class="line">========= All GOOD, BYFN execution completed ===========</div><div class="line"></div><div class="line"></div><div class="line"> _____   _   _   ____</div><div class="line">| ____| | \ | | |  _ \</div><div class="line">|  _|   |  \| | | | | |</div><div class="line">| |___  | |\  | | |_| |</div><div class="line">|_____| |_| \_| |____/</div></pre></td></tr></table></figure>
-<p>关闭网络：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">./byfn.sh -m down</div></pre></td></tr></table></figure>
-<p>输出日志：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div></pre></td><td class="code"><pre><div class="line">➜  first-network git:(a76d649) ✗ ./byfn.sh -m down</div><div class="line">Stopping with channel &apos;mychannel&apos; and CLI timeout of &apos;10&apos;</div><div class="line">Continue (y/n)? y</div><div class="line">proceeding ...</div><div class="line">WARNING: The CHANNEL_NAME variable is not set. Defaulting to a blank string.</div><div class="line">WARNING: The DELAY variable is not set. Defaulting to a blank string.</div><div class="line">WARNING: The TIMEOUT variable is not set. Defaulting to a blank string.</div><div class="line">Stopping orderer.example.com    ... done</div><div class="line">Stopping peer1.org2.example.com ... done</div><div class="line">Stopping peer0.org2.example.com ... done</div><div class="line">Stopping peer1.org1.example.com ... done</div><div class="line">Stopping peer0.org1.example.com ... done</div><div class="line">Removing cli                    ... done</div><div class="line">Removing orderer.example.com    ... done</div><div class="line">Removing peer1.org2.example.com ... done</div><div class="line">Removing peer0.org2.example.com ... done</div><div class="line">Removing peer1.org1.example.com ... done</div><div class="line">Removing peer0.org1.example.com ... done</div><div class="line">Removing network net_byfn</div><div class="line">Removing volume net_peer0.org2.example.com</div><div class="line">Removing volume net_peer1.org2.example.com</div><div class="line">Removing volume net_peer1.org1.example.com</div><div class="line">Removing volume net_peer0.org1.example.com</div><div class="line">Removing volume net_orderer.example.com</div><div class="line">WARNING: The CHANNEL_NAME variable is not set. Defaulting to a blank string.</div><div class="line">WARNING: The DELAY variable is not set. Defaulting to a blank string.</div><div class="line">WARNING: The TIMEOUT variable is not set. Defaulting to a blank string.</div><div class="line">Removing network net_byfn</div><div class="line">WARNING: Network net_byfn not found.</div><div class="line">Removing volume net_peer0.org2.example.com</div><div class="line">WARNING: Volume net_peer0.org2.example.com not found.</div><div class="line">Removing volume net_peer1.org2.example.com</div><div class="line">WARNING: Volume net_peer1.org2.example.com not found.</div><div class="line">Removing volume net_peer1.org1.example.com</div><div class="line">WARNING: Volume net_peer1.org1.example.com not found.</div><div class="line">Removing volume net_peer0.org1.example.com</div><div class="line">WARNING: Volume net_peer0.org1.example.com not found.</div><div class="line">Removing volume net_orderer.example.com</div><div class="line">WARNING: Volume net_orderer.example.com not found.</div><div class="line">6970b9a0fb75</div><div class="line">dcd2b3b66bb8</div><div class="line">6d79e9fcf20a</div><div class="line">b47bdb303acf</div><div class="line">fce5d85cbbaf</div><div class="line">8f01a8e18b98</div><div class="line">58d14dede52f</div><div class="line">ca2f8cbb15ca</div><div class="line">Untagged: dev-peer1.org2.example.com-mycc-1.0-26c2ef32838554aac4f7ad6f100aca865e87959c9a126e86d764c8d01f8346ab:latest</div><div class="line">Deleted: sha256:906bff156357014748b71a348083d33176d294a6a1311e7df0fc54fc8d081745</div><div class="line">Deleted: sha256:36f74509559873d1ee64d93681acdd78e2d8c330ba73377fc837edf0ef431b91</div><div class="line">Deleted: sha256:9d27eb407a1c2acd04f093ac57ffc6a6ac416db510d9dd5c61b8651516525b2f</div><div class="line">Deleted: sha256:c1e7964d91a0cb4c50150588a75c9b2dcbf0cdda7988accd1291e01ebee219d2</div><div class="line">Deleted: sha256:4fb2551d453747c6eefb6a032ea6f0c3adf4e908652c4a242ec49b7882a2af94</div><div class="line">Deleted: sha256:bb201d21c3b5ddf072c1c88a9facf165f3dc41884007ac39c57b7db6ada6660f</div><div class="line">Deleted: sha256:17bb731d4c48aeca66ddbfff413c6ed6d0e3aaaf2c1e39c2a80190b04162784a</div><div class="line">Untagged: dev-peer0.org1.example.com-mycc-1.0-384f11f484b9302df90b453200cfb25174305fce8f53f4e94d45ee3b6cab0ce9:latest</div><div class="line">Deleted: sha256:f8ef2ebed09a2bdc16e0ce832879ef9612cbc1c621018560b640b6ddabd4145a</div><div class="line">Deleted: sha256:b1a821ab9e0c17d5a25e79351888b63048b2a4404f6a42104c24b29f127da5e5</div><div class="line">Deleted: sha256:c0aa1d65ac849a0a0b55bd9f1d441dd72ad6a5a0d1463f69ee1e60bf936278f3</div><div class="line">Deleted: sha256:02750049903dca9fdc8bc6de13517968c4364e4c355b145abb3fb0e6c7f668df</div><div class="line">Deleted: sha256:7825160930eebcbd8c739de264927d2765db870bb2917cf26fc4cb3c7b4336ac</div><div class="line">Deleted: sha256:d2b686a165f3fa3a2f9d7ddaead3b27cc5b2f95901deb15687925459a33eef98</div><div class="line">Deleted: sha256:aede0e567de2e6f82d38172974ad2c3ba8a21fe37550b3b40590aa56a436f7aa</div><div class="line">Untagged: dev-peer0.org2.example.com-mycc-1.0-15b571b3ce849066b7ec74497da3b27e54e0df1345daff3951b94245ce09c42b:latest</div><div class="line">Deleted: sha256:d601184df16e34971d7bbbe2b9af5db5005bb1597a2d20e78eb91a74c28a8e47</div><div class="line">Deleted: sha256:d54ba0376a7ffe21541d5514d316c7d9b4bd76bbaf58a1370df156f90a8fc9a6</div><div class="line">Deleted: sha256:722ba7f245425b0323ecfe58415d1622aba46b9b850ae34ce514a2fd8be035dd</div><div class="line">Deleted: sha256:a956031b925713c8657d6f9b6d215141f87467cec0b7a8c5fb52944b8cc428f4</div><div class="line">Deleted: sha256:1f1302db16d7dc4a99f302cd0328982db99a11e2d32effd4d0a9f96e60595585</div><div class="line">Deleted: sha256:c6e1de55501abb5fcf7e23c77bfc897f33db61f9aa965131ae43c54295a0011e</div><div class="line">Deleted: sha256:7aea8b0de30036baaa12e83d5cb1396584ac7a584679ef7082aaf96055ffd87a</div></pre></td></tr></table></figure>
-<h1 id="3-附录-可能遇到的一些错误："><a href="#3-附录-可能遇到的一些错误：" class="headerlink" title="3 附录-可能遇到的一些错误："></a>3 附录-可能遇到的一些错误：</h1><p>启动网络的时候遇到：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">➜  first-network git:(a76d649) ✗ ./byfn.sh -m up</div><div class="line">Starting with channel &apos;mychannel&apos; and CLI timeout of &apos;10&apos;</div><div class="line">Continue (y/n)? y</div><div class="line">proceeding ...</div><div class="line">Creating cli ... error</div><div class="line">Starting peer1.org2.example.com ...</div><div class="line">Starting peer0.org2.example.com ...</div><div class="line">Starting peer1.org1.example.com ...</div><div class="line">Starting peer1.org1.example.com ... done</div><div class="line">Creating cli ...</div><div class="line"></div><div class="line">ERROR: for cli  Cannot create container for service cli: Conflict. The container name &quot;/cli&quot; is already in use by container &quot;a813a21e2dcc5e8b0f617b8fbdf695ea983b27ecbb4abc9c22f5341116ef7014&quot;. You have to remove (or rename) that container to be able to reuse that name.</div><div class="line"></div><div class="line">ERROR: for cli  Cannot create container for service cli: Conflict. The container name &quot;/cli&quot; is already in use by container &quot;a813a21e2dcc5e8b0f617b8fbdf695ea983b27ecbb4abc9c22f5341116ef7014&quot;. You have to remove (or rename) that container to be able to reuse that name.</div><div class="line">ERROR: Encountered errors while bringing up the project.</div><div class="line">ERROR !!!! Unable to start network</div></pre></td></tr></table></figure>
-<p>原因以及解决方案：<br>原因是之前已经启动过该名字的container。需要删除:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">docker stop /cli</div><div class="line">docker rm .cli</div></pre></td></tr></table></figure>
-<h1 id="4-参考资料"><a href="#4-参考资料" class="headerlink" title="4 参考资料:"></a>4 参考资料:</h1><p><a href="https://stackoverflow.com/questions/31697828/docker-run-name-is-already-in-use-by-container" target="_blank" rel="external">docker-run-name-is-already-in-use-by-container</a></p>
-<h2 id="版权声明"><a href="#版权声明" class="headerlink" title="版权声明"></a>版权声明</h2><p>本文首发于<a href="http://xiajunhust.github.io/">江南烟雨的个人博客</a>博客（ <a href="http://xiajunhust.github.io/">http://xiajunhust.github.io/</a> ），版权所有，侵权必究。<br>本文永久链接：<a href="http://xiajunhust.github.io/2018/05/06/区块链学习之一-Hyperledger搭建第一个区块链网络/">http://xiajunhust.github.io/2018/05/06/区块链学习之一-Hyperledger搭建第一个区块链网络/</a></p>
-
+        
+          <p class="article-more-link">
+            <a href="/2018/05/06/区块链学习之一-Hyperledger搭建第一个区块链网络/#more">Read More</a>
+          </p>
+        
       
     </div>
 
@@ -923,7 +906,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2018/05/06/区块链学习之一-Hyperledger搭建第一个区块链网络/" data-id="cjld0yoqh0010thwfqguxc4o7" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2018/05/06/区块链学习之一-Hyperledger搭建第一个区块链网络/" data-id="cjld11das000qupwfcr87lphl" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Hyperledger/">Hyperledger</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/区块链/">区块链</a></li></ul>
@@ -1082,7 +1065,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2017/12/02/Redis源码学习之一-Redis过期键删除策略/" data-id="cjld0yoq3000dthwfhrjb916t" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2017/12/02/Redis源码学习之一-Redis过期键删除策略/" data-id="cjld11daf0009upwflh54dcau" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Redis/">Redis</a></li></ul>
@@ -1237,7 +1220,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2017/01/07/一次大表SQL查询优化历程/" data-id="cjld0yoqa000othwfgiqmuol0" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2017/01/07/一次大表SQL查询优化历程/" data-id="cjld11daq000oupwfa18ic9qd" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MySQL/">MySQL</a></li></ul>
@@ -1385,7 +1368,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/12/28/Hystrix-Dashborad数据介绍/" data-id="cjld0yoq5000gthwfgxafq6x9" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2016/12/28/Hystrix-Dashborad数据介绍/" data-id="cjld11dae0007upwfb5dx9gnq" class="article-share-link">Share</a>
       
       
     </footer>
@@ -1541,7 +1524,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/12/18/从Hystrix-DashboardData看ReativeX的使用/" data-id="cjld0yoqe000uthwfu5by7b9o" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2016/12/18/从Hystrix-DashboardData看ReativeX的使用/" data-id="cjld11dau000supwfbs7zq7f9" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Hystrix/">Hystrix</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ReactiveX/">ReactiveX</a></li></ul>
@@ -1696,7 +1679,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/12/13/InfluxDB写入失败-partial-write-max-values-per-tag-limit-exceeded/" data-id="cjld0yoq00009thwfpsz2czpl" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2016/12/13/InfluxDB写入失败-partial-write-max-values-per-tag-limit-exceeded/" data-id="cjld11dah000aupwf4qz2bfdc" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/InfluxDB/">InfluxDB</a></li></ul>
