@@ -63,6 +63,159 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-Sentinel-热点参数限流使用与原理" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/12/04/Sentinel-热点参数限流使用与原理/" class="article-date">
+  <time datetime="2018-12-04T00:58:10.000Z" itemprop="datePublished">2018-12-04</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/12/04/Sentinel-热点参数限流使用与原理/">Sentinel热点参数限流使用与原理</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="1-引入Sentinel背景"><a href="#1-引入Sentinel背景" class="headerlink" title="1 引入Sentinel背景"></a>1 引入Sentinel背景</h1><p>最近遇到一个线上问题，订单表查询某分片查询热点导致mysql连接池满，从而影响了该分片上的所有读写操作。排查发现某一个业务场景，会导致短时间对同一个分片上的订单做读操作（目前不会有那么大的写并发量）。姑且在这里不讨论创建订单时候的分片的合理性，这里仅讨论如何解决本问题。首先是可以针对查询操作进行分片维度的限流，同时调用方需要进行对应的降级或补偿措施。<br>调研了Hystrix、Sentinel，发现Sentinel的热点参数限流非常适合，最终选择了Sentinel。</p>
+        
+          <p class="article-more-link">
+            <a href="/2018/12/04/Sentinel-热点参数限流使用与原理/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+
+
+	<!-- css -->
+	<style type="text/css">
+	    .center {
+	        text-align: center;
+	    }
+	    .hidden {
+	        display: none;
+	    }
+		.donate_bar a.btn_donate{
+			display: inline-block;
+			width: 82px;
+			height: 82px;
+			background: url("http://7xsl28.com1.z0.glb.clouddn.com/btn_reward.gif") no-repeat;
+			_background: url("http://7xsl28.com1.z0.glb.clouddn.com/btn_reward.gif") no-repeat;
+
+			<!-- http://img.t.sinajs.cn/t5/style/images/apps_PRF/e_media/btn_reward.gif
+			     因为本 hexo 生成的博客所用的 theme 的 a:hover 带动画效果，
+				 为了在让打赏按钮显示效果正常 而 添加了以下几行 css，
+				 嵌入其它博客时不一定要它们。 -->
+			-webkit-transition: background 0s;
+			-moz-transition: background 0s;
+			-o-transition: background 0s;
+			-ms-transition: background 0s;
+			transition: background 0s;
+			<!-- /让打赏按钮的效果显示正常 而 添加的几行 css 到此结束 -->
+		}
+
+		.donate_bar a.btn_donate:hover{ background-position: 0px -82px;}
+		.donate_bar .donate_txt {
+			display: block;
+			color: #9d9d9d;
+			font: 14px/2 "Microsoft Yahei";
+		}
+		.bold{ font-weight: bold; }
+	</style>
+	<!-- /css -->
+
+    <!-- Donate Module -->
+    <div id="donate_module">
+
+	<!-- btn_donate & tips -->
+	<div id="donate_board" class="donate_bar center">
+	    <br>
+	    ------------------------------------------------------------------------------------------------------------------------------
+	    <br>
+		<a id="btn_donate" class="btn_donate" target="_self" href="javascript:;" title="Donate 打赏"></a>
+		<span class="donate_txt">
+			打赏我的人，运气都不会太差~
+		</span>
+			
+		
+	</div>
+	<!-- /btn_donate & tips -->
+
+	<!-- donate guide -->
+    
+	<div id="donate_guide" class="donate_bar center hidden">
+        <br>
+	    ------------------------------------------------------------------------------------------------------------------------------
+	    <br>
+	    
+	    <div width="100%" align="center"><div name="dashmain" id="dash-main-id-87895f" class="dash-main-3 87895f-0.99"></div></div>
+		<script type="text/javascript" charset="utf-8" src="http://www.dashangcloud.com/static/ds.js"></script>
+		
+
+		<a href="http://o8sltkx20.bkt.clouddn.com/0004.jpg" title="用微信扫一扫哦~" class="fancybox" rel="article0">
+			<img src="http://o8sltkx20.bkt.clouddn.com/0004.jpg" title="微信打赏 Donate" height="190px" width="auto"/>
+		</a>
+        
+        &nbsp;&nbsp;
+
+		<a href="http://o8sltkx20.bkt.clouddn.com/0002.jpg" title="用支付宝扫一扫即可~" class="fancybox" rel="article0">
+			<img src="http://o8sltkx20.bkt.clouddn.com/0002.jpg" title="支付宝打赏 Donate" height="190px" width="auto"/>
+		</a>
+
+		<span class="donate_txt">
+			打赏我的人，运气都不会太差~
+		</span>
+
+	</div>
+	<!-- /donate guide -->
+
+	<!-- donate script -->
+	<script type="text/javascript">
+		document.getElementById('btn_donate').onclick = function() {
+			$('#donate_board').addClass('hidden');
+	    $('#donate_guide').removeClass('hidden');
+		}
+
+		function donate_on_web(){
+			$('#donate').submit();
+        }
+
+		var original_window_onload = window.onload;
+        window.onload = function () {
+            if (original_window_onload) {
+                original_window_onload();
+            }
+            document.getElementById('donate_board_wdg').className = 'hidden';
+		}
+	</script>
+	<!-- /donate script -->
+</div>
+<!-- /Donate Module -->
+   
+
+    <footer class="article-footer">
+      <a data-url="http://xiajunhust.github.io/2018/12/04/Sentinel-热点参数限流使用与原理/" data-id="cjpajl2p9000kogwfjwohi6d5" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Sentinel/">Sentinel</a></li></ul>
+
+    </footer>
+  </div>
+  
+
+
+
+</article>
+
+  
     <article id="post-MySQL Insert on duplicate锁" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2018/11/30/MySQL Insert on duplicate锁/" class="article-date">
@@ -77,7 +230,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/11/30/MySQL Insert on duplicate锁/">MySQL Insert on duplicate锁</a>
+      <a class="article-title" href="/2018/11/30/MySQL Insert on duplicate锁/">MySQL Insert on duplicate死锁</a>
     </h1>
   
 
@@ -202,7 +355,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2018/11/30/MySQL Insert on duplicate锁/" data-id="cjp3fos06000ajbwfugrql3il" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2018/11/30/MySQL Insert on duplicate锁/" data-id="cjpajl2p00009ogwfgsc5n3hw" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MySQL/">MySQL</a></li></ul>
@@ -356,7 +509,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2018/09/07/记一次线上Dubbo线程池队列满的问题/" data-id="cjp3fos0r001cjbwffo8ov2ay" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2018/09/07/记一次线上Dubbo线程池队列满的问题/" data-id="cjpajl2pq001dogwfp1o6bzog" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dubbo/">Dubbo</a></li></ul>
@@ -514,7 +667,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2018/08/28/DDD-Domain&Application&infrastructure-Service(DDD中三种服务)/" data-id="cjp3fos0d000rjbwfidyaxs35" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2018/08/28/DDD-Domain&Application&infrastructure-Service(DDD中三种服务)/" data-id="cjpajl2ox0004ogwfc1th9i0n" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DDD/">DDD</a></li></ul>
@@ -666,7 +819,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2018/06/24/区块链学习之四-Hyperledger-链码/" data-id="cjp3fos0q0019jbwfl0d4k2q7" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2018/06/24/区块链学习之四-Hyperledger-链码/" data-id="cjpajl2pl0014ogwforyg9mfz" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Hyperledger/">Hyperledger</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/区块链/">区块链</a></li></ul>
@@ -852,7 +1005,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2018/06/10/区块链学习之三-Hyperledger-编写第一个区块链应用/" data-id="cjp3fos0p0017jbwfauya4eb9" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2018/06/10/区块链学习之三-Hyperledger-编写第一个区块链应用/" data-id="cjpajl2pn0017ogwfd5xng8a5" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Hyperledger/">Hyperledger</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/区块链/">区块链</a></li></ul>
@@ -1052,7 +1205,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2018/05/22/区块链学习之二-Hyperledger示例区块链网络原理详解/" data-id="cjp3fos0m0012jbwfwc1p678g" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2018/05/22/区块链学习之二-Hyperledger示例区块链网络原理详解/" data-id="cjpajl2po0019ogwf2vu8br7k" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Hyperledger/">Hyperledger</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/区块链/">区块链</a></li></ul>
@@ -1213,7 +1366,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2018/05/06/区块链学习之一-Hyperledger搭建第一个区块链网络/" data-id="cjp3fos0h000wjbwfowz82vc5" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2018/05/06/区块链学习之一-Hyperledger搭建第一个区块链网络/" data-id="cjpajl2pj0010ogwfsbxaxmn0" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Hyperledger/">Hyperledger</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/区块链/">区块链</a></li></ul>
@@ -1372,7 +1525,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2017/12/02/Redis源码学习之一-Redis过期键删除策略/" data-id="cjp3fos08000djbwfs2ik3992" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2017/12/02/Redis源码学习之一-Redis过期键删除策略/" data-id="cjpajl2p5000eogwfnz2e9kqo" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Redis/">Redis</a></li></ul>
@@ -1527,157 +1680,11 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2017/01/07/一次大表SQL查询优化历程/" data-id="cjp3fos0b000ljbwfbkpuk91o" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2017/01/07/一次大表SQL查询优化历程/" data-id="cjpajl2pe000sogwfr2jyx7s9" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MySQL/">MySQL</a></li></ul>
 
-    </footer>
-  </div>
-  
-
-
-
-</article>
-
-  
-    <article id="post-Hystrix-Dashborad数据介绍" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/12/28/Hystrix-Dashborad数据介绍/" class="article-date">
-  <time datetime="2016-12-28T06:17:23.000Z" itemprop="datePublished">2016-12-28</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/12/28/Hystrix-Dashborad数据介绍/">Hystrix Dashborad数据介绍</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        
-      
-    </div>
-
-
-	<!-- css -->
-	<style type="text/css">
-	    .center {
-	        text-align: center;
-	    }
-	    .hidden {
-	        display: none;
-	    }
-		.donate_bar a.btn_donate{
-			display: inline-block;
-			width: 82px;
-			height: 82px;
-			background: url("http://7xsl28.com1.z0.glb.clouddn.com/btn_reward.gif") no-repeat;
-			_background: url("http://7xsl28.com1.z0.glb.clouddn.com/btn_reward.gif") no-repeat;
-
-			<!-- http://img.t.sinajs.cn/t5/style/images/apps_PRF/e_media/btn_reward.gif
-			     因为本 hexo 生成的博客所用的 theme 的 a:hover 带动画效果，
-				 为了在让打赏按钮显示效果正常 而 添加了以下几行 css，
-				 嵌入其它博客时不一定要它们。 -->
-			-webkit-transition: background 0s;
-			-moz-transition: background 0s;
-			-o-transition: background 0s;
-			-ms-transition: background 0s;
-			transition: background 0s;
-			<!-- /让打赏按钮的效果显示正常 而 添加的几行 css 到此结束 -->
-		}
-
-		.donate_bar a.btn_donate:hover{ background-position: 0px -82px;}
-		.donate_bar .donate_txt {
-			display: block;
-			color: #9d9d9d;
-			font: 14px/2 "Microsoft Yahei";
-		}
-		.bold{ font-weight: bold; }
-	</style>
-	<!-- /css -->
-
-    <!-- Donate Module -->
-    <div id="donate_module">
-
-	<!-- btn_donate & tips -->
-	<div id="donate_board" class="donate_bar center">
-	    <br>
-	    ------------------------------------------------------------------------------------------------------------------------------
-	    <br>
-		<a id="btn_donate" class="btn_donate" target="_self" href="javascript:;" title="Donate 打赏"></a>
-		<span class="donate_txt">
-			打赏我的人，运气都不会太差~
-		</span>
-			
-		
-	</div>
-	<!-- /btn_donate & tips -->
-
-	<!-- donate guide -->
-    
-	<div id="donate_guide" class="donate_bar center hidden">
-        <br>
-	    ------------------------------------------------------------------------------------------------------------------------------
-	    <br>
-	    
-	    <div width="100%" align="center"><div name="dashmain" id="dash-main-id-87895f" class="dash-main-3 87895f-0.99"></div></div>
-		<script type="text/javascript" charset="utf-8" src="http://www.dashangcloud.com/static/ds.js"></script>
-		
-
-		<a href="http://o8sltkx20.bkt.clouddn.com/0004.jpg" title="用微信扫一扫哦~" class="fancybox" rel="article0">
-			<img src="http://o8sltkx20.bkt.clouddn.com/0004.jpg" title="微信打赏 Donate" height="190px" width="auto"/>
-		</a>
-        
-        &nbsp;&nbsp;
-
-		<a href="http://o8sltkx20.bkt.clouddn.com/0002.jpg" title="用支付宝扫一扫即可~" class="fancybox" rel="article0">
-			<img src="http://o8sltkx20.bkt.clouddn.com/0002.jpg" title="支付宝打赏 Donate" height="190px" width="auto"/>
-		</a>
-
-		<span class="donate_txt">
-			打赏我的人，运气都不会太差~
-		</span>
-
-	</div>
-	<!-- /donate guide -->
-
-	<!-- donate script -->
-	<script type="text/javascript">
-		document.getElementById('btn_donate').onclick = function() {
-			$('#donate_board').addClass('hidden');
-	    $('#donate_guide').removeClass('hidden');
-		}
-
-		function donate_on_web(){
-			$('#donate').submit();
-        }
-
-		var original_window_onload = window.onload;
-        window.onload = function () {
-            if (original_window_onload) {
-                original_window_onload();
-            }
-            document.getElementById('donate_board_wdg').className = 'hidden';
-		}
-	</script>
-	<!-- /donate script -->
-</div>
-<!-- /Donate Module -->
-   
-
-    <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/12/28/Hystrix-Dashborad数据介绍/" data-id="cjp3fos030005jbwfafwrbn8c" class="article-share-link">Share</a>
-      
-      
     </footer>
   </div>
   
@@ -1703,7 +1710,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">标签</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/DDD/">DDD</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Dubbo/">Dubbo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hyperledger/">Hyperledger</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hystrix/">Hystrix</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/InfluxDB/">InfluxDB</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/">MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ReactiveX/">ReactiveX</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/">Redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RocketMQ/">RocketMQ</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/代码设计/">代码设计</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/区块链/">区块链</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/开发工具/">开发工具</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/思考-读书笔记/">思考&读书笔记</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/测试技术/">测试技术</a></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/DDD/">DDD</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Dubbo/">Dubbo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hyperledger/">Hyperledger</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hystrix/">Hystrix</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/InfluxDB/">InfluxDB</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/">MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ReactiveX/">ReactiveX</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/">Redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RocketMQ/">RocketMQ</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Sentinel/">Sentinel</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/代码设计/">代码设计</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/区块链/">区块链</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/开发工具/">开发工具</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/思考-读书笔记/">思考&读书笔记</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/测试技术/">测试技术</a></li></ul>
     </div>
   </div>
 
@@ -1713,7 +1720,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">标签云</h3>
     <div class="widget tagcloud">
-      <a href="/tags/DDD/" style="font-size: 10px;">DDD</a> <a href="/tags/Dubbo/" style="font-size: 10px;">Dubbo</a> <a href="/tags/Hyperledger/" style="font-size: 20px;">Hyperledger</a> <a href="/tags/Hystrix/" style="font-size: 10px;">Hystrix</a> <a href="/tags/InfluxDB/" style="font-size: 10px;">InfluxDB</a> <a href="/tags/Java/" style="font-size: 15px;">Java</a> <a href="/tags/MySQL/" style="font-size: 20px;">MySQL</a> <a href="/tags/ReactiveX/" style="font-size: 10px;">ReactiveX</a> <a href="/tags/Redis/" style="font-size: 10px;">Redis</a> <a href="/tags/RocketMQ/" style="font-size: 20px;">RocketMQ</a> <a href="/tags/代码设计/" style="font-size: 10px;">代码设计</a> <a href="/tags/区块链/" style="font-size: 20px;">区块链</a> <a href="/tags/开发工具/" style="font-size: 15px;">开发工具</a> <a href="/tags/思考-读书笔记/" style="font-size: 10px;">思考&读书笔记</a> <a href="/tags/测试技术/" style="font-size: 10px;">测试技术</a>
+      <a href="/tags/DDD/" style="font-size: 10px;">DDD</a> <a href="/tags/Dubbo/" style="font-size: 10px;">Dubbo</a> <a href="/tags/Hyperledger/" style="font-size: 20px;">Hyperledger</a> <a href="/tags/Hystrix/" style="font-size: 10px;">Hystrix</a> <a href="/tags/InfluxDB/" style="font-size: 10px;">InfluxDB</a> <a href="/tags/Java/" style="font-size: 15px;">Java</a> <a href="/tags/MySQL/" style="font-size: 20px;">MySQL</a> <a href="/tags/ReactiveX/" style="font-size: 10px;">ReactiveX</a> <a href="/tags/Redis/" style="font-size: 10px;">Redis</a> <a href="/tags/RocketMQ/" style="font-size: 20px;">RocketMQ</a> <a href="/tags/Sentinel/" style="font-size: 10px;">Sentinel</a> <a href="/tags/代码设计/" style="font-size: 10px;">代码设计</a> <a href="/tags/区块链/" style="font-size: 20px;">区块链</a> <a href="/tags/开发工具/" style="font-size: 15px;">开发工具</a> <a href="/tags/思考-读书笔记/" style="font-size: 10px;">思考&读书笔记</a> <a href="/tags/测试技术/" style="font-size: 10px;">测试技术</a>
     </div>
   </div>
 
@@ -1722,7 +1729,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">十一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">九月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">六月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">五月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">十二月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">十一月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">八月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">七月 2016</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">十一月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">九月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">八月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">六月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">五月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">十二月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">十一月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/08/">八月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">七月 2016</a></li></ul>
     </div>
   </div>
 
@@ -1735,7 +1742,11 @@
       <ul>
         
           <li>
-            <a href="/2018/11/30/MySQL Insert on duplicate锁/">MySQL Insert on duplicate锁</a>
+            <a href="/2018/12/04/Sentinel-热点参数限流使用与原理/">Sentinel热点参数限流使用与原理</a>
+          </li>
+        
+          <li>
+            <a href="/2018/11/30/MySQL Insert on duplicate锁/">MySQL Insert on duplicate死锁</a>
           </li>
         
           <li>
@@ -1748,10 +1759,6 @@
         
           <li>
             <a href="/2018/06/24/区块链学习之四-Hyperledger-链码/">区块链学习之四-Hyperledger-链码(智能合约)</a>
-          </li>
-        
-          <li>
-            <a href="/2018/06/10/区块链学习之三-Hyperledger-编写第一个区块链应用/">区块链学习之三-编写Hyperledger区块链应用以及应用与账本交互原理解析</a>
           </li>
         
       </ul>
