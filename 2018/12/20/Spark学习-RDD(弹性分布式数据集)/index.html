@@ -3,57 +3,18 @@
 <head>
   <meta charset="utf-8">
   
-  <title>技术分享-MySQL InnoDB locks and deadlocks | 江南烟雨的个人博客</title>
+  <title>Spark基础学习笔记-RDD(弹性分布式数据集) | 江南烟雨的个人博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="本文是在组内技术分享的ppt：《MySQL InnoDB locks and deadlocks》。与大家分享，如有问题，欢迎来信交流。">
+  <meta name="description" content="1 什么是RDDA Resilient Distributed Dataset (RDD), the basic abstraction in Spark.翻译：弹性的 分布式 数据集是 Spark 基础的抽象。解释：弹性的（可复原的），说明数据集具有容错性、可修复性。 分布式，说明数据集可以分布在不同的机器上。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="技术分享-MySQL InnoDB locks and deadlocks">
-<meta property="og:url" content="http://xiajunhust.github.io/2016/08/27/技术分享-MySQL-InnoDB-locks-and-deadlocks/index.html">
+<meta property="og:title" content="Spark基础学习笔记-RDD(弹性分布式数据集)">
+<meta property="og:url" content="http://xiajunhust.github.io/2018/12/20/Spark学习-RDD(弹性分布式数据集)/index.html">
 <meta property="og:site_name" content="江南烟雨的个人博客">
-<meta property="og:description" content="本文是在组内技术分享的ppt：《MySQL InnoDB locks and deadlocks》。与大家分享，如有问题，欢迎来信交流。">
-<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-00.png">
-<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-02.png">
-<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-03.png">
-<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-04.png">
-<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-05.png">
-<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-06.png">
-<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-07.png">
-<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-08.png">
-<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-09.png">
-<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-10.png">
-<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-11.png">
-<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-12.png">
-<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-13.png">
-<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-14.png">
-<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-15.png">
-<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-16.png">
-<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-17.png">
-<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-18.png">
-<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-19.png">
-<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-20.png">
-<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-21.png">
-<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-22.png">
-<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-23.png">
-<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-24.png">
-<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-25.png">
-<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-26.png">
-<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-29.png">
-<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-28.png">
-<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-29.png">
-<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-30.png">
-<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-31.png">
-<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-32.png">
-<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-33.png">
-<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-34.png">
-<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-35.png">
-<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-36.png">
-<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-37.png">
-<meta property="og:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-38.png">
-<meta property="og:updated_time" content="2016-09-07T08:01:17.000Z">
+<meta property="og:description" content="1 什么是RDDA Resilient Distributed Dataset (RDD), the basic abstraction in Spark.翻译：弹性的 分布式 数据集是 Spark 基础的抽象。解释：弹性的（可复原的），说明数据集具有容错性、可修复性。 分布式，说明数据集可以分布在不同的机器上。">
+<meta property="og:updated_time" content="2018-12-20T02:03:46.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="技术分享-MySQL InnoDB locks and deadlocks">
-<meta name="twitter:description" content="本文是在组内技术分享的ppt：《MySQL InnoDB locks and deadlocks》。与大家分享，如有问题，欢迎来信交流。">
-<meta name="twitter:image" content="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-00.png">
+<meta name="twitter:title" content="Spark基础学习笔记-RDD(弹性分布式数据集)">
+<meta name="twitter:description" content="1 什么是RDDA Resilient Distributed Dataset (RDD), the basic abstraction in Spark.翻译：弹性的 分布式 数据集是 Spark 基础的抽象。解释：弹性的（可复原的），说明数据集具有容错性、可修复性。 分布式，说明数据集可以分布在不同的机器上。">
   
     <link rel="alternate" href="/atom.xml" title="江南烟雨的个人博客" type="application/atom+xml">
   
@@ -104,10 +65,10 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main"><article id="post-技术分享-MySQL-InnoDB-locks-and-deadlocks" class="article article-type-post" itemscope itemprop="blogPost">
+        <section id="main"><article id="post-Spark学习-RDD(弹性分布式数据集)" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2016/08/27/技术分享-MySQL-InnoDB-locks-and-deadlocks/" class="article-date">
-  <time datetime="2016-08-27T08:01:34.000Z" itemprop="datePublished">2016-08-27</time>
+    <a href="/2018/12/20/Spark学习-RDD(弹性分布式数据集)/" class="article-date">
+  <time datetime="2018-12-20T00:58:10.000Z" itemprop="datePublished">2018-12-20</time>
 </a>
     
   </div>
@@ -118,7 +79,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      技术分享-MySQL InnoDB locks and deadlocks
+      Spark基础学习笔记-RDD(弹性分布式数据集)
     </h1>
   
 
@@ -126,11 +87,24 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>本文是在组内技术分享的ppt：《MySQL InnoDB locks and deadlocks》。与大家分享，如有问题，欢迎来信交流。</p>
-<p><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-00.png" alt="">  </p>
+        <h1 id="1-什么是RDD"><a href="#1-什么是RDD" class="headerlink" title="1 什么是RDD"></a>1 什么是RDD</h1><p>A Resilient Distributed Dataset (RDD), the basic abstraction in Spark.<br>翻译：弹性的 分布式 数据集是 Spark 基础的抽象。<br>解释：弹性的（可复原的），说明数据集具有容错性、可修复性。 分布式，说明数据集可以分布在不同的机器上。</p>
 <a id="more"></a>
-<p><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-02.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-03.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-04.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-05.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-06.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-07.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-08.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-09.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-10.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-11.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-12.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-13.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-14.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-15.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-16.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-17.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-18.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-19.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-20.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-21.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-22.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-23.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-24.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-25.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-26.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-29.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-28.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-29.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-30.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-31.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-32.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-33.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-34.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-35.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-36.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-37.png" alt=""><br><img src="http://o8sltkx20.bkt.clouddn.com/mysql-innodb-locks-38.png" alt="">  </p>
-<h2 id="版权声明"><a href="#版权声明" class="headerlink" title="版权声明"></a>版权声明</h2><p>本文首发于<a href="http://xiajunhust.github.io/">江南烟雨的个人博客</a>博客（ <a href="http://xiajunhust.github.io/">http://xiajunhust.github.io/</a> ），版权所有，侵权必究。<br>本文永久链接：<a href="http://xiajunhust.github.io/2016/08/27/技术分享-MySQL-InnoDB-locks-and-deadlocks/">http://xiajunhust.github.io/2016/08/27/技术分享-MySQL-InnoDB-locks-and-deadlocks/</a></p>
+<h1 id="2-创建RDD"><a href="#2-创建RDD" class="headerlink" title="2 创建RDD"></a>2 创建RDD</h1><p>spark提供了两种创建RDD的方式：读取外部数据集以及在驱动器程序中对一个集合进行并行化。<br>对集合进行并行化：  </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">scala&gt; var lines2 = sc.parallelize(List(&quot;pandas&quot;,&quot;I like pandas&quot;))</div><div class="line">lines2: org.apache.spark.rdd.RDD[String] = ParallelCollectionRDD[3] at parallelize at &lt;console&gt;:24</div><div class="line">scala&gt; lines2.first()</div><div class="line">res5: String = pandas</div><div class="line"></div><div class="line">scala&gt; lines2.count()</div><div class="line">res6: Long = 2</div><div class="line">```  </div><div class="line"></div><div class="line">从外部存储中读取数据集：</div></pre></td></tr></table></figure>
+<p>scala&gt; val lines=sc.textFile(“README.md”)<br>lines: org.apache.spark.rdd.RDD[String] = README.md MapPartitionsRDD[1] at textFile at <console>:24<br>scala&gt; lines.count()<br>res3: Long = 2</console></p>
+<p>scala&gt; lines.first<br>res4: String = hust<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">这里需要提前新建一个文件：spark-2.4.0-bin-hadoop2.7/bin/README.md。</div><div class="line"></div><div class="line"># 3 RDD操作  </div><div class="line">RDD支持两种操作：</div><div class="line"></div><div class="line">- 转化操作：返回一个新的RDD，比如filter()或map()</div><div class="line">- 行动操作：向驱动器程序返回结果或者把结果写入外部系统的操作，会触发实际的计算（比如count()或first()）</div><div class="line"></div><div class="line">需要注意的是，转化操作是惰性求值的，只有在行动操作中用到这些RDD时才会真正计算。另外转化操作会生成新的RDD，不会改变原有RDD的内容。  </div><div class="line">通过转化操作，可以从已有的RDD中派生出新的RDD，Spark会使用谱系图计算这些RDD之间的关系。Spark需要这些信息来按需计算每个RDD，也可以在持久化的RDD丢失部分数据时恢复所丢失的数据。  </div><div class="line">如下示例：先筛选出浙江省的城市，然后筛选出湖北省的城市，最后求并集。谱系图如下：</div><div class="line"></div><div class="line">![](https://xjblog-1258188043.cos.ap-shanghai.myqcloud.com/spark-01.jpeg)</div></pre></td></tr></table></figure></p>
+<p>scala&gt; var lines3 = sc.parallelize(List(“zhejiang hangzhou”,”zhejiang wenzhou”,”zhejiang ningbo”, “hubei wuhan”,”hubei shiyan”))<br>lines3: org.apache.spark.rdd.RDD[String] = ParallelCollectionRDD[4] at parallelize at <console>:24</console></p>
+<p>scala&gt; var zhejiang=lines3.filter(line=&gt;line.contains(“zhejiang”))<br>zhejiang: org.apache.spark.rdd.RDD[String] = MapPartitionsRDD[5] at filter at <console>:25</console></p>
+<p>scala&gt; zhejiang.count()<br>res7: Long = 3</p>
+<p>scala&gt; var hubei=lines3.filter(line=&gt;line.contains(“hubei”))<br>hubei: org.apache.spark.rdd.RDD[String] = MapPartitionsRDD[6] at filter at <console>:25</console></p>
+<p>scala&gt; hubei.count()<br>res8: Long = 2</p>
+<p>scala&gt; var zjhb=zhejiang.union(hubei)<br>zjhb: org.apache.spark.rdd.RDD[String] = UnionRDD[7] at union at <console>:27</console></p>
+<p>scala&gt; zjhb.count()<br>res9: Long = 5</p>
+<p>scala&gt; zjhb.take(5).foreach(println)<br>zhejiang hangzhou<br>zhejiang wenzhou<br>zhejiang ningbo<br>hubei wuhan<br>hubei shiyan</p>
+<p>scala&gt; zjhb.collect()<br>res12: Array[String] = Array(zhejiang hangzhou, zhejiang wenzhou, zhejiang ningbo, hubei wuhan, hubei shiyan)<br>```  </p>
+<p>需要注意的是，每当我们调用一个新的行动操作时，整个RDD都会从头开始计算。为了提高效率，我们可以将中间结果持久化。</p>
+<h1 id="4-参考资料"><a href="#4-参考资料" class="headerlink" title="4 参考资料"></a>4 参考资料</h1><p>(1)<a href="https://item.jd.com/11782888.html" target="_blank" rel="external">Spark快速大数据分析</a>  </p>
+<h2 id="版权声明"><a href="#版权声明" class="headerlink" title="版权声明"></a>版权声明</h2><p>本文首发于<a href="http://xiajunhust.github.io/">江南烟雨的个人博客</a>博客（ <a href="http://xiajunhust.github.io/">http://xiajunhust.github.io/</a> ），版权所有，侵权必究。<br>本文永久链接：<a href="http://xiajunhust.github.io/2018/12/20/Spark学习-RDD(弹性分布式数据集)/">http://xiajunhust.github.io/2018/12/20/Spark学习-RDD(弹性分布式数据集)/</a></p>
 
       
     </div>
@@ -243,10 +217,10 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/08/27/技术分享-MySQL-InnoDB-locks-and-deadlocks/" data-id="cjpvypvz8001f65wfw1ike8w2" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2018/12/20/Spark学习-RDD(弹性分布式数据集)/" data-id="cjpvypvyu000m65wflypicx69" class="article-share-link">Share</a>
       
       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MySQL/">MySQL</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spark/">Spark</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/大数据/">大数据</a></li></ul>
 
     </footer>
   </div>
@@ -254,19 +228,10 @@
     
 <nav id="article-nav">
   
-    <a href="/2016/08/28/MySQL的日期时间类型关于秒以下精度的处理/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Newer</strong>
-      <div class="article-nav-title">
-        
-          MySQL的日期时间类型关于秒以下精度的处理
-        
-      </div>
-    </a>
   
-  
-    <a href="/2016/08/06/为什么Java-HashMap、CopyOnWriteArrayList等集合自己实现readObject和writeObject方法/" id="article-nav-older" class="article-nav-link-wrap">
+    <a href="/2018/12/17/大数据日知录读书笔记-分布式系统-向量时钟算法（Vector_Clock）/" id="article-nav-older" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">为什么Java HashMap、CopyOnWriteArrayList等集合自己实现readObject和writeObject方法</div>
+      <div class="article-nav-title">大数据日知录读书笔记-分布式系统-向量时钟算法（Vector_Clock）</div>
     </a>
   
 </nav>
@@ -276,7 +241,7 @@
 
   <section id="comments">
    <!-- 多说评论框 start -->
-<div id="ds-thread" class="ds-thread" data-thread-key="2016/08/27/技术分享-MySQL-InnoDB-locks-and-deadlocks/" data-title="技术分享-MySQL InnoDB locks and deadlocks" data-url="http://xiajunhust.github.io/2016/08/27/技术分享-MySQL-InnoDB-locks-and-deadlocks/"></div>
+<div id="ds-thread" class="ds-thread" data-thread-key="2018/12/20/Spark学习-RDD(弹性分布式数据集)/" data-title="Spark基础学习笔记-RDD(弹性分布式数据集)" data-url="http://xiajunhust.github.io/2018/12/20/Spark学习-RDD(弹性分布式数据集)/"></div>
 <!-- 多说评论框 end -->
 <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 <script type="text/javascript">
