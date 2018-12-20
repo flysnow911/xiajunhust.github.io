@@ -3,18 +3,20 @@
 <head>
   <meta charset="utf-8">
   
-  <title>Hexo GitHub搭建个人博客-添加README | 江南烟雨的个人博客</title>
+  <title>Spark基础学习笔记-RDD(弹性分布式数据集) | 江南烟雨的个人博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="概要当我们使用Hexo+Github搭建好个人博客环境之后，默认Github上repository中是没有Readme的。本文主要介绍如何添加Readme。">
+  <meta name="description" content="1 什么是RDDA Resilient Distributed Dataset (RDD), the basic abstraction in Spark.翻译：弹性的 分布式 数据集是 Spark 基础的抽象。解释：弹性的（可复原的），说明数据集具有容错性、可修复性。 分布式，说明数据集可以分布在不同的机器上。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Hexo GitHub搭建个人博客-添加README">
-<meta property="og:url" content="http://xiajunhust.github.io/2016/07/11/Hexo-GitHub搭建个人博客-添加README/index.html">
+<meta property="og:title" content="Spark基础学习笔记-RDD(弹性分布式数据集)">
+<meta property="og:url" content="http://xiajunhust.github.io/2018/12/20/Spark基础学习笔记-RDD(弹性分布式数据集) /index.html">
 <meta property="og:site_name" content="江南烟雨的个人博客">
-<meta property="og:description" content="概要当我们使用Hexo+Github搭建好个人博客环境之后，默认Github上repository中是没有Readme的。本文主要介绍如何添加Readme。">
-<meta property="og:updated_time" content="2016-09-07T08:03:08.000Z">
+<meta property="og:description" content="1 什么是RDDA Resilient Distributed Dataset (RDD), the basic abstraction in Spark.翻译：弹性的 分布式 数据集是 Spark 基础的抽象。解释：弹性的（可复原的），说明数据集具有容错性、可修复性。 分布式，说明数据集可以分布在不同的机器上。">
+<meta property="og:image" content="https://xjblog-1258188043.cos.ap-shanghai.myqcloud.com/spark-01.jpeg">
+<meta property="og:updated_time" content="2018-12-20T02:10:54.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Hexo GitHub搭建个人博客-添加README">
-<meta name="twitter:description" content="概要当我们使用Hexo+Github搭建好个人博客环境之后，默认Github上repository中是没有Readme的。本文主要介绍如何添加Readme。">
+<meta name="twitter:title" content="Spark基础学习笔记-RDD(弹性分布式数据集)">
+<meta name="twitter:description" content="1 什么是RDDA Resilient Distributed Dataset (RDD), the basic abstraction in Spark.翻译：弹性的 分布式 数据集是 Spark 基础的抽象。解释：弹性的（可复原的），说明数据集具有容错性、可修复性。 分布式，说明数据集可以分布在不同的机器上。">
+<meta name="twitter:image" content="https://xjblog-1258188043.cos.ap-shanghai.myqcloud.com/spark-01.jpeg">
   
     <link rel="alternate" href="/atom.xml" title="江南烟雨的个人博客" type="application/atom+xml">
   
@@ -65,10 +67,10 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main"><article id="post-Hexo-GitHub搭建个人博客-添加README" class="article article-type-post" itemscope itemprop="blogPost">
+        <section id="main"><article id="post-Spark基础学习笔记-RDD(弹性分布式数据集) " class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2016/07/11/Hexo-GitHub搭建个人博客-添加README/" class="article-date">
-  <time datetime="2016-07-11T10:05:12.000Z" itemprop="datePublished">2016-07-11</time>
+    <a href="/2018/12/20/Spark基础学习笔记-RDD(弹性分布式数据集) /" class="article-date">
+  <time datetime="2018-12-20T00:58:10.000Z" itemprop="datePublished">2018-12-20</time>
 </a>
     
   </div>
@@ -79,7 +81,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      Hexo GitHub搭建个人博客-添加README
+      Spark基础学习笔记-RDD(弹性分布式数据集)
     </h1>
   
 
@@ -87,17 +89,52 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="概要"><a href="#概要" class="headerlink" title="概要"></a>概要</h1><p>当我们使用Hexo+Github搭建好个人博客环境之后，默认Github上repository中是没有Readme的。本文主要介绍如何添加Readme。</p>
+        <h1 id="1-什么是RDD"><a href="#1-什么是RDD" class="headerlink" title="1 什么是RDD"></a>1 什么是RDD</h1><p>A Resilient Distributed Dataset (RDD), the basic abstraction in Spark.<br>翻译：弹性的 分布式 数据集是 Spark 基础的抽象。<br>解释：弹性的（可复原的），说明数据集具有容错性、可修复性。 分布式，说明数据集可以分布在不同的机器上。</p>
 <a id="more"></a>
-<h1 id="如何添加Readme"><a href="#如何添加Readme" class="headerlink" title="如何添加Readme"></a>如何添加Readme</h1><p>如果我们直接在Github上增加Readme文件，在执行了hexo d部署命令之后，Readme文件会自动消失。</p>
-<h1 id="解决办法"><a href="#解决办法" class="headerlink" title="解决办法"></a>解决办法</h1><p>将我们要添加的Readme.md文件放入本地hexo工作目录的source根目录下，然后修改_config.yml文件，在skip_render后增加我们添加的文件名README.md：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">skip_render: [README.md](http://README.md)</div></pre></td></tr></table></figure>
-<p>需要注意的是，冒号后一定要有空格， 否则运行hexo g命令的时候会出现莫名其妙的错误：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line">xiajundeMacBook-Pro:hexo xiajun$ sudo hexo d  </div><div class="line">FATAL can not read a block mapping entry; a multiline key may not be an implicit key at line 30, column 1:  </div><div class="line">    # Writing  </div><div class="line">    ^  </div><div class="line">YAMLException: can not read a block mapping entry; a multiline key may not be an implicit key at line 30, column 1:  </div><div class="line">    # Writing  </div><div class="line">    ^  </div><div class="line">    at generateError (/Users/xiajun/hexo/node_modules/hexo/node_modules/js-yaml/lib/js-yaml/loader.js:162:10)  </div><div class="line">    at throwError (/Users/xiajun/hexo/node_modules/hexo/node_modules/js-yaml/lib/js-yaml/loader.js:168:9)  </div><div class="line">    at readBlockMapping (/Users/xiajun/hexo/node_modules/hexo/node_modules/js-yaml/lib/js-yaml/loader.js:1040:9)  </div><div class="line">    at composeNode (/Users/xiajun/hexo/node_modules/hexo/node_modules/js-yaml/lib/js-yaml/loader.js:1326:12)  </div><div class="line">    at readDocument (/Users/xiajun/hexo/node_modules/hexo/node_modules/js-yaml/lib/js-yaml/loader.js:1488:3)  </div><div class="line">    at loadDocuments (/Users/xiajun/hexo/node_modules/hexo/node_modules/js-yaml/lib/js-yaml/loader.js:1544:5)  </div><div class="line">    at Object.load (/Users/xiajun/hexo/node_modules/hexo/node_modules/js-yaml/lib/js-yaml/loader.js:1561:19)  </div><div class="line">    at Hexo.yamlHelper (/Users/xiajun/hexo/node_modules/hexo/lib/plugins/renderer/yaml.js:7:15)  </div><div class="line">    at Hexo.tryCatcher (/Users/xiajun/hexo/node_modules/hexo/node_modules/bluebird/js/release/util.js:16:23)  </div><div class="line">    at Hexo.&amp;lt;anonymous&amp;gt; (/Users/xiajun/hexo/node_modules/hexo/node_modules/bluebird/js/release/method.js:15:34)  </div><div class="line">    at /Users/xiajun/hexo/node_modules/hexo/lib/hexo/render.js:59:21  </div><div class="line">    at tryCatcher (/Users/xiajun/hexo/node_modules/hexo/node_modules/bluebird/js/release/util.js:16:23)  </div><div class="line">    at Promise._settlePromiseFromHandler (/Users/xiajun/hexo/node_modules/hexo/node_modules/bluebird/js/release/promise.js:502:31)  </div><div class="line">    at Promise._settlePromise (/Users/xiajun/hexo/node_modules/hexo/node_modules/bluebird/js/release/promise.js:559:18)  </div><div class="line">    at Promise._settlePromise0 (/Users/xiajun/hexo/node_modules/hexo/node_modules/bluebird/js/release/promise.js:604:10)  </div><div class="line">    at Promise._settlePromises (/Users/xiajun/hexo/node_modules/hexo/node_modules/bluebird/js/release/promise.js:683:18)  </div><div class="line">    at Async._drainQueue (/Users/xiajun/hexo/node_modules/hexo/node_modules/bluebird/js/release/async.js:138:16)  </div><div class="line">    at Async._drainQueues (/Users/xiajun/hexo/node_modules/hexo/node_modules/bluebird/js/release/async.js:148:10)  </div><div class="line">    at Immediate.Async.drainQueues [as _onImmediate] (/Users/xiajun/hexo/node_modules/hexo/node_modules/bluebird/js/release/async.js:17:14)  </div><div class="line">    at processImmediate [as _immediateCallback] (timers.js:368:17)</div></pre></td></tr></table></figure>
-<p>然后我们执行部署命令部署到github，就可以看到repository中有了Readme文件，并且下次再次部署的时候，依然存在。</p>
-<p>关于skip_render的含义，官方文档解释是：<br>跳过指定文件的渲染，您可使用 glob 表达式来匹配路径。</p>
-<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><p><a href="http://stackoverflow.com/questions/31494145/how-can-i-tell-hexo-to-ignore-a-file-when-creating-posts" target="_blank" rel="external">How can I tell Hexo to ignore a file when creating posts?-StackOverflow</a><br><a href="http://www.yczmm.com/hexo-skip_render.html" target="_blank" rel="external">Hexo _posts目录, skip_render 的说明</a><br><a href="https://hexo.io/zh-cn/docs/configuration.html" target="_blank" rel="external">Hexo官方文档</a></p>
-<h2 id="版权声明"><a href="#版权声明" class="headerlink" title="版权声明"></a>版权声明</h2><p>本文首发于<a href="http://xiajunhust.github.io/">江南烟雨的个人博客</a>博客（ <a href="http://xiajunhust.github.io/">http://xiajunhust.github.io/</a> ），版权所有，侵权必究。<br>本文永久链接：<a href="http://xiajunhust.github.io/2016/07/11/Hexo-GitHub搭建个人博客-添加README/">http://xiajunhust.github.io/2016/07/11/Hexo-GitHub搭建个人博客-添加README/</a></p>
+<h1 id="2-创建RDD"><a href="#2-创建RDD" class="headerlink" title="2 创建RDD"></a>2 创建RDD</h1><p>spark提供了两种创建RDD的方式：读取外部数据集以及在驱动器程序中对一个集合进行并行化。<br>对集合进行并行化：  </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">scala&gt; var lines2 = sc.parallelize(List(&quot;pandas&quot;,&quot;I like pandas&quot;))</div><div class="line">lines2: org.apache.spark.rdd.RDD[String] = ParallelCollectionRDD[3] at parallelize at &lt;console&gt;:24</div><div class="line">scala&gt; lines2.first()</div><div class="line">res5: String = pandas</div><div class="line"></div><div class="line">scala&gt; lines2.count()</div><div class="line">res6: Long = 2</div></pre></td></tr></table></figure>
+<p>从外部存储中读取数据集：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">scala&gt; val lines=sc.textFile(&quot;README.md&quot;)</div><div class="line">lines: org.apache.spark.rdd.RDD[String] = README.md MapPartitionsRDD[1] at textFile at &lt;console&gt;:24</div><div class="line">scala&gt; lines.count()</div><div class="line">res3: Long = 2</div><div class="line"></div><div class="line">scala&gt; lines.first</div><div class="line">res4: String = hust</div></pre></td></tr></table></figure>
+<p>这里需要提前新建一个文件：spark-2.4.0-bin-hadoop2.7/bin/README.md。</p>
+<h1 id="3-RDD操作"><a href="#3-RDD操作" class="headerlink" title="3 RDD操作"></a>3 RDD操作</h1><p>RDD支持两种操作：</p>
+<ul>
+<li>转化操作：返回一个新的RDD，比如filter()或map()</li>
+<li>行动操作：向驱动器程序返回结果或者把结果写入外部系统的操作，会触发实际的计算（比如count()或first()）</li>
+</ul>
+<p>需要注意的是，转化操作是惰性求值的，只有在行动操作中用到这些RDD时才会真正计算。另外转化操作会生成新的RDD，不会改变原有RDD的内容。<br>通过转化操作，可以从已有的RDD中派生出新的RDD，Spark会使用谱系图计算这些RDD之间的关系。Spark需要这些信息来按需计算每个RDD，也可以在持久化的RDD丢失部分数据时恢复所丢失的数据。<br>如下示例：先筛选出浙江省的城市，然后筛选出湖北省的城市，最后求并集。谱系图如下：<br><img src="https://xjblog-1258188043.cos.ap-shanghai.myqcloud.com/spark-01.jpeg" alt=""></p>
+<pre><code>scala&gt; var lines3 = sc.parallelize(List(&quot;zhejiang hangzhou&quot;,&quot;zhejiang wenzhou&quot;,&quot;zhejiang ningbo&quot;, &quot;hubei wuhan&quot;,&quot;hubei shiyan&quot;))
+lines3: org.apache.spark.rdd.RDD[String] = ParallelCollectionRDD[4] at parallelize at &lt;console&gt;:24
+
+scala&gt; var zhejiang=lines3.filter(line=&gt;line.contains(&quot;zhejiang&quot;))
+zhejiang: org.apache.spark.rdd.RDD[String] = MapPartitionsRDD[5] at filter at &lt;console&gt;:25
+
+scala&gt; zhejiang.count()
+res7: Long = 3
+
+scala&gt; var hubei=lines3.filter(line=&gt;line.contains(&quot;hubei&quot;))
+hubei: org.apache.spark.rdd.RDD[String] = MapPartitionsRDD[6] at filter at &lt;console&gt;:25
+
+scala&gt; hubei.count()
+res8: Long = 2
+
+scala&gt; var zjhb=zhejiang.union(hubei)
+zjhb: org.apache.spark.rdd.RDD[String] = UnionRDD[7] at union at &lt;console&gt;:27
+
+scala&gt; zjhb.count()
+res9: Long = 5
+
+scala&gt; zjhb.take(5).foreach(println)
+zhejiang hangzhou
+zhejiang wenzhou
+zhejiang ningbo
+hubei wuhan
+hubei shiyan
+
+scala&gt; zjhb.collect()
+res12: Array[String] = Array(zhejiang hangzhou, zhejiang wenzhou, zhejiang ningbo, hubei wuhan, hubei shiyan)
+</code></pre><p>需要注意的是，每当我们调用一个新的行动操作时，整个RDD都会从头开始计算。为了提高效率，我们可以将中间结果持久化。</p>
+<h1 id="4-参考资料"><a href="#4-参考资料" class="headerlink" title="4 参考资料"></a>4 参考资料</h1><p>(1)<a href="https://item.jd.com/11782888.html" target="_blank" rel="external">Spark快速大数据分析</a>  </p>
+<h2 id="版权声明"><a href="#版权声明" class="headerlink" title="版权声明"></a>版权声明</h2><p>本文首发于<a href="http://xiajunhust.github.io/">江南烟雨的个人博客</a>博客（ <a href="http://xiajunhust.github.io/">http://xiajunhust.github.io/</a> ），版权所有，侵权必究。<br>本文永久链接：<a href="http://xiajunhust.github.io/2018/12/20/Spark基础学习笔记-RDD(弹性分布式数据集">http://xiajunhust.github.io/2018/12/20/Spark基础学习笔记-RDD(弹性分布式数据集</a>) /</p>
 
       
     </div>
@@ -210,10 +247,10 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/07/11/Hexo-GitHub搭建个人博客-添加README/" data-id="cjpw2nlw00005w9wfsc291946" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2018/12/20/Spark基础学习笔记-RDD(弹性分布式数据集) /" data-id="cjpw2nlwd000mw9wff7bbma4l" class="article-share-link">Share</a>
       
       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/开发工具/">开发工具</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spark/">Spark</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/大数据/">大数据</a></li></ul>
 
     </footer>
   </div>
@@ -221,15 +258,11 @@
     
 <nav id="article-nav">
   
-    <a href="/2016/07/11/Hexo-GitHub搭建个人博客-增加评论以及访问量统计功能/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Newer</strong>
-      <div class="article-nav-title">
-        
-          Hexo GitHub搭建个人博客-增加评论以及访问量统计功能
-        
-      </div>
-    </a>
   
+    <a href="/2018/12/17/大数据日知录读书笔记-分布式系统-向量时钟算法（Vector_Clock）/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">大数据日知录读书笔记-分布式系统-向量时钟算法（Vector_Clock）</div>
+    </a>
   
 </nav>
 
@@ -238,7 +271,7 @@
 
   <section id="comments">
    <!-- 多说评论框 start -->
-<div id="ds-thread" class="ds-thread" data-thread-key="2016/07/11/Hexo-GitHub搭建个人博客-添加README/" data-title="Hexo GitHub搭建个人博客-添加README" data-url="http://xiajunhust.github.io/2016/07/11/Hexo-GitHub搭建个人博客-添加README/"></div>
+<div id="ds-thread" class="ds-thread" data-thread-key="2018/12/20/Spark基础学习笔记-RDD(弹性分布式数据集) /" data-title="Spark基础学习笔记-RDD(弹性分布式数据集)" data-url="http://xiajunhust.github.io/2018/12/20/Spark基础学习笔记-RDD(弹性分布式数据集) /"></div>
 <!-- 多说评论框 end -->
 <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 <script type="text/javascript">
