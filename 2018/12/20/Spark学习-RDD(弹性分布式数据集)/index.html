@@ -11,10 +11,12 @@
 <meta property="og:url" content="http://xiajunhust.github.io/2018/12/20/Spark学习-RDD(弹性分布式数据集)/index.html">
 <meta property="og:site_name" content="江南烟雨的个人博客">
 <meta property="og:description" content="1 什么是RDDA Resilient Distributed Dataset (RDD), the basic abstraction in Spark.翻译：弹性的 分布式 数据集是 Spark 基础的抽象。解释：弹性的（可复原的），说明数据集具有容错性、可修复性。 分布式，说明数据集可以分布在不同的机器上。">
-<meta property="og:updated_time" content="2018-12-20T02:03:46.000Z">
+<meta property="og:image" content="https://xjblog-1258188043.cos.ap-shanghai.myqcloud.com/spark-01.jpeg">
+<meta property="og:updated_time" content="2018-12-20T02:10:54.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Spark基础学习笔记-RDD(弹性分布式数据集)">
 <meta name="twitter:description" content="1 什么是RDDA Resilient Distributed Dataset (RDD), the basic abstraction in Spark.翻译：弹性的 分布式 数据集是 Spark 基础的抽象。解释：弹性的（可复原的），说明数据集具有容错性、可修复性。 分布式，说明数据集可以分布在不同的机器上。">
+<meta name="twitter:image" content="https://xjblog-1258188043.cos.ap-shanghai.myqcloud.com/spark-01.jpeg">
   
     <link rel="alternate" href="/atom.xml" title="江南烟雨的个人博客" type="application/atom+xml">
   
@@ -90,19 +92,47 @@
         <h1 id="1-什么是RDD"><a href="#1-什么是RDD" class="headerlink" title="1 什么是RDD"></a>1 什么是RDD</h1><p>A Resilient Distributed Dataset (RDD), the basic abstraction in Spark.<br>翻译：弹性的 分布式 数据集是 Spark 基础的抽象。<br>解释：弹性的（可复原的），说明数据集具有容错性、可修复性。 分布式，说明数据集可以分布在不同的机器上。</p>
 <a id="more"></a>
 <h1 id="2-创建RDD"><a href="#2-创建RDD" class="headerlink" title="2 创建RDD"></a>2 创建RDD</h1><p>spark提供了两种创建RDD的方式：读取外部数据集以及在驱动器程序中对一个集合进行并行化。<br>对集合进行并行化：  </p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">scala&gt; var lines2 = sc.parallelize(List(&quot;pandas&quot;,&quot;I like pandas&quot;))</div><div class="line">lines2: org.apache.spark.rdd.RDD[String] = ParallelCollectionRDD[3] at parallelize at &lt;console&gt;:24</div><div class="line">scala&gt; lines2.first()</div><div class="line">res5: String = pandas</div><div class="line"></div><div class="line">scala&gt; lines2.count()</div><div class="line">res6: Long = 2</div><div class="line">```  </div><div class="line"></div><div class="line">从外部存储中读取数据集：</div></pre></td></tr></table></figure>
-<p>scala&gt; val lines=sc.textFile(“README.md”)<br>lines: org.apache.spark.rdd.RDD[String] = README.md MapPartitionsRDD[1] at textFile at <console>:24<br>scala&gt; lines.count()<br>res3: Long = 2</console></p>
-<p>scala&gt; lines.first<br>res4: String = hust<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">这里需要提前新建一个文件：spark-2.4.0-bin-hadoop2.7/bin/README.md。</div><div class="line"></div><div class="line"># 3 RDD操作  </div><div class="line">RDD支持两种操作：</div><div class="line"></div><div class="line">- 转化操作：返回一个新的RDD，比如filter()或map()</div><div class="line">- 行动操作：向驱动器程序返回结果或者把结果写入外部系统的操作，会触发实际的计算（比如count()或first()）</div><div class="line"></div><div class="line">需要注意的是，转化操作是惰性求值的，只有在行动操作中用到这些RDD时才会真正计算。另外转化操作会生成新的RDD，不会改变原有RDD的内容。  </div><div class="line">通过转化操作，可以从已有的RDD中派生出新的RDD，Spark会使用谱系图计算这些RDD之间的关系。Spark需要这些信息来按需计算每个RDD，也可以在持久化的RDD丢失部分数据时恢复所丢失的数据。  </div><div class="line">如下示例：先筛选出浙江省的城市，然后筛选出湖北省的城市，最后求并集。谱系图如下：</div><div class="line"></div><div class="line">![](https://xjblog-1258188043.cos.ap-shanghai.myqcloud.com/spark-01.jpeg)</div></pre></td></tr></table></figure></p>
-<p>scala&gt; var lines3 = sc.parallelize(List(“zhejiang hangzhou”,”zhejiang wenzhou”,”zhejiang ningbo”, “hubei wuhan”,”hubei shiyan”))<br>lines3: org.apache.spark.rdd.RDD[String] = ParallelCollectionRDD[4] at parallelize at <console>:24</console></p>
-<p>scala&gt; var zhejiang=lines3.filter(line=&gt;line.contains(“zhejiang”))<br>zhejiang: org.apache.spark.rdd.RDD[String] = MapPartitionsRDD[5] at filter at <console>:25</console></p>
-<p>scala&gt; zhejiang.count()<br>res7: Long = 3</p>
-<p>scala&gt; var hubei=lines3.filter(line=&gt;line.contains(“hubei”))<br>hubei: org.apache.spark.rdd.RDD[String] = MapPartitionsRDD[6] at filter at <console>:25</console></p>
-<p>scala&gt; hubei.count()<br>res8: Long = 2</p>
-<p>scala&gt; var zjhb=zhejiang.union(hubei)<br>zjhb: org.apache.spark.rdd.RDD[String] = UnionRDD[7] at union at <console>:27</console></p>
-<p>scala&gt; zjhb.count()<br>res9: Long = 5</p>
-<p>scala&gt; zjhb.take(5).foreach(println)<br>zhejiang hangzhou<br>zhejiang wenzhou<br>zhejiang ningbo<br>hubei wuhan<br>hubei shiyan</p>
-<p>scala&gt; zjhb.collect()<br>res12: Array[String] = Array(zhejiang hangzhou, zhejiang wenzhou, zhejiang ningbo, hubei wuhan, hubei shiyan)<br>```  </p>
-<p>需要注意的是，每当我们调用一个新的行动操作时，整个RDD都会从头开始计算。为了提高效率，我们可以将中间结果持久化。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">scala&gt; var lines2 = sc.parallelize(List(&quot;pandas&quot;,&quot;I like pandas&quot;))</div><div class="line">lines2: org.apache.spark.rdd.RDD[String] = ParallelCollectionRDD[3] at parallelize at &lt;console&gt;:24</div><div class="line">scala&gt; lines2.first()</div><div class="line">res5: String = pandas</div><div class="line"></div><div class="line">scala&gt; lines2.count()</div><div class="line">res6: Long = 2</div></pre></td></tr></table></figure>
+<p>从外部存储中读取数据集：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">scala&gt; val lines=sc.textFile(&quot;README.md&quot;)</div><div class="line">lines: org.apache.spark.rdd.RDD[String] = README.md MapPartitionsRDD[1] at textFile at &lt;console&gt;:24</div><div class="line">scala&gt; lines.count()</div><div class="line">res3: Long = 2</div><div class="line"></div><div class="line">scala&gt; lines.first</div><div class="line">res4: String = hust</div></pre></td></tr></table></figure>
+<p>这里需要提前新建一个文件：spark-2.4.0-bin-hadoop2.7/bin/README.md。</p>
+<h1 id="3-RDD操作"><a href="#3-RDD操作" class="headerlink" title="3 RDD操作"></a>3 RDD操作</h1><p>RDD支持两种操作：</p>
+<ul>
+<li>转化操作：返回一个新的RDD，比如filter()或map()</li>
+<li>行动操作：向驱动器程序返回结果或者把结果写入外部系统的操作，会触发实际的计算（比如count()或first()）</li>
+</ul>
+<p>需要注意的是，转化操作是惰性求值的，只有在行动操作中用到这些RDD时才会真正计算。另外转化操作会生成新的RDD，不会改变原有RDD的内容。<br>通过转化操作，可以从已有的RDD中派生出新的RDD，Spark会使用谱系图计算这些RDD之间的关系。Spark需要这些信息来按需计算每个RDD，也可以在持久化的RDD丢失部分数据时恢复所丢失的数据。<br>如下示例：先筛选出浙江省的城市，然后筛选出湖北省的城市，最后求并集。谱系图如下：<br><img src="https://xjblog-1258188043.cos.ap-shanghai.myqcloud.com/spark-01.jpeg" alt=""></p>
+<pre><code>scala&gt; var lines3 = sc.parallelize(List(&quot;zhejiang hangzhou&quot;,&quot;zhejiang wenzhou&quot;,&quot;zhejiang ningbo&quot;, &quot;hubei wuhan&quot;,&quot;hubei shiyan&quot;))
+lines3: org.apache.spark.rdd.RDD[String] = ParallelCollectionRDD[4] at parallelize at &lt;console&gt;:24
+
+scala&gt; var zhejiang=lines3.filter(line=&gt;line.contains(&quot;zhejiang&quot;))
+zhejiang: org.apache.spark.rdd.RDD[String] = MapPartitionsRDD[5] at filter at &lt;console&gt;:25
+
+scala&gt; zhejiang.count()
+res7: Long = 3
+
+scala&gt; var hubei=lines3.filter(line=&gt;line.contains(&quot;hubei&quot;))
+hubei: org.apache.spark.rdd.RDD[String] = MapPartitionsRDD[6] at filter at &lt;console&gt;:25
+
+scala&gt; hubei.count()
+res8: Long = 2
+
+scala&gt; var zjhb=zhejiang.union(hubei)
+zjhb: org.apache.spark.rdd.RDD[String] = UnionRDD[7] at union at &lt;console&gt;:27
+
+scala&gt; zjhb.count()
+res9: Long = 5
+
+scala&gt; zjhb.take(5).foreach(println)
+zhejiang hangzhou
+zhejiang wenzhou
+zhejiang ningbo
+hubei wuhan
+hubei shiyan
+
+scala&gt; zjhb.collect()
+res12: Array[String] = Array(zhejiang hangzhou, zhejiang wenzhou, zhejiang ningbo, hubei wuhan, hubei shiyan)
+</code></pre><p>需要注意的是，每当我们调用一个新的行动操作时，整个RDD都会从头开始计算。为了提高效率，我们可以将中间结果持久化。</p>
 <h1 id="4-参考资料"><a href="#4-参考资料" class="headerlink" title="4 参考资料"></a>4 参考资料</h1><p>(1)<a href="https://item.jd.com/11782888.html" target="_blank" rel="external">Spark快速大数据分析</a>  </p>
 <h2 id="版权声明"><a href="#版权声明" class="headerlink" title="版权声明"></a>版权声明</h2><p>本文首发于<a href="http://xiajunhust.github.io/">江南烟雨的个人博客</a>博客（ <a href="http://xiajunhust.github.io/">http://xiajunhust.github.io/</a> ），版权所有，侵权必究。<br>本文永久链接：<a href="http://xiajunhust.github.io/2018/12/20/Spark学习-RDD(弹性分布式数据集)/">http://xiajunhust.github.io/2018/12/20/Spark学习-RDD(弹性分布式数据集)/</a></p>
 
@@ -217,7 +247,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2018/12/20/Spark学习-RDD(弹性分布式数据集)/" data-id="cjpvyw314001b86wf5ou9uf6h" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2018/12/20/Spark学习-RDD(弹性分布式数据集)/" data-id="cjpvyz276000q9swf06fy9nxj" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spark/">Spark</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/大数据/">大数据</a></li></ul>
