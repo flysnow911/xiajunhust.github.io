@@ -3,21 +3,21 @@
 <head>
   <meta charset="utf-8">
   
-  <title>InfluxDB写入失败-partial write: max-values-per-tag limit exceeded | 江南烟雨的个人博客</title>
+  <title>Spark基础学习笔记3-广播变量(Broadcast) | 江南烟雨的个人博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="最近线上向InfluxDB写入数据突然报错，大概意思是tag的值超限，详细错误信息：
-12345678910112016-12-02 20:47:11.485 [] [] [] ERROR c.y.t.p.m.m.i.OrderCreateMonitorManageImpl - InfluxDB写入异常!influxDO=InfluxDO(measurement=com.XXX.trade.cre">
+  <meta name="description" content="1 Spark中广播变量概念广播变量是spark中共享变量的其中一种。它可以让程序高效的向所有工作节点发送一个只读的值，以供一个或多个spark操作使用。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="InfluxDB写入失败-partial write: max-values-per-tag limit exceeded">
-<meta property="og:url" content="http://xiajunhust.github.io/2016/12/13/InfluxDB写入失败-partial-write-max-values-per-tag-limit-exceeded/index.html">
+<meta property="og:title" content="Spark基础学习笔记3-广播变量(Broadcast)">
+<meta property="og:url" content="http://xiajunhust.github.io/2018/12/23/Spark基础学习笔记3-广播变量/index.html">
 <meta property="og:site_name" content="江南烟雨的个人博客">
-<meta property="og:description" content="最近线上向InfluxDB写入数据突然报错，大概意思是tag的值超限，详细错误信息：
-12345678910112016-12-02 20:47:11.485 [] [] [] ERROR c.y.t.p.m.m.i.OrderCreateMonitorManageImpl - InfluxDB写入异常!influxDO=InfluxDO(measurement=com.XXX.trade.cre">
-<meta property="og:updated_time" content="2016-12-17T15:25:36.000Z">
+<meta property="og:description" content="1 Spark中广播变量概念广播变量是spark中共享变量的其中一种。它可以让程序高效的向所有工作节点发送一个只读的值，以供一个或多个spark操作使用。">
+<meta property="og:image" content="https://xjblog-1258188043.cos.ap-shanghai.myqcloud.com/spark-05.png">
+<meta property="og:image" content="https://xjblog-1258188043.cos.ap-shanghai.myqcloud.com/spark-06.png">
+<meta property="og:updated_time" content="2018-12-23T08:50:50.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="InfluxDB写入失败-partial write: max-values-per-tag limit exceeded">
-<meta name="twitter:description" content="最近线上向InfluxDB写入数据突然报错，大概意思是tag的值超限，详细错误信息：
-12345678910112016-12-02 20:47:11.485 [] [] [] ERROR c.y.t.p.m.m.i.OrderCreateMonitorManageImpl - InfluxDB写入异常!influxDO=InfluxDO(measurement=com.XXX.trade.cre">
+<meta name="twitter:title" content="Spark基础学习笔记3-广播变量(Broadcast)">
+<meta name="twitter:description" content="1 Spark中广播变量概念广播变量是spark中共享变量的其中一种。它可以让程序高效的向所有工作节点发送一个只读的值，以供一个或多个spark操作使用。">
+<meta name="twitter:image" content="https://xjblog-1258188043.cos.ap-shanghai.myqcloud.com/spark-05.png">
   
     <link rel="alternate" href="/atom.xml" title="江南烟雨的个人博客" type="application/atom+xml">
   
@@ -68,10 +68,10 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main"><article id="post-InfluxDB写入失败-partial-write-max-values-per-tag-limit-exceeded" class="article article-type-post" itemscope itemprop="blogPost">
+        <section id="main"><article id="post-Spark基础学习笔记3-广播变量" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2016/12/13/InfluxDB写入失败-partial-write-max-values-per-tag-limit-exceeded/" class="article-date">
-  <time datetime="2016-12-13T03:05:46.000Z" itemprop="datePublished">2016-12-13</time>
+    <a href="/2018/12/23/Spark基础学习笔记3-广播变量/" class="article-date">
+  <time datetime="2018-12-23T00:58:10.000Z" itemprop="datePublished">2018-12-23</time>
 </a>
     
   </div>
@@ -82,7 +82,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      InfluxDB写入失败-partial write: max-values-per-tag limit exceeded
+      Spark基础学习笔记3-广播变量(Broadcast)
     </h1>
   
 
@@ -90,31 +90,23 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>最近线上向InfluxDB写入数据突然报错，大概意思是tag的值超限，详细错误信息：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">2016-12-02 20:47:11.485 [] [] [] ERROR c.y.t.p.m.m.i.OrderCreateMonitorManageImpl - InfluxDB写入异常!influxDO=InfluxDO(measurement=com.XXX.trade.create.request.result, timeStamp=1480682831481, tagKeyList=[cluster, host, count_time, count, count_type], tagValList=[DEFAULT_CLUSTER, xxx-inc.com, 1480682831481, 3, bill_new], fieldKeyList=[result, cost], fieldValList=[true, 112]), exception=&#123;&#125;</div><div class="line">java.lang.RuntimeException: &#123;&quot;error&quot;:&quot;partial write: max-values-per-tag limit exceeded (100000/100000): measurement=\&quot;com.XXX.trade.create.request.result\&quot; tag=\&quot;count_time\&quot; value=\&quot;count_time\&quot; dropped=1&quot;&#125;</div><div class="line"></div><div class="line">    at org.influxdb.impl.InfluxDBImpl.execute(InfluxDBImpl.java:266) ~[influxdb-java-2.4.jar:na]</div><div class="line">    at org.influxdb.impl.InfluxDBImpl.write(InfluxDBImpl.java:167) ~[influxdb-java-2.4.jar:na]</div><div class="line">    at org.influxdb.impl.InfluxDBImpl.write(InfluxDBImpl.java:157) ~[influxdb-java-2.4.jar:na]</div><div class="line">    at com.XXX.trade.process.monitor.dal.impl.InfluxDBDAOImpl.insert(InfluxDBDAOImpl.java:104) ~[trade-process-service-1.0.0-SNAPSHOT.jar:na]</div><div class="line">    at com.XXX.trade.process.monitor.manage.impl.OrderCreateMonitorManageImpl.save(OrderCreateMonitorManageImpl.java:40) ~[trade-process-service-1.0.0-SNAPSHOT.jar:na]</div><div class="line">    at com.XXX.trade.process.nsq.processor.impl.MonitorProcessor.process(MonitorProcessor.java:69) [trade-process-service-1.0.0-SNAPSHOT.jar:na]</div><div class="line">    at com.XXX.trade.process.nsq.NSQSubscriber.lambda$init$0(NSQSubscriber.java:71) [trade-process-service-1.0.0-SNAPSHOT.jar:na]</div><div class="line">    at com.XXX.trade.process.nsq.NSQSubscriber$$Lambda$8/1829287142.process(Unknown Source) [trade-process-service-1.0.0-SNAPSHOT.jar:na]</div></pre></td></tr></table></figure>
-<p>Google搜索了下，这是InfluxDB v1.1.0 [2016-11-14]版本新加的一个特性(<a href="https://github.com/influxdata/influxdb/blob/master/CHANGELOG.md" target="_blank" rel="external">CHANGELOG.md</a>)：</p>
+        <h1 id="1-Spark中广播变量概念"><a href="#1-Spark中广播变量概念" class="headerlink" title="1 Spark中广播变量概念"></a>1 Spark中广播变量概念</h1><p>广播变量是spark中共享变量的其中一种。它可以让程序高效的向所有工作节点发送一个只读的值，以供一个或多个spark操作使用。   </p>
 <a id="more"></a>
-<i><br>max-values-per-tag was added with a default of 100,000, but can be disabled by setting it to 0. Existing measurements with tags that exceed this limit will continue to load, but writes that would cause the tags cardinality to increase will be dropped and a partial write error will be returned to the caller. This limit can be used to prevent high cardinality tag values from being written to a measurement.<br></i>
-
-<p>增加了对tag的值的大小的校验，最大值是10000.若写入的数据的tag的值超限，则调用方会收到报错。用来防止写入到measurement的数据的series-cardinality(<a href="https://docs.influxdata.com/influxdb/v1.1/concepts/glossary/#series-cardinality" target="_blank" rel="external">series-cardinality</a>)过大。</p>
-<i><br>关于series cardinality：<br>The number of unique database, measurement, and tag set combinations in an InfluxDB instance.<br></i>
-
-<p><b>这样做的用意是什么呢？</b><br><a href="https://github.com/influxdata/influxdb/issues/7146" target="_blank" rel="external">issue-7146：Add option max-tags-per-database to limit high cardinality data</a>  </p>
-<i><br>Much as max-series-per-database in <a href="https://github.com/influxdata/influxdb/pull/7095" target="_blank" rel="external">#7095</a>, add a max-tags-per-database to limit high cardinality data.<br><br>Writes beyond that should be dropped and logged with a rate limit on the log (one summary log per minute or something saying x writes dropped).<br><br>This is important because if you accidentally load in a huge amount of high cardinality data, you can easily get into a place that InfluxDB will OOM if you attempt to delete the data, so your only choice is to try to move the files on disk out the way which deletes other data.<br><br>—<br><br>Configuration setting for managing series cardinality<br><br>Limiting your series cardinality is an essential part of working with InfluxDB. The new max-values-per-tag configuration setting can help you do just that.<br><br>The setting limits the number of tag values allowed per tag key. The default setting is 10,000 (so 10,000 tag values allowed per tag key). If a write causes the number of tag values for a tag key to exceed 10,000, InfluxDB will not write the point and it returns a partial write error.<br></i>
-
-<p>如果我们写入了大量的series-cardinality很高的数据，那么当我们删除数据的时候，InfluxDB会OOM。</p>
-<p><b>为什么我们需要关注series cardility？</b><br>原因是InfluxDB在内存中维护了系统中每个series数据的索引。随着具有唯一性的series数据数量的增长，RAM的使用也会增长。过高的series cardinality会导致操作系统kill掉InfluxDB进程，抛出OOM异常。  </p>
-<i><br>InfluxDB maintains an in-memory index of every series in the system. As the number of unique series grows, so does the RAM usage. High series cardinality can lead to the operating system killing the InfluxDB process with an out of memory (OOM) exception. See Querying for series cardinality to learn how to query for series cardinality.<br></i>
-
-
-
-<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
-<li><a href="https://github.com/influxdata/influxdb/issues/7146" target="_blank" rel="external">https://github.com/influxdata/influxdb/issues/7146</a></li>
-<li><a href="https://github.com/influxdata/influxdb/blob/master/CHANGELOG.md" target="_blank" rel="external">https://github.com/influxdata/influxdb/blob/master/CHANGELOG.md</a></li>
-<li><a href="https://www.influxdata.com/tldr-influxdb-tech-tips-november-15-2016/" target="_blank" rel="external">https://www.influxdata.com/tldr-influxdb-tech-tips-november-15-2016/</a></li>
-<li><a href="https://docs.influxdata.com/influxdb/v1.1/troubleshooting/frequently-asked-questions/#how-can-i-query-for-series-cardinality" target="_blank" rel="external">FAQ-how-can-i-query-for-series-cardinality</a><h2 id="版权声明"><a href="#版权声明" class="headerlink" title="版权声明"></a>版权声明</h2></li>
-</ul>
-<p>本文首发于<a href="http://xiajunhust.github.io/">江南烟雨的个人博客</a>博客（ <a href="http://xiajunhust.github.io/">http://xiajunhust.github.io/</a> ），版权所有，侵权必究。<br>本文永久链接：<a href="http://xiajunhust.github.io/2016/12/13/InfluxDB写入失败-partial-write-max-values-per-tag-limit-exceeded/">http://xiajunhust.github.io/2016/12/13/InfluxDB写入失败-partial-write-max-values-per-tag-limit-exceeded/</a></p>
+<h1 id="2-广播变量使用示例"><a href="#2-广播变量使用示例" class="headerlink" title="2 广播变量使用示例"></a>2 广播变量使用示例</h1><p>下面是一段简单的计算逻辑，对比了不使用广播变量和使用广播变量的两种方式：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">val pws = Map(&quot;Apache Spark&quot; -&gt; &quot;http://spark.apache.org/&quot;, &quot;Scala&quot; -&gt; &quot;http://www.scala-lang.org/&quot;)</div><div class="line">//不使用广播变量（比较低效，需要多次将pws变量发送到各个节点）</div><div class="line">val time1=System.currentTimeMillis()</div><div class="line">val websites = sc.parallelize(Seq(&quot;Apache Spark&quot;, &quot;Scala&quot;)).map(pws).collect</div><div class="line">val time2 =System.currentTimeMillis()</div><div class="line">println(&quot;websites = &quot;  + (time2 - time1))</div><div class="line">websites.foreach(println)</div><div class="line"></div><div class="line">//使用广播变量</div><div class="line">val pwsB = sc.broadcast(pws)</div><div class="line">val time3=System.currentTimeMillis()</div><div class="line">val websitesWithBroadcast = sc.parallelize(Seq(&quot;Apache Spark&quot;, &quot;Scala&quot;)).map(pwsB.value).collect</div><div class="line">println(&quot;websitesWithBroadcast = &quot; + (System.currentTimeMillis() - time3))</div><div class="line">websitesWithBroadcast.foreach(println)</div></pre></td></tr></table></figure>
+<p>输出：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">===============广播变量使用示例================</div><div class="line">cost = 446ms</div><div class="line">websites = </div><div class="line">http://spark.apache.org/</div><div class="line">http://www.scala-lang.org/</div><div class="line">cost = 32ms</div><div class="line">websitesWithBroadcast = </div><div class="line">http://spark.apache.org/</div><div class="line">http://www.scala-lang.org/</div></pre></td></tr></table></figure>
+<p>可以看出，输出结果是一样的，但是耗时，广播变量明显优于非广播变量模式。</p>
+<h1 id="3-广播变量原理"><a href="#3-广播变量原理" class="headerlink" title="3 广播变量原理"></a>3 广播变量原理</h1><p>将变量广播到各个执行器的示意图：<br><img src="https://xjblog-1258188043.cos.ap-shanghai.myqcloud.com/spark-05.png" alt=""></p>
+<p>在spark中，使用SparkContext创建广播变量，使用broadcastmanager和ContextCleaner管理其生命周期。<br><img src="https://xjblog-1258188043.cos.ap-shanghai.myqcloud.com/spark-06.png" alt=""></p>
+<p>org.apache.spark.SparkContext#broadcast核心代码:  </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">def broadcast[T: ClassTag](value: T): Broadcast[T] = &#123;</div><div class="line">//调用broadcastManager创建新的广播变量</div><div class="line">val bc = env.broadcastManager.newBroadcast[T](value, isLocal)</div><div class="line">//注册广播变量到ContextCleaner</div><div class="line">cleaner.foreach(_.registerBroadcastForCleanup(bc))</div><div class="line">bc</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>也可以手动销毁广播变量org.apache.spark.broadcast.Broadcast#destroy:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">def destroy() &#123;</div><div class="line">destroy(blocking = true)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>获取广播变量的值:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">/** Get the broadcasted value. */</div><div class="line">def value: T = &#123;</div><div class="line">assertValid()</div><div class="line">getValue()</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h1 id="4-参考资料"><a href="#4-参考资料" class="headerlink" title="4 参考资料"></a>4 参考资料</h1><p>(1)《快速大数据分析》<br>(2)<a href="http://spark.apache.org/docs/latest/rdd-programming-guide.html#broadcast-variables" target="_blank" rel="external">官方文档-broadcast-variables</a><br>(3)<a href="https://jaceklaskowski.gitbooks.io/mastering-apache-spark/spark-broadcast.html" target="_blank" rel="external">mastering-apache-spark</a></p>
+<h2 id="版权声明"><a href="#版权声明" class="headerlink" title="版权声明"></a>版权声明</h2><p>本文首发于<a href="http://xiajunhust.github.io/">江南烟雨的个人博客</a>博客（ <a href="http://xiajunhust.github.io/">http://xiajunhust.github.io/</a> ），版权所有，侵权必究。<br>本文永久链接：<a href="http://xiajunhust.github.io/2018/12/23/Spark基础学习笔记3-广播变量/">http://xiajunhust.github.io/2018/12/23/Spark基础学习笔记3-广播变量/</a></p>
 
       
     </div>
@@ -227,10 +219,10 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/12/13/InfluxDB写入失败-partial-write-max-values-per-tag-limit-exceeded/" data-id="cjq0nks9o000apywf254lv627" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2018/12/23/Spark基础学习笔记3-广播变量/" data-id="cjq0nksa2000spywfmft7no3l" class="article-share-link">Share</a>
       
       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/InfluxDB/">InfluxDB</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spark/">Spark</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/大数据/">大数据</a></li></ul>
 
     </footer>
   </div>
@@ -238,19 +230,10 @@
     
 <nav id="article-nav">
   
-    <a href="/2016/12/18/从Hystrix-DashboardData看ReativeX的使用/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Newer</strong>
-      <div class="article-nav-title">
-        
-          从Hystrix DashboardData看ReativeX的使用
-        
-      </div>
-    </a>
   
-  
-    <a href="/2016/11/17/RocketMQ源码学习之四-PushConsumer/" id="article-nav-older" class="article-nav-link-wrap">
+    <a href="/2018/12/21/Spark基础学习笔记2-Pair RDD/" id="article-nav-older" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">RocketMQ源码学习之四-PushConsumer</div>
+      <div class="article-nav-title">Spark基础学习笔记2-Pair RDD</div>
     </a>
   
 </nav>
@@ -260,7 +243,7 @@
 
   <section id="comments">
    <!-- 多说评论框 start -->
-<div id="ds-thread" class="ds-thread" data-thread-key="2016/12/13/InfluxDB写入失败-partial-write-max-values-per-tag-limit-exceeded/" data-title="InfluxDB写入失败-partial write: max-values-per-tag limit exceeded" data-url="http://xiajunhust.github.io/2016/12/13/InfluxDB写入失败-partial-write-max-values-per-tag-limit-exceeded/"></div>
+<div id="ds-thread" class="ds-thread" data-thread-key="2018/12/23/Spark基础学习笔记3-广播变量/" data-title="Spark基础学习笔记3-广播变量(Broadcast)" data-url="http://xiajunhust.github.io/2018/12/23/Spark基础学习笔记3-广播变量/"></div>
 <!-- 多说评论框 end -->
 <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 <script type="text/javascript">
