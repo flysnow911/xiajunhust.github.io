@@ -13,7 +13,7 @@
 <meta property="og:description" content="1 Spark中广播变量概念广播变量是spark中共享变量的其中一种。它可以让程序高效的向所有工作节点发送一个只读的值，以供一个或多个spark操作使用。">
 <meta property="og:image" content="https://xjblog-1258188043.cos.ap-shanghai.myqcloud.com/spark-05.png">
 <meta property="og:image" content="https://xjblog-1258188043.cos.ap-shanghai.myqcloud.com/spark-06.png">
-<meta property="og:updated_time" content="2018-12-23T08:50:50.000Z">
+<meta property="og:updated_time" content="2018-12-23T08:54:53.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Spark基础学习笔记3-广播变量(Broadcast)">
 <meta name="twitter:description" content="1 Spark中广播变量概念广播变量是spark中共享变量的其中一种。它可以让程序高效的向所有工作节点发送一个只读的值，以供一个或多个spark操作使用。">
@@ -105,7 +105,7 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">def destroy() &#123;</div><div class="line">destroy(blocking = true)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>获取广播变量的值:</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">/** Get the broadcasted value. */</div><div class="line">def value: T = &#123;</div><div class="line">assertValid()</div><div class="line">getValue()</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h1 id="4-参考资料"><a href="#4-参考资料" class="headerlink" title="4 参考资料"></a>4 参考资料</h1><p>(1)《快速大数据分析》<br>(2)<a href="http://spark.apache.org/docs/latest/rdd-programming-guide.html#broadcast-variables" target="_blank" rel="external">官方文档-broadcast-variables</a><br>(3)<a href="https://jaceklaskowski.gitbooks.io/mastering-apache-spark/spark-broadcast.html" target="_blank" rel="external">mastering-apache-spark</a></p>
+<h1 id="4-参考资料"><a href="#4-参考资料" class="headerlink" title="4 参考资料"></a>4 参考资料</h1><p>(1)《快速大数据分析》<br>(2)<a href="http://spark.apache.org/docs/latest/rdd-programming-guide.html#broadcast-variables" target="_blank" rel="external">官方文档-broadcast-variables</a><br>(3)<a href="https://jaceklaskowski.gitbooks.io/mastering-apache-spark/spark-broadcast.html" target="_blank" rel="external">mastering-apache-spark</a><br>(4)<a href="https://spark.apache.org/docs/1.6.2/api/java/org/apache/spark/broadcast/Broadcast.html" target="_blank" rel="external">官方API doc</a></p>
 <h2 id="版权声明"><a href="#版权声明" class="headerlink" title="版权声明"></a>版权声明</h2><p>本文首发于<a href="http://xiajunhust.github.io/">江南烟雨的个人博客</a>博客（ <a href="http://xiajunhust.github.io/">http://xiajunhust.github.io/</a> ），版权所有，侵权必究。<br>本文永久链接：<a href="http://xiajunhust.github.io/2018/12/23/Spark基础学习笔记3-广播变量/">http://xiajunhust.github.io/2018/12/23/Spark基础学习笔记3-广播变量/</a></p>
 
       
@@ -219,7 +219,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2018/12/23/Spark基础学习笔记3-广播变量/" data-id="cjq0nksa2000spywfmft7no3l" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2018/12/23/Spark基础学习笔记3-广播变量/" data-id="cjq23v4dz0015zowfdsplx4vn" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spark/">Spark</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/大数据/">大数据</a></li></ul>
