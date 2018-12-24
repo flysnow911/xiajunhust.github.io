@@ -167,7 +167,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
             
-            Accueil
+            Startseite
           </a>
         </li>
       
@@ -177,7 +177,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
-            Archives
+            Archiv
           </a>
         </li>
       
@@ -243,7 +243,7 @@
             <span class="post-meta-item-icon">
               <i class="fa fa-calendar-o"></i>
             </span>
-            <span class="post-meta-item-text">Posté le</span>
+            <span class="post-meta-item-text">Veröffentlicht am</span>
             <time itemprop="dateCreated" datetime="2018-12-23T08:58:10+08:00" content="2018-12-23">
               2018-12-23
             </time>
@@ -283,7 +283,7 @@
           <h1 id="1-Spark中广播变量概念"><a href="#1-Spark中广播变量概念" class="headerlink" title="1 Spark中广播变量概念"></a>1 Spark中广播变量概念</h1><p>广播变量是spark中共享变量的其中一种。它可以让程序高效的向所有工作节点发送一个只读的值，以供一个或多个spark操作使用。   </p>
           <div class="post-more-link text-center">
             <a class="btn" href="/2018/12/23/Spark基础学习笔记3-广播变量/#more" rel="contents">
-              Lire la suite &raquo;
+              Weiterlesen &raquo;
             </a>
           </div>
         
@@ -346,7 +346,7 @@
             <span class="post-meta-item-icon">
               <i class="fa fa-calendar-o"></i>
             </span>
-            <span class="post-meta-item-text">Posté le</span>
+            <span class="post-meta-item-text">Veröffentlicht am</span>
             <time itemprop="dateCreated" datetime="2018-12-21T08:58:10+08:00" content="2018-12-21">
               2018-12-21
             </time>
@@ -386,7 +386,7 @@
           <h1 id="1-什么是Pair-RDD"><a href="#1-什么是Pair-RDD" class="headerlink" title="1 什么是Pair RDD"></a>1 什么是Pair RDD</h1><p>Pair RDD：键值对RDD。提供了并行操作各个键或跨节点重新进行数据分组的操作接口。<br>本文介绍了Pair RDD的相关操作，并以实际例子进行讲解。  </p>
           <div class="post-more-link text-center">
             <a class="btn" href="/2018/12/21/Spark基础学习笔记2-Pair RDD/#more" rel="contents">
-              Lire la suite &raquo;
+              Weiterlesen &raquo;
             </a>
           </div>
         
@@ -449,7 +449,7 @@
             <span class="post-meta-item-icon">
               <i class="fa fa-calendar-o"></i>
             </span>
-            <span class="post-meta-item-text">Posté le</span>
+            <span class="post-meta-item-text">Veröffentlicht am</span>
             <time itemprop="dateCreated" datetime="2018-12-20T08:58:10+08:00" content="2018-12-20">
               2018-12-20
             </time>
@@ -489,7 +489,7 @@
           <h1 id="1-什么是RDD"><a href="#1-什么是RDD" class="headerlink" title="1 什么是RDD"></a>1 什么是RDD</h1><p>A Resilient Distributed Dataset (RDD), the basic abstraction in Spark.<br>翻译：弹性的 分布式 数据集是 Spark 基础的抽象。<br>解释：弹性的（可复原的），说明数据集具有容错性、可修复性。 分布式，说明数据集可以分布在不同的机器上。</p>
           <div class="post-more-link text-center">
             <a class="btn" href="/2018/12/20/Spark基础学习笔记1-RDD(弹性分布式数据集) /#more" rel="contents">
-              Lire la suite &raquo;
+              Weiterlesen &raquo;
             </a>
           </div>
         
@@ -552,7 +552,7 @@
             <span class="post-meta-item-icon">
               <i class="fa fa-calendar-o"></i>
             </span>
-            <span class="post-meta-item-text">Posté le</span>
+            <span class="post-meta-item-text">Veröffentlicht am</span>
             <time itemprop="dateCreated" datetime="2018-12-17T08:58:10+08:00" content="2018-12-17">
               2018-12-17
             </time>
@@ -593,7 +593,7 @@
 <p>向量时钟算法要解决什么问题？<br>分布式系统中数据的不同副本之间的数据的一致性是一个难以解决的问题，原因是不同副本的时钟可能不一样。我们无法判断多个更新操作之间的先后顺序。<br>向量时钟算法则是为了解决部分此类问题。</p>
           <div class="post-more-link text-center">
             <a class="btn" href="/2018/12/17/大数据日知录读书笔记-分布式系统-向量时钟算法（Vector_Clock）/#more" rel="contents">
-              Lire la suite &raquo;
+              Weiterlesen &raquo;
             </a>
           </div>
         
@@ -656,7 +656,7 @@
             <span class="post-meta-item-icon">
               <i class="fa fa-calendar-o"></i>
             </span>
-            <span class="post-meta-item-text">Posté le</span>
+            <span class="post-meta-item-text">Veröffentlicht am</span>
             <time itemprop="dateCreated" datetime="2018-12-04T08:58:10+08:00" content="2018-12-04">
               2018-12-04
             </time>
@@ -696,7 +696,7 @@
           <h1 id="1-引入Sentinel背景"><a href="#1-引入Sentinel背景" class="headerlink" title="1 引入Sentinel背景"></a>1 引入Sentinel背景</h1><p>最近遇到一个线上问题，订单表查询某分片查询热点导致mysql连接池满，从而影响了该分片上的所有读写操作。排查发现某一个业务场景，会导致短时间对同一个分片上的订单做读操作（目前不会有那么大的写并发量）。姑且在这里不讨论创建订单时候的分片的合理性，这里仅讨论如何解决本问题。首先是可以针对查询操作进行分片维度的限流，同时调用方需要进行对应的降级或补偿措施。<br>调研了Hystrix、Sentinel，发现Sentinel的热点参数限流非常适合，最终选择了Sentinel。</p>
           <div class="post-more-link text-center">
             <a class="btn" href="/2018/12/04/Sentinel-热点参数限流使用与原理/#more" rel="contents">
-              Lire la suite &raquo;
+              Weiterlesen &raquo;
             </a>
           </div>
         
@@ -759,7 +759,7 @@
             <span class="post-meta-item-icon">
               <i class="fa fa-calendar-o"></i>
             </span>
-            <span class="post-meta-item-text">Posté le</span>
+            <span class="post-meta-item-text">Veröffentlicht am</span>
             <time itemprop="dateCreated" datetime="2018-11-30T20:58:10+08:00" content="2018-11-30">
               2018-11-30
             </time>
@@ -799,7 +799,7 @@
           <h1 id="1-死锁背景"><a href="#1-死锁背景" class="headerlink" title="1 死锁背景"></a>1 死锁背景</h1><p>多个线程执行insert into … on duplicate key update…的时候发生了死锁。</p>
           <div class="post-more-link text-center">
             <a class="btn" href="/2018/11/30/MySQL Insert on duplicate锁/#more" rel="contents">
-              Lire la suite &raquo;
+              Weiterlesen &raquo;
             </a>
           </div>
         
@@ -862,7 +862,7 @@
             <span class="post-meta-item-icon">
               <i class="fa fa-calendar-o"></i>
             </span>
-            <span class="post-meta-item-text">Posté le</span>
+            <span class="post-meta-item-text">Veröffentlicht am</span>
             <time itemprop="dateCreated" datetime="2018-09-07T10:48:59+08:00" content="2018-09-07">
               2018-09-07
             </time>
@@ -903,7 +903,7 @@
 <h1 id="1-问题描述"><a href="#1-问题描述" class="headerlink" title="1 问题描述"></a>1 问题描述</h1><p>线上做全链路压测，其中涉及三个系统，调用关系A-&gt;B-&gt;C，均是dubbo调用。压测的时候C出现CPU满导致服务响应超时的情况，进而导致B以及A接口均超时。停止压测后，B-&gt;C的流量依然未有明显降低，系统收敛慢，影响线上业务。</p>
           <div class="post-more-link text-center">
             <a class="btn" href="/2018/09/07/记一次线上Dubbo线程池队列满的问题/#more" rel="contents">
-              Lire la suite &raquo;
+              Weiterlesen &raquo;
             </a>
           </div>
         
@@ -966,7 +966,7 @@
             <span class="post-meta-item-icon">
               <i class="fa fa-calendar-o"></i>
             </span>
-            <span class="post-meta-item-text">Posté le</span>
+            <span class="post-meta-item-text">Veröffentlicht am</span>
             <time itemprop="dateCreated" datetime="2018-08-28T17:52:57+08:00" content="2018-08-28">
               2018-08-28
             </time>
@@ -1011,7 +1011,7 @@
 <h2 id="2-domain-service"><a href="#2-domain-service" class="headerlink" title="2 domain service"></a>2 domain service</h2><p>包含那些不适合放在领域对象中的领域逻辑。不包含典型的CRUD操作（应该放在repository中）。<br>domain service中可以使用repository。</p>
           <div class="post-more-link text-center">
             <a class="btn" href="/2018/08/28/DDD-Domain&Application&infrastructure-Service(DDD中三种服务)/#more" rel="contents">
-              Lire la suite &raquo;
+              Weiterlesen &raquo;
             </a>
           </div>
         
@@ -1074,7 +1074,7 @@
             <span class="post-meta-item-icon">
               <i class="fa fa-calendar-o"></i>
             </span>
-            <span class="post-meta-item-text">Posté le</span>
+            <span class="post-meta-item-text">Veröffentlicht am</span>
             <time itemprop="dateCreated" datetime="2018-06-24T17:24:59+08:00" content="2018-06-24">
               2018-06-24
             </time>
@@ -1177,7 +1177,7 @@
             <span class="post-meta-item-icon">
               <i class="fa fa-calendar-o"></i>
             </span>
-            <span class="post-meta-item-text">Posté le</span>
+            <span class="post-meta-item-text">Veröffentlicht am</span>
             <time itemprop="dateCreated" datetime="2018-06-10T17:24:59+08:00" content="2018-06-10">
               2018-06-10
             </time>
@@ -1326,7 +1326,7 @@
           <div class="site-state-item site-state-posts">
             <a href="/archives">
               <span class="site-state-item-count">30</span>
-              <span class="site-state-item-name">articles</span>
+              <span class="site-state-item-name">Artikel</span>
             </a>
           </div>
 
@@ -1336,7 +1336,7 @@
             <div class="site-state-item site-state-tags">
               <a href="/tags">
                 <span class="site-state-item-count">19</span>
-                <span class="site-state-item-name">tags</span>
+                <span class="site-state-item-name">Tags</span>
               </a>
             </div>
           
@@ -1379,12 +1379,26 @@
   <span class="author" itemprop="copyrightHolder">江南烟雨</span>
 </div>
 
+<div class="busuanzi-count">
+
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
 <div class="powered-by">
-  Powered by <a class="theme-link" href="http://hexo.io">Hexo</a>
+  Erstellt mit  <a class="theme-link" href="http://hexo.io">Hexo</a>
 </div>
 
 <div class="theme-info">
-  Thème -
+  Theme -
   <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
     NexT.Mist
   </a>
