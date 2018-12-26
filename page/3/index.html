@@ -63,6 +63,161 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-RocketMQ源码学习之二-同步消息发送" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/11/12/RocketMQ源码学习之二-同步消息发送/" class="article-date">
+  <time datetime="2016-11-12T12:52:32.000Z" itemprop="datePublished">2016-11-12</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/11/12/RocketMQ源码学习之二-同步消息发送/">RocketMQ源码学习之二-同步消息发送</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>本文讲述RocketMQ同步发送消息的原理。</p>
+<h1 id="1-消息生产者demo"><a href="#1-消息生产者demo" class="headerlink" title="1 消息生产者demo"></a>1 消息生产者demo</h1><p>先看一段同步发送消息的demo代码：  </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line">import com.alibaba.rocketmq.client.exception.MQClientException;</div><div class="line">import com.alibaba.rocketmq.client.producer.DefaultMQProducer;</div><div class="line">import com.alibaba.rocketmq.client.producer.SendResult;</div><div class="line">import com.alibaba.rocketmq.common.message.Message;</div><div class="line"></div><div class="line">public class Producer1 &#123;</div><div class="line">  public static void main(String[] args) throws MQClientException, InterruptedException &#123;</div><div class="line">    DefaultMQProducer producer = new DefaultMQProducer(&quot;ProducerGroupName&quot;);</div><div class="line">    producer.setNamesrvAddr(&quot;192.168.2.101:9876&quot;);</div><div class="line">    producer.setInstanceName(&quot;Producer1&quot;);</div><div class="line">    producer.start();</div><div class="line">    for (int i = 0; i &lt; 1; i++)</div><div class="line">      try &#123;</div><div class="line">        &#123;</div><div class="line">          Message msg = new Message(&quot;TopicTest&quot;,// topic</div><div class="line">                                    &quot;TagA&quot;,// tag</div><div class="line">                                    &quot;OrderID188&quot;,// key</div><div class="line">                                    (&quot;Hello MetaQ&quot;).getBytes());// body</div><div class="line">          SendResult sendResult = producer.send(msg);</div><div class="line">          System.out.println(sendResult);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">      &#125;</div><div class="line">      catch (Exception e) &#123;</div><div class="line">        e.printStackTrace();</div><div class="line">      &#125;</div><div class="line"></div><div class="line">    producer.shutdown();</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+        
+          <p class="article-more-link">
+            <a href="/2016/11/12/RocketMQ源码学习之二-同步消息发送/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+
+
+	<!-- css -->
+	<style type="text/css">
+	    .center {
+	        text-align: center;
+	    }
+	    .hidden {
+	        display: none;
+	    }
+		.donate_bar a.btn_donate{
+			display: inline-block;
+			width: 82px;
+			height: 82px;
+			background: url("http://7xsl28.com1.z0.glb.clouddn.com/btn_reward.gif") no-repeat;
+			_background: url("http://7xsl28.com1.z0.glb.clouddn.com/btn_reward.gif") no-repeat;
+
+			<!-- http://img.t.sinajs.cn/t5/style/images/apps_PRF/e_media/btn_reward.gif
+			     因为本 hexo 生成的博客所用的 theme 的 a:hover 带动画效果，
+				 为了在让打赏按钮显示效果正常 而 添加了以下几行 css，
+				 嵌入其它博客时不一定要它们。 -->
+			-webkit-transition: background 0s;
+			-moz-transition: background 0s;
+			-o-transition: background 0s;
+			-ms-transition: background 0s;
+			transition: background 0s;
+			<!-- /让打赏按钮的效果显示正常 而 添加的几行 css 到此结束 -->
+		}
+
+		.donate_bar a.btn_donate:hover{ background-position: 0px -82px;}
+		.donate_bar .donate_txt {
+			display: block;
+			color: #9d9d9d;
+			font: 14px/2 "Microsoft Yahei";
+		}
+		.bold{ font-weight: bold; }
+	</style>
+	<!-- /css -->
+
+    <!-- Donate Module -->
+    <div id="donate_module">
+
+	<!-- btn_donate & tips -->
+	<div id="donate_board" class="donate_bar center">
+	    <br>
+	    ------------------------------------------------------------------------------------------------------------------------------
+	    <br>
+		<a id="btn_donate" class="btn_donate" target="_self" href="javascript:;" title="Donate 打赏"></a>
+		<span class="donate_txt">
+			打赏我的人，运气都不会太差~
+		</span>
+			
+		
+	</div>
+	<!-- /btn_donate & tips -->
+
+	<!-- donate guide -->
+    
+	<div id="donate_guide" class="donate_bar center hidden">
+        <br>
+	    ------------------------------------------------------------------------------------------------------------------------------
+	    <br>
+	    
+	    <div width="100%" align="center"><div name="dashmain" id="dash-main-id-87895f" class="dash-main-3 87895f-0.99"></div></div>
+		<script type="text/javascript" charset="utf-8" src="http://www.dashangcloud.com/static/ds.js"></script>
+		
+
+		<a href="https://xjblog-1258188043.cos.ap-shanghai.myqcloud.com/wechat_qrcode.jpeg" title="用微信扫一扫哦~" class="fancybox" rel="article0">
+			<img src="https://xjblog-1258188043.cos.ap-shanghai.myqcloud.com/wechat_qrcode.jpeg" title="微信打赏 Donate" height="190px" width="auto"/>
+		</a>
+        
+        &nbsp;&nbsp;
+
+		<a href="https://xjblog-1258188043.cos.ap-shanghai.myqcloud.com/alipay_qrcode.jpeg" title="用支付宝扫一扫即可~" class="fancybox" rel="article0">
+			<img src="https://xjblog-1258188043.cos.ap-shanghai.myqcloud.com/alipay_qrcode.jpeg" title="支付宝打赏 Donate" height="190px" width="auto"/>
+		</a>
+
+		<span class="donate_txt">
+			打赏我的人，运气都不会太差~
+		</span>
+
+	</div>
+	<!-- /donate guide -->
+
+	<!-- donate script -->
+	<script type="text/javascript">
+		document.getElementById('btn_donate').onclick = function() {
+			$('#donate_board').addClass('hidden');
+	    $('#donate_guide').removeClass('hidden');
+		}
+
+		function donate_on_web(){
+			$('#donate').submit();
+        }
+
+		var original_window_onload = window.onload;
+        window.onload = function () {
+            if (original_window_onload) {
+                original_window_onload();
+            }
+            document.getElementById('donate_board_wdg').className = 'hidden';
+		}
+	</script>
+	<!-- /donate script -->
+</div>
+<!-- /Donate Module -->
+   
+
+    <footer class="article-footer">
+      <a data-url="http://xiajunhust.github.io/2016/11/12/RocketMQ源码学习之二-同步消息发送/" data-id="cjq4hsb8b000o9twftztvm8c9" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/RocketMQ/">RocketMQ</a></li></ul>
+
+    </footer>
+  </div>
+  
+
+
+
+</article>
+
+  
     <article id="post-RocketMQ源码学习之一-MAC系统单机环境搭建" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2016/11/12/RocketMQ源码学习之一-MAC系统单机环境搭建/" class="article-date">
@@ -204,7 +359,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/11/12/RocketMQ源码学习之一-MAC系统单机环境搭建/" data-id="cjq4hkqt2000i5ewfddj5g7xl" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2016/11/12/RocketMQ源码学习之一-MAC系统单机环境搭建/" data-id="cjq4hsb86000i9twfj8gl87bj" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/RocketMQ/">RocketMQ</a></li></ul>
@@ -358,7 +513,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/08/28/MySQL的日期时间类型关于秒以下精度的处理/" data-id="cjq4hkqsz000d5ewf85dz4qbm" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2016/08/28/MySQL的日期时间类型关于秒以下精度的处理/" data-id="cjq4hsb84000e9twfet2v7jrp" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MySQL/">MySQL</a></li></ul>
@@ -512,7 +667,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/08/27/技术分享-MySQL-InnoDB-locks-and-deadlocks/" data-id="cjq4hkqtm001j5ewft658ej9l" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2016/08/27/技术分享-MySQL-InnoDB-locks-and-deadlocks/" data-id="cjq4hsb8u001j9twftvs9bjd8" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MySQL/">MySQL</a></li></ul>
@@ -666,7 +821,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/08/06/为什么Java-HashMap、CopyOnWriteArrayList等集合自己实现readObject和writeObject方法/" data-id="cjq4hkqtd00125ewfzs3t0moh" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2016/08/06/为什么Java-HashMap、CopyOnWriteArrayList等集合自己实现readObject和writeObject方法/" data-id="cjq4hsb8o00169twf7g8wj5o6" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li></ul>
@@ -825,7 +980,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/08/06/CopyOnWriteArrayList与JMM/" data-id="cjq4hkqsl00005ewfava4fx8m" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2016/08/06/CopyOnWriteArrayList与JMM/" data-id="cjq4hsb7n00009twfpv0jalo7" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li></ul>
@@ -979,7 +1134,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/07/20/代码中的命名问题-命名太长了！/" data-id="cjq4hkqth001b5ewflkr4s1sy" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2016/07/20/代码中的命名问题-命名太长了！/" data-id="cjq4hsb8m00139twfi4vu6gby" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/代码设计/">代码设计</a></li></ul>
@@ -1132,7 +1287,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/07/16/《Soft-skills》读书笔记（一）-这本书与其他书籍有何不同/" data-id="cjq4hkqtb000y5ewfdflmstap" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2016/07/16/《Soft-skills》读书笔记（一）-这本书与其他书籍有何不同/" data-id="cjq4hsb8j000z9twfphuyhvgj" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/思考-读书笔记/">思考&读书笔记</a></li></ul>
@@ -1285,7 +1440,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/07/14/DbUnit-AmbiguousTableNameException异常解决/" data-id="cjq4hkqst00045ewfooonvuot" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2016/07/14/DbUnit-AmbiguousTableNameException异常解决/" data-id="cjq4hsb7x00059twfb07xpsgw" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/测试技术/">测试技术</a></li></ul>
@@ -1438,160 +1593,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/07/11/Hexo-GitHub搭建个人博客-增加评论以及访问量统计功能/" data-id="cjq4hkqsv00075ewfm3mxjs3f" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/开发工具/">开发工具</a></li></ul>
-
-    </footer>
-  </div>
-  
-
-
-
-</article>
-
-  
-    <article id="post-Hexo-GitHub搭建个人博客-添加README" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2016/07/11/Hexo-GitHub搭建个人博客-添加README/" class="article-date">
-  <time datetime="2016-07-11T10:05:12.000Z" itemprop="datePublished">2016-07-11</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/07/11/Hexo-GitHub搭建个人博客-添加README/">Hexo GitHub搭建个人博客-添加README</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="概要"><a href="#概要" class="headerlink" title="概要"></a>概要</h1><p>当我们使用Hexo+Github搭建好个人博客环境之后，默认Github上repository中是没有Readme的。本文主要介绍如何添加Readme。</p>
-        
-          <p class="article-more-link">
-            <a href="/2016/07/11/Hexo-GitHub搭建个人博客-添加README/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-
-
-	<!-- css -->
-	<style type="text/css">
-	    .center {
-	        text-align: center;
-	    }
-	    .hidden {
-	        display: none;
-	    }
-		.donate_bar a.btn_donate{
-			display: inline-block;
-			width: 82px;
-			height: 82px;
-			background: url("http://7xsl28.com1.z0.glb.clouddn.com/btn_reward.gif") no-repeat;
-			_background: url("http://7xsl28.com1.z0.glb.clouddn.com/btn_reward.gif") no-repeat;
-
-			<!-- http://img.t.sinajs.cn/t5/style/images/apps_PRF/e_media/btn_reward.gif
-			     因为本 hexo 生成的博客所用的 theme 的 a:hover 带动画效果，
-				 为了在让打赏按钮显示效果正常 而 添加了以下几行 css，
-				 嵌入其它博客时不一定要它们。 -->
-			-webkit-transition: background 0s;
-			-moz-transition: background 0s;
-			-o-transition: background 0s;
-			-ms-transition: background 0s;
-			transition: background 0s;
-			<!-- /让打赏按钮的效果显示正常 而 添加的几行 css 到此结束 -->
-		}
-
-		.donate_bar a.btn_donate:hover{ background-position: 0px -82px;}
-		.donate_bar .donate_txt {
-			display: block;
-			color: #9d9d9d;
-			font: 14px/2 "Microsoft Yahei";
-		}
-		.bold{ font-weight: bold; }
-	</style>
-	<!-- /css -->
-
-    <!-- Donate Module -->
-    <div id="donate_module">
-
-	<!-- btn_donate & tips -->
-	<div id="donate_board" class="donate_bar center">
-	    <br>
-	    ------------------------------------------------------------------------------------------------------------------------------
-	    <br>
-		<a id="btn_donate" class="btn_donate" target="_self" href="javascript:;" title="Donate 打赏"></a>
-		<span class="donate_txt">
-			打赏我的人，运气都不会太差~
-		</span>
-			
-		
-	</div>
-	<!-- /btn_donate & tips -->
-
-	<!-- donate guide -->
-    
-	<div id="donate_guide" class="donate_bar center hidden">
-        <br>
-	    ------------------------------------------------------------------------------------------------------------------------------
-	    <br>
-	    
-	    <div width="100%" align="center"><div name="dashmain" id="dash-main-id-87895f" class="dash-main-3 87895f-0.99"></div></div>
-		<script type="text/javascript" charset="utf-8" src="http://www.dashangcloud.com/static/ds.js"></script>
-		
-
-		<a href="https://xjblog-1258188043.cos.ap-shanghai.myqcloud.com/wechat_qrcode.jpeg" title="用微信扫一扫哦~" class="fancybox" rel="article0">
-			<img src="https://xjblog-1258188043.cos.ap-shanghai.myqcloud.com/wechat_qrcode.jpeg" title="微信打赏 Donate" height="190px" width="auto"/>
-		</a>
-        
-        &nbsp;&nbsp;
-
-		<a href="https://xjblog-1258188043.cos.ap-shanghai.myqcloud.com/alipay_qrcode.jpeg" title="用支付宝扫一扫即可~" class="fancybox" rel="article0">
-			<img src="https://xjblog-1258188043.cos.ap-shanghai.myqcloud.com/alipay_qrcode.jpeg" title="支付宝打赏 Donate" height="190px" width="auto"/>
-		</a>
-
-		<span class="donate_txt">
-			打赏我的人，运气都不会太差~
-		</span>
-
-	</div>
-	<!-- /donate guide -->
-
-	<!-- donate script -->
-	<script type="text/javascript">
-		document.getElementById('btn_donate').onclick = function() {
-			$('#donate_board').addClass('hidden');
-	    $('#donate_guide').removeClass('hidden');
-		}
-
-		function donate_on_web(){
-			$('#donate').submit();
-        }
-
-		var original_window_onload = window.onload;
-        window.onload = function () {
-            if (original_window_onload) {
-                original_window_onload();
-            }
-            document.getElementById('donate_board_wdg').className = 'hidden';
-		}
-	</script>
-	<!-- /donate script -->
-</div>
-<!-- /Donate Module -->
-   
-
-    <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2016/07/11/Hexo-GitHub搭建个人博客-添加README/" data-id="cjq4hkqsu00055ewfbrqigcsc" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2016/07/11/Hexo-GitHub搭建个人博客-增加评论以及访问量统计功能/" data-id="cjq4hsb7r00029twf6ihjmfol" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/开发工具/">开发工具</a></li></ul>
@@ -1608,7 +1610,7 @@
 
 
   <nav id="page-nav">
-    <a class="extend prev" rel="prev" href="/page/2/">&laquo; __('prev')</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span>
+    <a class="extend prev" rel="prev" href="/page/2/">&laquo; __('prev')</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/4/">__('next') &raquo;</a>
   </nav>
 </section>
         
@@ -1631,7 +1633,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">标签云</h3>
     <div class="widget tagcloud">
-      <a href="/tags/DDD/" style="font-size: 10px;">DDD</a> <a href="/tags/Dubbo/" style="font-size: 10px;">Dubbo</a> <a href="/tags/Hyperledger/" style="font-size: 20px;">Hyperledger</a> <a href="/tags/Hystrix/" style="font-size: 10px;">Hystrix</a> <a href="/tags/InfluxDB/" style="font-size: 10px;">InfluxDB</a> <a href="/tags/Java/" style="font-size: 13.33px;">Java</a> <a href="/tags/MySQL/" style="font-size: 20px;">MySQL</a> <a href="/tags/ReactiveX/" style="font-size: 10px;">ReactiveX</a> <a href="/tags/Redis/" style="font-size: 10px;">Redis</a> <a href="/tags/RocketMQ/" style="font-size: 20px;">RocketMQ</a> <a href="/tags/Sentinel/" style="font-size: 10px;">Sentinel</a> <a href="/tags/Spark/" style="font-size: 16.67px;">Spark</a> <a href="/tags/代码设计/" style="font-size: 10px;">代码设计</a> <a href="/tags/分布式/" style="font-size: 10px;">分布式</a> <a href="/tags/区块链/" style="font-size: 20px;">区块链</a> <a href="/tags/大数据/" style="font-size: 16.67px;">大数据</a> <a href="/tags/开发工具/" style="font-size: 13.33px;">开发工具</a> <a href="/tags/思考-读书笔记/" style="font-size: 10px;">思考&读书笔记</a> <a href="/tags/测试技术/" style="font-size: 10px;">测试技术</a>
+      <a href="/tags/DDD/" style="font-size: 10px;">DDD</a> <a href="/tags/Dubbo/" style="font-size: 10px;">Dubbo</a> <a href="/tags/Hyperledger/" style="font-size: 20px;">Hyperledger</a> <a href="/tags/Hystrix/" style="font-size: 10px;">Hystrix</a> <a href="/tags/InfluxDB/" style="font-size: 10px;">InfluxDB</a> <a href="/tags/Java/" style="font-size: 15px;">Java</a> <a href="/tags/MySQL/" style="font-size: 20px;">MySQL</a> <a href="/tags/ReactiveX/" style="font-size: 10px;">ReactiveX</a> <a href="/tags/Redis/" style="font-size: 10px;">Redis</a> <a href="/tags/RocketMQ/" style="font-size: 20px;">RocketMQ</a> <a href="/tags/Sentinel/" style="font-size: 10px;">Sentinel</a> <a href="/tags/Spark/" style="font-size: 20px;">Spark</a> <a href="/tags/代码设计/" style="font-size: 10px;">代码设计</a> <a href="/tags/分布式/" style="font-size: 10px;">分布式</a> <a href="/tags/区块链/" style="font-size: 20px;">区块链</a> <a href="/tags/大数据/" style="font-size: 20px;">大数据</a> <a href="/tags/开发工具/" style="font-size: 15px;">开发工具</a> <a href="/tags/思考-读书笔记/" style="font-size: 10px;">思考&读书笔记</a> <a href="/tags/测试技术/" style="font-size: 10px;">测试技术</a>
     </div>
   </div>
 
@@ -1653,6 +1655,10 @@
       <ul>
         
           <li>
+            <a href="/2018/12/25/Spark基础学习笔记4-Spark执行原理分析/">Spark基础学习笔记4-Spark执行原理分析</a>
+          </li>
+        
+          <li>
             <a href="/2018/12/23/Spark基础学习笔记3-广播变量/">Spark基础学习笔记3-广播变量(Broadcast)</a>
           </li>
         
@@ -1666,10 +1672,6 @@
         
           <li>
             <a href="/2018/12/17/大数据日知录读书笔记-分布式系统-向量时钟算法（Vector_Clock）/">大数据日知录读书笔记-分布式系统-向量时钟算法（Vector_Clock）</a>
-          </li>
-        
-          <li>
-            <a href="/2018/12/04/Sentinel-热点参数限流使用与原理/">Sentinel热点参数限流使用与原理</a>
           </li>
         
       </ul>
