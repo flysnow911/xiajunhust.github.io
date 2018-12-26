@@ -5,18 +5,18 @@
   
   <title>Spark基础学习笔记3-广播变量(Broadcast) | 江南烟雨的个人博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="1 Spark中广播变量概念广播变量是spark中共享变量的其中一种。它可以让程序高效的向所有工作节点发送一个只读的值，以供一个或多个spark操作使用。">
+  <meta name="description" content="1 Spark中广播变量概念test广播变量是spark中共享变量的其中一种。它可以让程序高效的向所有工作节点发送一个只读的值，以供一个或多个spark操作使用。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Spark基础学习笔记3-广播变量(Broadcast)">
 <meta property="og:url" content="http://xiajunhust.github.io/2018/12/23/Spark基础学习笔记3-广播变量/index.html">
 <meta property="og:site_name" content="江南烟雨的个人博客">
-<meta property="og:description" content="1 Spark中广播变量概念广播变量是spark中共享变量的其中一种。它可以让程序高效的向所有工作节点发送一个只读的值，以供一个或多个spark操作使用。">
+<meta property="og:description" content="1 Spark中广播变量概念test广播变量是spark中共享变量的其中一种。它可以让程序高效的向所有工作节点发送一个只读的值，以供一个或多个spark操作使用。">
 <meta property="og:image" content="https://xjblog-1258188043.cos.ap-shanghai.myqcloud.com/spark-05.png">
 <meta property="og:image" content="https://xjblog-1258188043.cos.ap-shanghai.myqcloud.com/spark-06.png">
-<meta property="og:updated_time" content="2018-12-23T08:54:53.000Z">
+<meta property="og:updated_time" content="2018-12-26T01:13:58.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Spark基础学习笔记3-广播变量(Broadcast)">
-<meta name="twitter:description" content="1 Spark中广播变量概念广播变量是spark中共享变量的其中一种。它可以让程序高效的向所有工作节点发送一个只读的值，以供一个或多个spark操作使用。">
+<meta name="twitter:description" content="1 Spark中广播变量概念test广播变量是spark中共享变量的其中一种。它可以让程序高效的向所有工作节点发送一个只读的值，以供一个或多个spark操作使用。">
 <meta name="twitter:image" content="https://xjblog-1258188043.cos.ap-shanghai.myqcloud.com/spark-05.png">
   
     <link rel="alternate" href="/atom.xml" title="江南烟雨的个人博客" type="application/atom+xml">
@@ -90,7 +90,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="1-Spark中广播变量概念"><a href="#1-Spark中广播变量概念" class="headerlink" title="1 Spark中广播变量概念"></a>1 Spark中广播变量概念</h1><p>广播变量是spark中共享变量的其中一种。它可以让程序高效的向所有工作节点发送一个只读的值，以供一个或多个spark操作使用。   </p>
+        <h1 id="1-Spark中广播变量概念"><a href="#1-Spark中广播变量概念" class="headerlink" title="1 Spark中广播变量概念"></a>1 Spark中广播变量概念</h1><p>test广播变量是spark中共享变量的其中一种。它可以让程序高效的向所有工作节点发送一个只读的值，以供一个或多个spark操作使用。   </p>
 <a id="more"></a>
 <h1 id="2-广播变量使用示例"><a href="#2-广播变量使用示例" class="headerlink" title="2 广播变量使用示例"></a>2 广播变量使用示例</h1><p>下面是一段简单的计算逻辑，对比了不使用广播变量和使用广播变量的两种方式：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">val pws = Map(&quot;Apache Spark&quot; -&gt; &quot;http://spark.apache.org/&quot;, &quot;Scala&quot; -&gt; &quot;http://www.scala-lang.org/&quot;)</div><div class="line">//不使用广播变量（比较低效，需要多次将pws变量发送到各个节点）</div><div class="line">val time1=System.currentTimeMillis()</div><div class="line">val websites = sc.parallelize(Seq(&quot;Apache Spark&quot;, &quot;Scala&quot;)).map(pws).collect</div><div class="line">val time2 =System.currentTimeMillis()</div><div class="line">println(&quot;websites = &quot;  + (time2 - time1))</div><div class="line">websites.foreach(println)</div><div class="line"></div><div class="line">//使用广播变量</div><div class="line">val pwsB = sc.broadcast(pws)</div><div class="line">val time3=System.currentTimeMillis()</div><div class="line">val websitesWithBroadcast = sc.parallelize(Seq(&quot;Apache Spark&quot;, &quot;Scala&quot;)).map(pwsB.value).collect</div><div class="line">println(&quot;websitesWithBroadcast = &quot; + (System.currentTimeMillis() - time3))</div><div class="line">websitesWithBroadcast.foreach(println)</div></pre></td></tr></table></figure>
@@ -219,7 +219,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2018/12/23/Spark基础学习笔记3-广播变量/" data-id="cjq4hhwaw000v3twf5nyi503w" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2018/12/23/Spark基础学习笔记3-广播变量/" data-id="cjq4hkqt9000u5ewfq1ak7oif" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spark/">Spark</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/大数据/">大数据</a></li></ul>
