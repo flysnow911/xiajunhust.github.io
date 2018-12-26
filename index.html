@@ -63,169 +63,6 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-Spark基础学习笔记4-Spark执行原理分析" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/12/25/Spark基础学习笔记4-Spark执行原理分析/" class="article-date">
-  <time datetime="2018-12-25T00:58:10.000Z" itemprop="datePublished">2018-12-25</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/12/25/Spark基础学习笔记4-Spark执行原理分析/">Spark基础学习笔记4-Spark执行原理分析</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="1-Spark运行架构"><a href="#1-Spark运行架构" class="headerlink" title="1 Spark运行架构"></a>1 Spark运行架构</h1><p>spark运行架构如下图：<br><img src="https://xjblog-1258188043.cos.ap-shanghai.myqcloud.com/spark-14.jpg" alt="">  </p>
-<p>在具体讲解Spark运行架构之前，需要先了解几个重要的概念：</p>
-<ul>
-<li>RDD：是弹性分布式数据集（Resilient Distributed Dataset）的简称，是分布式内存的一个抽象概念，提供了一种高度受限的共享内存模型；</li>
-<li>DAG：是Directed Acyclic Graph（有向无环图）的简称，反映RDD之间的依赖关系；</li>
-<li>Executor：是运行在工作节点（Worker Node）上的一个进程，负责运行任务，并为应用程序存储数据；</li>
-<li>应用：用户编写的Spark应用程序；</li>
-<li>任务：运行在Executor上的工作单元；</li>
-<li>作业：一个作业包含多个RDD及作用于相应RDD上的各种操作；</li>
-<li>阶段：是作业的基本调度单位，一个作业会分为多组任务，每组任务被称为“阶段”，或者也被称为“任务集”。</li>
-</ul>
-        
-          <p class="article-more-link">
-            <a href="/2018/12/25/Spark基础学习笔记4-Spark执行原理分析/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-
-
-	<!-- css -->
-	<style type="text/css">
-	    .center {
-	        text-align: center;
-	    }
-	    .hidden {
-	        display: none;
-	    }
-		.donate_bar a.btn_donate{
-			display: inline-block;
-			width: 82px;
-			height: 82px;
-			background: url("http://7xsl28.com1.z0.glb.clouddn.com/btn_reward.gif") no-repeat;
-			_background: url("http://7xsl28.com1.z0.glb.clouddn.com/btn_reward.gif") no-repeat;
-
-			<!-- http://img.t.sinajs.cn/t5/style/images/apps_PRF/e_media/btn_reward.gif
-			     因为本 hexo 生成的博客所用的 theme 的 a:hover 带动画效果，
-				 为了在让打赏按钮显示效果正常 而 添加了以下几行 css，
-				 嵌入其它博客时不一定要它们。 -->
-			-webkit-transition: background 0s;
-			-moz-transition: background 0s;
-			-o-transition: background 0s;
-			-ms-transition: background 0s;
-			transition: background 0s;
-			<!-- /让打赏按钮的效果显示正常 而 添加的几行 css 到此结束 -->
-		}
-
-		.donate_bar a.btn_donate:hover{ background-position: 0px -82px;}
-		.donate_bar .donate_txt {
-			display: block;
-			color: #9d9d9d;
-			font: 14px/2 "Microsoft Yahei";
-		}
-		.bold{ font-weight: bold; }
-	</style>
-	<!-- /css -->
-
-    <!-- Donate Module -->
-    <div id="donate_module">
-
-	<!-- btn_donate & tips -->
-	<div id="donate_board" class="donate_bar center">
-	    <br>
-	    ------------------------------------------------------------------------------------------------------------------------------
-	    <br>
-		<a id="btn_donate" class="btn_donate" target="_self" href="javascript:;" title="Donate 打赏"></a>
-		<span class="donate_txt">
-			打赏我的人，运气都不会太差~
-		</span>
-			
-		
-	</div>
-	<!-- /btn_donate & tips -->
-
-	<!-- donate guide -->
-    
-	<div id="donate_guide" class="donate_bar center hidden">
-        <br>
-	    ------------------------------------------------------------------------------------------------------------------------------
-	    <br>
-	    
-	    <div width="100%" align="center"><div name="dashmain" id="dash-main-id-87895f" class="dash-main-3 87895f-0.99"></div></div>
-		<script type="text/javascript" charset="utf-8" src="http://www.dashangcloud.com/static/ds.js"></script>
-		
-
-		<a href="https://xjblog-1258188043.cos.ap-shanghai.myqcloud.com/wechat_qrcode.jpeg" title="用微信扫一扫哦~" class="fancybox" rel="article0">
-			<img src="https://xjblog-1258188043.cos.ap-shanghai.myqcloud.com/wechat_qrcode.jpeg" title="微信打赏 Donate" height="190px" width="auto"/>
-		</a>
-        
-        &nbsp;&nbsp;
-
-		<a href="https://xjblog-1258188043.cos.ap-shanghai.myqcloud.com/alipay_qrcode.jpeg" title="用支付宝扫一扫即可~" class="fancybox" rel="article0">
-			<img src="https://xjblog-1258188043.cos.ap-shanghai.myqcloud.com/alipay_qrcode.jpeg" title="支付宝打赏 Donate" height="190px" width="auto"/>
-		</a>
-
-		<span class="donate_txt">
-			打赏我的人，运气都不会太差~
-		</span>
-
-	</div>
-	<!-- /donate guide -->
-
-	<!-- donate script -->
-	<script type="text/javascript">
-		document.getElementById('btn_donate').onclick = function() {
-			$('#donate_board').addClass('hidden');
-	    $('#donate_guide').removeClass('hidden');
-		}
-
-		function donate_on_web(){
-			$('#donate').submit();
-        }
-
-		var original_window_onload = window.onload;
-        window.onload = function () {
-            if (original_window_onload) {
-                original_window_onload();
-            }
-            document.getElementById('donate_board_wdg').className = 'hidden';
-		}
-	</script>
-	<!-- /donate script -->
-</div>
-<!-- /Donate Module -->
-   
-
-    <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2018/12/25/Spark基础学习笔记4-Spark执行原理分析/" data-id="cjq3t7jj8000yrnwfl5ow6xzn" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spark/">Spark</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/大数据/">大数据</a></li></ul>
-
-    </footer>
-  </div>
-  
-
-
-
-</article>
-
-  
     <article id="post-Spark基础学习笔记3-广播变量" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2018/12/23/Spark基础学习笔记3-广播变量/" class="article-date">
@@ -365,7 +202,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2018/12/23/Spark基础学习笔记3-广播变量/" data-id="cjq3t7jj7000wrnwfu9dyrca6" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2018/12/23/Spark基础学习笔记3-广播变量/" data-id="cjq4hhwaw000v3twf5nyi503w" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spark/">Spark</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/大数据/">大数据</a></li></ul>
@@ -518,7 +355,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2018/12/21/Spark基础学习笔记2-Pair RDD/" data-id="cjq3t7jj2000qrnwfyewlzsx1" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2018/12/21/Spark基础学习笔记2-Pair RDD/" data-id="cjq4hhwau000s3twfvxmvavih" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spark/">Spark</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/大数据/">大数据</a></li></ul>
@@ -671,7 +508,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2018/12/20/Spark基础学习笔记1-RDD(弹性分布式数据集) /" data-id="cjq3t7jj1000ornwfwmd4478d" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2018/12/20/Spark基础学习笔记1-RDD(弹性分布式数据集) /" data-id="cjq4hhwar000o3twf4qsgrxkg" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spark/">Spark</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/大数据/">大数据</a></li></ul>
@@ -825,7 +662,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2018/12/17/大数据日知录读书笔记-分布式系统-向量时钟算法（Vector_Clock）/" data-id="cjq3t7jjq001drnwfe9ecrva8" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2018/12/17/大数据日知录读书笔记-分布式系统-向量时钟算法（Vector_Clock）/" data-id="cjq4hhwbd001h3twfzie303dj" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/分布式/">分布式</a></li></ul>
@@ -978,7 +815,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2018/12/04/Sentinel-热点参数限流使用与原理/" data-id="cjq3t7jj3000srnwf81n5rgaj" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2018/12/04/Sentinel-热点参数限流使用与原理/" data-id="cjq4hhwas000q3twfjcmwslrm" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Sentinel/">Sentinel</a></li></ul>
@@ -1131,7 +968,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2018/11/30/MySQL Insert on duplicate锁/" data-id="cjq3t7jiu000drnwf43rtc6v3" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2018/11/30/MySQL Insert on duplicate锁/" data-id="cjq4hhwad00093twf3cqyo591" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MySQL/">MySQL</a></li></ul>
@@ -1285,7 +1122,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2018/09/07/记一次线上Dubbo线程池队列满的问题/" data-id="cjq3t7jjx001lrnwfe3gmafqj" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2018/09/07/记一次线上Dubbo线程池队列满的问题/" data-id="cjq4hhwbf001l3twf8byj1ctp" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Dubbo/">Dubbo</a></li></ul>
@@ -1443,7 +1280,7 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2018/08/28/DDD-Domain&Application&infrastructure-Service(DDD中三种服务)/" data-id="cjq3t7jim0007rnwfpuz23s5b" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2018/08/28/DDD-Domain&Application&infrastructure-Service(DDD中三种服务)/" data-id="cjq4hhwa000003twf43nbi92v" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DDD/">DDD</a></li></ul>
@@ -1595,7 +1432,193 @@
    
 
     <footer class="article-footer">
-      <a data-url="http://xiajunhust.github.io/2018/06/24/区块链学习之四-Hyperledger-链码/" data-id="cjq3t7jjw001hrnwfbig1ced2" class="article-share-link">Share</a>
+      <a data-url="http://xiajunhust.github.io/2018/06/24/区块链学习之四-Hyperledger-链码/" data-id="cjq4hhwbb001f3twfhd1jyhat" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Hyperledger/">Hyperledger</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/区块链/">区块链</a></li></ul>
+
+    </footer>
+  </div>
+  
+
+
+
+</article>
+
+  
+    <article id="post-区块链学习之三-Hyperledger-编写第一个区块链应用" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/06/10/区块链学习之三-Hyperledger-编写第一个区块链应用/" class="article-date">
+  <time datetime="2018-06-10T09:24:59.000Z" itemprop="datePublished">2018-06-10</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/06/10/区块链学习之三-Hyperledger-编写第一个区块链应用/">区块链学习之三-编写Hyperledger区块链应用以及应用与账本交互原理解析</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>本章介绍如何基于Hyperledger编写区块链应用，以及它们背后的运行原理。<br>本文采用nodejs客户端为例进行说明，也可以使用其他客户端比如java客户端来执行。</p>
+<p>欢迎关注我的区块链技术学习公众号二维码：<br><img src="http://o8sltkx20.bkt.clouddn.com/%E5%85%AC%E4%BC%97%E5%8F%B7%E4%BA%8C%E7%BB%B4%E7%A0%81.jpg" alt="大话区块链技术"></p>
+<h1 id="1-区块链应用工作原理"><a href="#1-区块链应用工作原理" class="headerlink" title="1 区块链应用工作原理"></a>1 区块链应用工作原理</h1><p>区块链应用工作原理示意图：<br><img src="http://o8sltkx20.bkt.clouddn.com/blockchain4.jpeg" alt="区块链应用工作原理示意图"><br>应用从CA获得授权后，通过智能合约与账本进行交互。</p>
+<h1 id="2-fabcar示例应用启动"><a href="#2-fabcar示例应用启动" class="headerlink" title="2 fabcar示例应用启动"></a>2 fabcar示例应用启动</h1><p>本文以fabric-sample中的fabcar示例工程来进行说明。  </p>
+<h1 id="2-1-环境配置"><a href="#2-1-环境配置" class="headerlink" title="2.1 环境配置"></a>2.1 环境配置</h1><h1 id="2-1-1-应用依赖安装"><a href="#2-1-1-应用依赖安装" class="headerlink" title="2.1.1 应用依赖安装"></a>2.1.1 应用依赖安装</h1><p>切换到目录src/github.com/hyperledger/fabric-samples/fabcar下，执行如下命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">npm install</div></pre></td></tr></table></figure>
+<h1 id="2-1-2-启动网络"><a href="#2-1-2-启动网络" class="headerlink" title="2.1.2 启动网络"></a>2.1.2 启动网络</h1><p>运行如下命令，将会启动智能合约容器（供链码运行）：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">./startFabric.sh</div></pre></td></tr></table></figure>
+<h1 id="2-2-应用与网络交互-与CA（Certificate-Authority）交互"><a href="#2-2-应用与网络交互-与CA（Certificate-Authority）交互" class="headerlink" title="2.2 应用与网络交互-与CA（Certificate Authority）交互"></a>2.2 应用与网络交互-与CA（Certificate Authority）交互</h1><p>可以在命令行中执行如下命令查看CA的日志：  </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker logs -f ca.example.com</div></pre></td></tr></table></figure>
+<p>当我们启动网络的时候，一个管理员用户admin会在CA注册，接下来需要为它生成证书（enrollment certificate，eCert），后面我们将使用这个管理员账户来注册新的用户。向CA服务器发送注册请求:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">node enrollAdmin.js</div></pre></td></tr></table></figure>
+<p>该命令发起证书注册请求，并且将生成的证书和key相关信息存储到文件夹hfc-key-store下。应用后续会从这个目录加载证书。<br>看到如下输出说明运行成功：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"> Store path:gopath/src/github.com/hyperledger/fabric-samples/fabcar/hfc-key-store</div><div class="line">Successfully loaded admin from persistence</div><div class="line">Assigned the admin user to the fabric client ::&#123;&quot;name&quot;:&quot;admin&quot;,&quot;mspid&quot;:&quot;Org1MSP&quot;,&quot;roles&quot;:null,&quot;affiliation&quot;:&quot;&quot;,&quot;enrollmentSecret&quot;:&quot;&quot;,&quot;enrollment&quot;:&#123;&quot;signingIdentity&quot;:&quot;6872aa81ba301a9bed59449d2617f1657cdbc84320638ecc0c6ec1d6408f0acd&quot;,&quot;identity&quot;:&#123;&quot;certificate&quot;:&quot;-----BEGIN CERTIFICATE-----\nMIIB8TCCAZegAwIBAgIUDr94KBe0jWetLGyRGuvjujHYl3UwCgYIKoZIzj0EAwIw\nczELMAkGA1UEBhMCVVMxEzARBgNVBAgTCkNhbGlmb3JuaWExFjAUBgNVBAcTDVNh\nbiBGcmFuY2lzY28xGTAXBgNVBAoTEG9yZzEuZXhhbXBsZS5jb20xHDAaBgNVBAMT\nE2NhLm9yZzEuZXhhbXBsZS5jb20wHhcNMTgwMzI2MDEwNzAwWhcNMTkwMzI2MDEw\nNzAwWjAQMQ4wDAYDVQQDEwVhZG1pbjBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IA\nBMUmRJtPO8XmIEFRgY3qkhkYTnkWwgZ4IwH5Mr5KtJfByDl3al1AtLdZ+b1QBJF3\nk0g99tFYa4dPiHtHHTceF0ijbDBqMA4GA1UdDwEB/wQEAwIHgDAMBgNVHRMBAf8E\nAjAAMB0GA1UdDgQWBBThuftwB3EGicNuBI/6SxmUcv5mMzArBgNVHSMEJDAigCBC\nOaoNzXba7ri6DNpwGFHRRQTTGq0bLd3brGpXNl5JfDAKBggqhkjOPQQDAgNIADBF\nAiEAnxsP7GZ9RMyKy1tpNAvgTXFSVOVYvW2cXHWS0rhYrJgCIEWSE3a+16Vurjtt\nAfCHTzfoDndk/4JH5kE66mt14AgO\n-----END CERTIFICATE-----\n&quot;&#125;&#125;&#125;</div></pre></td></tr></table></figure>
+<p>有了根证书，接下来可以注册新的用户：user1。我们将使用这个用户来查询和更新账本。<br>特别注意的是：这里是使用刚刚生成的根证书为此新用户进行注册。为user1发起注册请求：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">node registerUser.js</div></pre></td></tr></table></figure>
+<p>看到如下输出信息说明创建成功：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"> Store path:gopath/src/github.com/hyperledger/fabric-samples/fabcar/hfc-key-store</div><div class="line">Successfully loaded admin from persistence</div><div class="line">Successfully registered user1 - secret:sbLGhukyjiht</div><div class="line">Successfully enrolled member user &quot;user1&quot;</div><div class="line">User1 was successfully registered and enrolled and is ready to intreact with the fabric network</div></pre></td></tr></table></figure>
+<p>如果遇到如下报错，需要在host文件中增加localhost的配置。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Store path:gopath/src/github.com/hyperledger/fabric-samples/fabcar/hfc-key-store</div><div class="line">Successfully loaded admin from persistence</div><div class="line">Failed to register: Error: Calling register endpoint failed with error [Error: getaddrinfo ENOTFOUND localhost localhost:7054]</div></pre></td></tr></table></figure>
+<p>有了admin和user1两个用户的证书，接下来可以和账本进行交互了。</p>
+<h2 id="2-3-和账本交互-查询账本"><a href="#2-3-和账本交互-查询账本" class="headerlink" title="2.3 和账本交互-查询账本"></a>2.3 和账本交互-查询账本</h2><p>查询账本是指从账本读取数据。数据是以key-value的格式存储的。我们可以查询单个或多个key对应的value值，如果是以json格式存储的，则还可以支持复杂的搜索。</p>
+<p>账本查询工作原理示意图：<br><img src="http://o8sltkx20.bkt.clouddn.com/blockchain5.jpeg" width="700" alt="查询账本" align="center">     </p>
+<p>我们通过示例工程中的query.js脚本来执行查询.我们先运行一下看看效果：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">➜  fabcar git:(a76d649) ✗ node query.js</div><div class="line">Store path:gopath/src/github.com/hyperledger/fabric-samples/fabcar/hfc-key-store</div><div class="line">Successfully loaded user1 from persistence</div><div class="line">Query has completed, checking results</div><div class="line">Response is  [&#123;&quot;Key&quot;:&quot;CAR0&quot;, &quot;Record&quot;:&#123;&quot;colour&quot;:&quot;blue&quot;,&quot;make&quot;:&quot;Toyota&quot;,&quot;model&quot;:&quot;Prius&quot;,&quot;owner&quot;:&quot;Tomoko&quot;&#125;&#125;,&#123;&quot;Key&quot;:&quot;CAR1&quot;, &quot;Record&quot;:&#123;&quot;colour&quot;:&quot;red&quot;,&quot;make&quot;:&quot;Ford&quot;,&quot;model&quot;:&quot;Mustang&quot;,&quot;owner&quot;:&quot;Brad&quot;&#125;&#125;,&#123;&quot;Key&quot;:&quot;CAR2&quot;, &quot;Record&quot;:&#123;&quot;colour&quot;:&quot;green&quot;,&quot;make&quot;:&quot;Hyundai&quot;,&quot;model&quot;:&quot;Tucson&quot;,&quot;owner&quot;:&quot;Jin Soo&quot;&#125;&#125;,&#123;&quot;Key&quot;:&quot;CAR3&quot;, &quot;Record&quot;:&#123;&quot;colour&quot;:&quot;yellow&quot;,&quot;make&quot;:&quot;Volkswagen&quot;,&quot;model&quot;:&quot;Passat&quot;,&quot;owner&quot;:&quot;Max&quot;&#125;&#125;,&#123;&quot;Key&quot;:&quot;CAR4&quot;, &quot;Record&quot;:&#123;&quot;colour&quot;:&quot;black&quot;,&quot;make&quot;:&quot;Tesla&quot;,&quot;model&quot;:&quot;S&quot;,&quot;owner&quot;:&quot;Adriana&quot;&#125;&#125;,&#123;&quot;Key&quot;:&quot;CAR5&quot;, &quot;Record&quot;:&#123;&quot;colour&quot;:&quot;purple&quot;,&quot;make&quot;:&quot;Peugeot&quot;,&quot;model&quot;:&quot;205&quot;,&quot;owner&quot;:&quot;Michel&quot;&#125;&#125;,&#123;&quot;Key&quot;:&quot;CAR6&quot;, &quot;Record&quot;:&#123;&quot;colour&quot;:&quot;white&quot;,&quot;make&quot;:&quot;Chery&quot;,&quot;model&quot;:&quot;S22L&quot;,&quot;owner&quot;:&quot;Aarav&quot;&#125;&#125;,&#123;&quot;Key&quot;:&quot;CAR7&quot;, &quot;Record&quot;:&#123;&quot;colour&quot;:&quot;violet&quot;,&quot;make&quot;:&quot;Fiat&quot;,&quot;model&quot;:&quot;Punto&quot;,&quot;owner&quot;:&quot;Pari&quot;&#125;&#125;,&#123;&quot;Key&quot;:&quot;CAR8&quot;, &quot;Record&quot;:&#123;&quot;colour&quot;:&quot;indigo&quot;,&quot;make&quot;:&quot;Tata&quot;,&quot;model&quot;:&quot;Nano&quot;,&quot;owner&quot;:&quot;Valeria&quot;&#125;&#125;,&#123;&quot;Key&quot;:&quot;CAR9&quot;, &quot;Record&quot;:&#123;&quot;colour&quot;:&quot;brown&quot;,&quot;make&quot;:&quot;Holden&quot;,&quot;model&quot;:&quot;Barina&quot;,&quot;owner&quot;:&quot;Shotaro&quot;&#125;&#125;]</div></pre></td></tr></table></figure>
+<p>可以看到会输出所有的car信息。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div></pre></td><td class="code"><pre><div class="line">&apos;use strict&apos;;</div><div class="line"></div><div class="line">var Fabric_Client = require(&apos;fabric-client&apos;);</div><div class="line">var path = require(&apos;path&apos;);</div><div class="line">var util = require(&apos;util&apos;);</div><div class="line">var os = require(&apos;os&apos;);</div><div class="line"></div><div class="line">//</div><div class="line">var fabric_client = new Fabric_Client();</div><div class="line"></div><div class="line">// setup the fabric network（指定channel以及peer）</div><div class="line">var channel = fabric_client.newChannel(&apos;mychannel&apos;);</div><div class="line">var peer = fabric_client.newPeer(&apos;grpc://localhost:7051&apos;);</div><div class="line">channel.addPeer(peer);</div><div class="line"></div><div class="line">//证书存储路径指定</div><div class="line">var member_user = null;</div><div class="line">var store_path = path.join(__dirname, &apos;hfc-key-store&apos;);</div><div class="line">console.log(&apos;Store path:&apos;+store_path);</div><div class="line">var tx_id = null;</div><div class="line"></div><div class="line">// create the key value store as defined in the fabric-client/config/default.json &apos;key-value-store&apos; setting</div><div class="line">Fabric_Client.newDefaultKeyValueStore(&#123; path: store_path</div><div class="line">&#125;).then((state_store) =&gt; &#123;</div><div class="line">	// assign the store to the fabric client</div><div class="line">	fabric_client.setStateStore(state_store);</div><div class="line">	var crypto_suite = Fabric_Client.newCryptoSuite();</div><div class="line">	// use the same location for the state store (where the users&apos; certificate are kept)</div><div class="line">	// and the crypto store (where the users&apos; keys are kept)</div><div class="line">	var crypto_store = Fabric_Client.newCryptoKeyStore(&#123;path: store_path&#125;);</div><div class="line">	crypto_suite.setCryptoKeyStore(crypto_store);</div><div class="line">	fabric_client.setCryptoSuite(crypto_suite);</div><div class="line"></div><div class="line">   //指定用户</div><div class="line">	// get the enrolled user from persistence, this user will sign all requests</div><div class="line">	return fabric_client.getUserContext(&apos;user1&apos;, true);</div><div class="line">&#125;).then((user_from_store) =&gt; &#123;</div><div class="line">	if (user_from_store &amp;&amp; user_from_store.isEnrolled()) &#123;</div><div class="line">		console.log(&apos;Successfully loaded user1 from persistence&apos;);</div><div class="line">		member_user = user_from_store;</div><div class="line">	&#125; else &#123;</div><div class="line">		throw new Error(&apos;Failed to get user1.... run registerUser.js&apos;);</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	// 查询请求：</div><div class="line">	const request = &#123;</div><div class="line">		//targets : --- letting this default to the peers assigned to the channel</div><div class="line">		chaincodeId: &apos;fabcar&apos;,</div><div class="line">		fcn: &apos;queryAllCars&apos;,//查询所有car的方法</div><div class="line">		args: [&apos;&apos;]//不需传递参数</div><div class="line">	&#125;;</div><div class="line"></div><div class="line">	// 向peer节点发起查询请求</div><div class="line">	return channel.queryByChaincode(request);</div><div class="line">&#125;).then((query_responses) =&gt; &#123;</div><div class="line">	console.log(&quot;Query has completed, checking results&quot;);</div><div class="line">	// query_responses could have more than one  results if there multiple peers were used as targets</div><div class="line">	if (query_responses &amp;&amp; query_responses.length == 1) &#123;</div><div class="line">		if (query_responses[0] instanceof Error) &#123;</div><div class="line">			console.error(&quot;error from query = &quot;, query_responses[0]);</div><div class="line">		&#125; else &#123;</div><div class="line">			console.log(&quot;Response is &quot;, query_responses[0].toString());</div><div class="line">		&#125;</div><div class="line">	&#125; else &#123;</div><div class="line">		console.log(&quot;No payloads were returned from query&quot;);</div><div class="line">	&#125;</div><div class="line">&#125;).catch((err) =&gt; &#123;</div><div class="line">	console.error(&apos;Failed to query successfully :: &apos; + err);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<h2 id="2-4-和账本交互-更新账本"><a href="#2-4-和账本交互-更新账本" class="headerlink" title="2.4 和账本交互-更新账本"></a>2.4 和账本交互-更新账本</h2><p>账本更新工作原理示意图：<br><img src="http://o8sltkx20.bkt.clouddn.com/blockchain7.jpeg" width="700" alt="更新账本" align="center"><br><img src="http://o8sltkx20.bkt.clouddn.com/blockchain8.jpeg" width="700" alt="更新账本交易处理过程" align="center">         </p>
+<p>账本更新较复杂，主要分为提案、背书、排序、执行交易更新账本等处理。<br>下面以创建car为例来说明更新账本。我们使用invoke.js文件来执行这一操作。核心代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">var request = &#123;  //targets: let default to the peer assigned to the client  chaincodeId: &apos;fabcar&apos;,  fcn: &apos;createCar&apos;,  args: [&apos;CAR10&apos;, &apos;Chevy&apos;, &apos;Volt&apos;, &apos;Red&apos;, &apos;Nick&apos;],  chainId: &apos;mychannel&apos;,  txId: tx_id&#125;;</div></pre></td></tr></table></figure>
+<p>执行，看到如下输出表示成功:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">➜  fabcar git:(a76d649) ✗ node invoke.js</div><div class="line">Store path:gopath/src/github.com/hyperledger/fabric-samples/fabcar/hfc-key-store</div><div class="line">Successfully loaded user1 from persistence</div><div class="line">Assigning transaction_id:  43ea5062b32111163e1eaca3f66cd1afdfa84d6d941dbdbce355f41030bc99f6</div><div class="line">Transaction proposal was good</div><div class="line">Successfully sent Proposal and received ProposalResponse: Status - 200, message - &quot;OK&quot;</div><div class="line">The transaction has been committed on peer localhost:7053</div><div class="line">Send transaction promise and event listener promise have completed</div><div class="line">Successfully sent transaction to the orderer.</div><div class="line">Successfully committed the change to the ledger by the peer</div></pre></td></tr></table></figure>
+<p>再次执行query.js可以看到我们刚才创建的这条car记录。</p>
+<h1 id="2-5-智能合约解读"><a href="#2-5-智能合约解读" class="headerlink" title="2.5 智能合约解读"></a>2.5 智能合约解读</h1><p>GO版本的智能合约代码在gopath/src/github.com/hyperledger/fabric-samples/chaincode/fabcar/fabcar.go目录下面，文件名fabcar。go，使用go语言编写。</p>
+<p>应用是如何能够调到用链码上的不同方法呢？每个方法会被编码到链码shim interface里的一个API，这样智能合约容器就能与peer节点账本进行交互。<br><img src="http://o8sltkx20.bkt.clouddn.com/blockchain6.jpeg" width="700" alt="查询账本" align="center">  </p>
+<p>我们看看刚才运行的方法queryAllCars，看看是如何与账本交互的。核心代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">func (s *SmartContract) queryAllCars(APIstub shim.ChaincodeStubInterface) sc.Response &#123;</div><div class="line">   //查询范围指定</div><div class="line">	startKey := &quot;CAR0&quot;</div><div class="line">	endKey := &quot;CAR999&quot;</div><div class="line"></div><div class="line">	resultsIterator, err := APIstub.GetStateByRange(startKey, endKey)</div><div class="line">	if err != nil &#123;</div><div class="line">		return shim.Error(err.Error())</div><div class="line">	&#125;</div><div class="line">	defer resultsIterator.Close()</div><div class="line"></div><div class="line">	// buffer is a JSON array containing QueryResults</div><div class="line">   //...</div><div class="line"></div><div class="line">	return shim.Success(buffer.Bytes())</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="版权声明"><a href="#版权声明" class="headerlink" title="版权声明"></a>版权声明</h2><p>本文首发于<a href="http://xiajunhust.github.io/">江南烟雨的个人博客</a>博客（ <a href="http://xiajunhust.github.io/">http://xiajunhust.github.io/</a> ），版权所有，侵权必究。<br>本文永久链接：<a href="http://xiajunhust.github.io/2018/06/10/区块链学习之三-Hyperledger-编写第一个区块链应用/">http://xiajunhust.github.io/2018/06/10/区块链学习之三-Hyperledger-编写第一个区块链应用/</a></p>
+
+      
+    </div>
+
+
+	<!-- css -->
+	<style type="text/css">
+	    .center {
+	        text-align: center;
+	    }
+	    .hidden {
+	        display: none;
+	    }
+		.donate_bar a.btn_donate{
+			display: inline-block;
+			width: 82px;
+			height: 82px;
+			background: url("http://7xsl28.com1.z0.glb.clouddn.com/btn_reward.gif") no-repeat;
+			_background: url("http://7xsl28.com1.z0.glb.clouddn.com/btn_reward.gif") no-repeat;
+
+			<!-- http://img.t.sinajs.cn/t5/style/images/apps_PRF/e_media/btn_reward.gif
+			     因为本 hexo 生成的博客所用的 theme 的 a:hover 带动画效果，
+				 为了在让打赏按钮显示效果正常 而 添加了以下几行 css，
+				 嵌入其它博客时不一定要它们。 -->
+			-webkit-transition: background 0s;
+			-moz-transition: background 0s;
+			-o-transition: background 0s;
+			-ms-transition: background 0s;
+			transition: background 0s;
+			<!-- /让打赏按钮的效果显示正常 而 添加的几行 css 到此结束 -->
+		}
+
+		.donate_bar a.btn_donate:hover{ background-position: 0px -82px;}
+		.donate_bar .donate_txt {
+			display: block;
+			color: #9d9d9d;
+			font: 14px/2 "Microsoft Yahei";
+		}
+		.bold{ font-weight: bold; }
+	</style>
+	<!-- /css -->
+
+    <!-- Donate Module -->
+    <div id="donate_module">
+
+	<!-- btn_donate & tips -->
+	<div id="donate_board" class="donate_bar center">
+	    <br>
+	    ------------------------------------------------------------------------------------------------------------------------------
+	    <br>
+		<a id="btn_donate" class="btn_donate" target="_self" href="javascript:;" title="Donate 打赏"></a>
+		<span class="donate_txt">
+			打赏我的人，运气都不会太差~
+		</span>
+			
+		
+	</div>
+	<!-- /btn_donate & tips -->
+
+	<!-- donate guide -->
+    
+	<div id="donate_guide" class="donate_bar center hidden">
+        <br>
+	    ------------------------------------------------------------------------------------------------------------------------------
+	    <br>
+	    
+	    <div width="100%" align="center"><div name="dashmain" id="dash-main-id-87895f" class="dash-main-3 87895f-0.99"></div></div>
+		<script type="text/javascript" charset="utf-8" src="http://www.dashangcloud.com/static/ds.js"></script>
+		
+
+		<a href="https://xjblog-1258188043.cos.ap-shanghai.myqcloud.com/wechat_qrcode.jpeg" title="用微信扫一扫哦~" class="fancybox" rel="article0">
+			<img src="https://xjblog-1258188043.cos.ap-shanghai.myqcloud.com/wechat_qrcode.jpeg" title="微信打赏 Donate" height="190px" width="auto"/>
+		</a>
+        
+        &nbsp;&nbsp;
+
+		<a href="https://xjblog-1258188043.cos.ap-shanghai.myqcloud.com/alipay_qrcode.jpeg" title="用支付宝扫一扫即可~" class="fancybox" rel="article0">
+			<img src="https://xjblog-1258188043.cos.ap-shanghai.myqcloud.com/alipay_qrcode.jpeg" title="支付宝打赏 Donate" height="190px" width="auto"/>
+		</a>
+
+		<span class="donate_txt">
+			打赏我的人，运气都不会太差~
+		</span>
+
+	</div>
+	<!-- /donate guide -->
+
+	<!-- donate script -->
+	<script type="text/javascript">
+		document.getElementById('btn_donate').onclick = function() {
+			$('#donate_board').addClass('hidden');
+	    $('#donate_guide').removeClass('hidden');
+		}
+
+		function donate_on_web(){
+			$('#donate').submit();
+        }
+
+		var original_window_onload = window.onload;
+        window.onload = function () {
+            if (original_window_onload) {
+                original_window_onload();
+            }
+            document.getElementById('donate_board_wdg').className = 'hidden';
+		}
+	</script>
+	<!-- /donate script -->
+</div>
+<!-- /Donate Module -->
+   
+
+    <footer class="article-footer">
+      <a data-url="http://xiajunhust.github.io/2018/06/10/区块链学习之三-Hyperledger-编写第一个区块链应用/" data-id="cjq4hhwb5001b3twfrzhxmmyr" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Hyperledger/">Hyperledger</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/区块链/">区块链</a></li></ul>
@@ -1612,7 +1635,7 @@
 
 
   <nav id="page-nav">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/2/">__('next') &raquo;</a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/">__('next') &raquo;</a>
   </nav>
 </section>
         
@@ -1635,7 +1658,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">标签云</h3>
     <div class="widget tagcloud">
-      <a href="/tags/DDD/" style="font-size: 10px;">DDD</a> <a href="/tags/Dubbo/" style="font-size: 10px;">Dubbo</a> <a href="/tags/Hyperledger/" style="font-size: 20px;">Hyperledger</a> <a href="/tags/Hystrix/" style="font-size: 10px;">Hystrix</a> <a href="/tags/InfluxDB/" style="font-size: 10px;">InfluxDB</a> <a href="/tags/Java/" style="font-size: 15px;">Java</a> <a href="/tags/MySQL/" style="font-size: 20px;">MySQL</a> <a href="/tags/ReactiveX/" style="font-size: 10px;">ReactiveX</a> <a href="/tags/Redis/" style="font-size: 10px;">Redis</a> <a href="/tags/RocketMQ/" style="font-size: 20px;">RocketMQ</a> <a href="/tags/Sentinel/" style="font-size: 10px;">Sentinel</a> <a href="/tags/Spark/" style="font-size: 20px;">Spark</a> <a href="/tags/代码设计/" style="font-size: 10px;">代码设计</a> <a href="/tags/分布式/" style="font-size: 10px;">分布式</a> <a href="/tags/区块链/" style="font-size: 20px;">区块链</a> <a href="/tags/大数据/" style="font-size: 20px;">大数据</a> <a href="/tags/开发工具/" style="font-size: 15px;">开发工具</a> <a href="/tags/思考-读书笔记/" style="font-size: 10px;">思考&读书笔记</a> <a href="/tags/测试技术/" style="font-size: 10px;">测试技术</a>
+      <a href="/tags/DDD/" style="font-size: 10px;">DDD</a> <a href="/tags/Dubbo/" style="font-size: 10px;">Dubbo</a> <a href="/tags/Hyperledger/" style="font-size: 20px;">Hyperledger</a> <a href="/tags/Hystrix/" style="font-size: 10px;">Hystrix</a> <a href="/tags/InfluxDB/" style="font-size: 10px;">InfluxDB</a> <a href="/tags/Java/" style="font-size: 13.33px;">Java</a> <a href="/tags/MySQL/" style="font-size: 20px;">MySQL</a> <a href="/tags/ReactiveX/" style="font-size: 10px;">ReactiveX</a> <a href="/tags/Redis/" style="font-size: 10px;">Redis</a> <a href="/tags/RocketMQ/" style="font-size: 20px;">RocketMQ</a> <a href="/tags/Sentinel/" style="font-size: 10px;">Sentinel</a> <a href="/tags/Spark/" style="font-size: 16.67px;">Spark</a> <a href="/tags/代码设计/" style="font-size: 10px;">代码设计</a> <a href="/tags/分布式/" style="font-size: 10px;">分布式</a> <a href="/tags/区块链/" style="font-size: 20px;">区块链</a> <a href="/tags/大数据/" style="font-size: 16.67px;">大数据</a> <a href="/tags/开发工具/" style="font-size: 13.33px;">开发工具</a> <a href="/tags/思考-读书笔记/" style="font-size: 10px;">思考&读书笔记</a> <a href="/tags/测试技术/" style="font-size: 10px;">测试技术</a>
     </div>
   </div>
 
@@ -1657,10 +1680,6 @@
       <ul>
         
           <li>
-            <a href="/2018/12/25/Spark基础学习笔记4-Spark执行原理分析/">Spark基础学习笔记4-Spark执行原理分析</a>
-          </li>
-        
-          <li>
             <a href="/2018/12/23/Spark基础学习笔记3-广播变量/">Spark基础学习笔记3-广播变量(Broadcast)</a>
           </li>
         
@@ -1674,6 +1693,10 @@
         
           <li>
             <a href="/2018/12/17/大数据日知录读书笔记-分布式系统-向量时钟算法（Vector_Clock）/">大数据日知录读书笔记-分布式系统-向量时钟算法（Vector_Clock）</a>
+          </li>
+        
+          <li>
+            <a href="/2018/12/04/Sentinel-热点参数限流使用与原理/">Sentinel热点参数限流使用与原理</a>
           </li>
         
       </ul>
