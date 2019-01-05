@@ -196,22 +196,20 @@ RDD：是弹性分布式数据集（Resilient Distributed Dataset）的简称，
             
             
                 
-<a class="post-hover" href="/2018/12/21/Spark基础学习笔记2-Pair RDD/" style="height: 48.5%">
-    <div class="content is-hidden-touch full-height overflow-hidden" style="background-image: url('https://xjblog-1258188043.cos.ap-shanghai.myqcloud.com/spark-03.png')">
+<a class="post-hover" href="/2018/12/21/[论文阅读笔记]BBR Congestion-Based Congestion Control/" style="height: 48.5%">
+    <div class="content is-hidden-touch full-height overflow-hidden" style="background-image: url('https://xjblog-1258188043.cos.ap-shanghai.myqcloud.com/bbr-02.png')">
         <div class="content-bg-mask full-width full-height has-padding">
             <h3 class="title is-marginless text-shadow">
-                Spark基础学习笔记2-Pair RDD
+                论文阅读笔记-BBR Congestion-Based Congestion Control
             </h3>
             
             
-            <span class="tag is-post-tag">Spark</span>
-            
-            <span class="tag is-post-tag">大数据</span>
+            <span class="tag is-post-tag">网络</span>
             
             
             <p class="sub-title text-shadow"></p>
             <p class="is-marginless text-shadow post-content-text">
-                1 什么是Pair RDDPair RDD：键值对RDD。提供了并行操作各个键或跨节点重新进行数..
+                最近在学习阿里开源的限流组件Sentinel的过程中，发现系统保护限流这块借鉴了BBR算法，因此..
             </p>
             <p class="date text-shadow is-marginless">2018-12-21</p>
         </div>
@@ -247,22 +245,20 @@ RDD：是弹性分布式数据集（Resilient Distributed Dataset）的简称，
         
         
         
-<a class="post-hover" href="/2018/12/21/Spark基础学习笔记2-Pair RDD/" style="height: 48.5%">
-    <div class="content is-hidden-touch full-height overflow-hidden" style="background-image: url('https://xjblog-1258188043.cos.ap-shanghai.myqcloud.com/spark-03.png')">
+<a class="post-hover" href="/2018/12/21/[论文阅读笔记]BBR Congestion-Based Congestion Control/" style="height: 48.5%">
+    <div class="content is-hidden-touch full-height overflow-hidden" style="background-image: url('https://xjblog-1258188043.cos.ap-shanghai.myqcloud.com/bbr-02.png')">
         <div class="content-bg-mask full-width full-height has-padding">
             <h3 class="title is-marginless text-shadow">
-                Spark基础学习笔记2-Pair RDD
+                论文阅读笔记-BBR Congestion-Based Congestion Control
             </h3>
             
             
-            <span class="tag is-post-tag">Spark</span>
-            
-            <span class="tag is-post-tag">大数据</span>
+            <span class="tag is-post-tag">网络</span>
             
             
             <p class="sub-title text-shadow"></p>
             <p class="is-marginless text-shadow post-content-text">
-                1 什么是Pair RDDPair RDD：键值对RDD。提供了并行操作各个键或跨节点重新进行数..
+                最近在学习阿里开源的限流组件Sentinel的过程中，发现系统保护限流这块借鉴了BBR算法，因此..
             </p>
             <p class="date text-shadow is-marginless">2018-12-21</p>
         </div>
@@ -312,6 +308,37 @@ RDD：是弹性分布式数据集（Resilient Distributed Dataset）的简称，
                 
                     
                         <div class="content-box  is-hidden-desktop" style="margin-bottom: 27px;">
+                            <a class="post-hover" href="/2018/12/21/[论文阅读笔记]BBR Congestion-Based Congestion Control/">
+                            <div class="columns" style="min-height: 230px;">
+                                
+                                    <div class="column is-4-desktop is-5-tablet post-avatar is-hidden-mobile"
+                                         style="margin: 10px; background-size: cover;background-image: url('https://xjblog-1258188043.cos.ap-shanghai.myqcloud.com/bbr-02.png')">
+                                    </div>
+                                
+                                <div class="column is-8-desktop post-content is-flex align-center">
+                                    <div class="content">
+                                        <h3>论文阅读笔记-BBR Congestion-Based Congestion Control</h3>
+                                        
+                                        <p>
+                                            
+                                                <span class="tag is-post-tag">网络</span>
+                                            
+                                        </p>
+                                        <p>
+                                            最近在学习阿里开源的限流组件Sentinel的过程中，发现系统保护限流这块借鉴了BBR算法，因此找到了这篇论文，研究下BBR算法的设计。
+1 BBR算法产生的背景及动机当前因特网的数据传输效果远远没有达到理想效果，还有很大的潜力未挖掘。导致此问题的原因是20世纪80年代提出的基于丢包的拥塞控制算法[4]：认为丢包就是因为发生了拥塞，二者划等号。因为技术的..
+                                        </p>
+                                        <p>2018-12-21</p>
+                                        <button class="button is-small">Read More</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                        </div>
+                    
+                
+                    
+                        <div class="content-box  " style="margin-bottom: 27px;">
                             <a class="post-hover" href="/2018/12/21/Spark基础学习笔记2-Pair RDD/">
                             <div class="columns" style="min-height: 230px;">
                                 
@@ -334,37 +361,6 @@ RDD：是弹性分布式数据集（Resilient Distributed Dataset）的简称，
                                             1 什么是Pair RDDPair RDD：键值对RDD。提供了并行操作各个键或跨节点重新进行数据分组的操作接口。本文介绍了Pair RDD的相关操作，并以实际例子进行讲解。  
 
 环境搭建：Intellij Idea+Scala+SBT。省略Intellij Idea安装SBT、Scala等的步骤。使用Intellij创建SBT工程.在build.sb..
-                                        </p>
-                                        <p>2018-12-21</p>
-                                        <button class="button is-small">Read More</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-                        </div>
-                    
-                
-                    
-                        <div class="content-box  " style="margin-bottom: 27px;">
-                            <a class="post-hover" href="/2018/12/21/[论文阅读笔记]BBR Congestion-Based Congestion Control/">
-                            <div class="columns" style="min-height: 230px;">
-                                
-                                    <div class="column is-4-desktop is-5-tablet post-avatar is-hidden-mobile"
-                                         style="margin: 10px; background-size: cover;background-image: url('https://xjblog-1258188043.cos.ap-shanghai.myqcloud.com/bbr-02.png')">
-                                    </div>
-                                
-                                <div class="column is-8-desktop post-content is-flex align-center">
-                                    <div class="content">
-                                        <h3>论文阅读笔记-BBR Congestion-Based Congestion Control</h3>
-                                        
-                                        <p>
-                                            
-                                                <span class="tag is-post-tag">网络</span>
-                                            
-                                        </p>
-                                        <p>
-                                            最近在学习阿里开源的限流组件Sentinel的过程中，发现系统保护限流这块借鉴了BBR算法，因此找到了这篇论文，研究下BBR算法的设计。
-1 BBR算法产生的背景及动机当前因特网的数据传输效果远远没有达到理想效果，还有很大的潜力未挖掘。导致此问题的原因是20世纪80年代提出的基于丢包的拥塞控制算法[4]：认为丢包就是因为发生了拥塞，二者划等号。因为技术的..
                                         </p>
                                         <p>2018-12-21</p>
                                         <button class="button is-small">Read More</button>
